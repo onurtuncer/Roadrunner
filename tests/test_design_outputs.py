@@ -24,3 +24,26 @@ def test_evidence_pins():
     assert handoff["quantities"]["length_overall_m"]["value"] == pytest.approx(1.5)
     assert set(handoff["quantities"]) == {"length_overall_m", "takeoff_mass_kg", "speed_max_m_s"}
     assert handoff["hypotheses_not_inputs"] == ["engines_most_power_dense", "range_ten_times_comparators"]
+
+
+def test_technology_pins():
+    """Catalogue-derived technology levels (notebook 4). Vendor data in, so these move only with the catalogue."""
+    t = yaml.safe_load((OUT / "technology.yaml").read_text(encoding="utf-8"))
+    assert t["engines"] == 12 and len(t["vendors"]) == 3
+    b = t["bounds"]
+    assert (b["thrust_per_frontal_area_N_m2"]["low"], b["thrust_per_frontal_area_N_m2"]["high"]) == \
+        pytest.approx((20749.9, 29236.3), rel=1e-5)
+    assert (b["thrust_to_weight"]["low"], b["thrust_to_weight"]["high"]) == pytest.approx((6.23756, 11.8467), rel=1e-5)
+    assert (b["sfc_kg_N_s"]["low"], b["sfc_kg_N_s"]["high"]) == pytest.approx((3.22222e-05, 4.38889e-05), rel=1e-5)
+    assert (b["idle_thrust_fraction"]["low"], b["idle_thrust_fraction"]["high"]) == \
+        pytest.approx((0.0329412, 0.0510204), rel=1e-5)
+    c = t["mass_correlation"]
+    assert (c["coefficient"], c["exponent"], c["n"]) == pytest.approx((0.00232506, 1.24446, 12), rel=1e-5)
+
+
+def test_datasheets_imply_the_configured_fuel_density_within_one_percent():
+    t = yaml.safe_load((OUT / "technology.yaml").read_text(encoding="utf-8"))
+    used = t["fuel_density_kg_m3"]["used"]
+    implied = t["fuel_density_kg_m3"]["implied_by_datasheets"]
+    assert len(implied) == 5
+    assert all(abs(rho / used - 1.0) < 0.01 for rho in implied.values())

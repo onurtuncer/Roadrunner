@@ -229,3 +229,6 @@ src/roadrunner_re/_version.py
 /site/
 /executed/
 /rendered/
+
+# Notebook figures (regenerated in CI, embedded in the rendered notebooks)
+/notebooks/figures/

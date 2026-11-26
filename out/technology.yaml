@@ -1,0 +1,250 @@
+# Handoff of notebooks/reference_engines.ipynb. Generated; do not edit (ADR-0001).
+engines: 12
+vendors:
+- AMT Netherlands
+- JetCat
+- PBS Velka Bites
+fuel_density_kg_m3:
+  used: 800.0
+  implied_by_datasheets:
+    jetcat_p1000_pro: 802.874
+    jetcat_p400_pro: 803.999
+    jetcat_p550_pro: 800.0
+    pbs_tj100: 805.556
+    pbs_tj80_90: 802.174
+bounds:
+  sfc_kg_N_s:
+    low: 3.22222e-05
+    median: 3.7176e-05
+    high: 4.38889e-05
+    n: 10
+  specific_thrust_N_s_kg:
+    low: 506.41
+    median: 602.525
+    high: 634.328
+    n: 8
+  thrust_per_frontal_area_N_m2:
+    low: 20749.9
+    median: 23922.8
+    high: 29236.3
+    n: 12
+  thrust_to_weight:
+    low: 6.23756
+    median: 8.60836
+    high: 11.8467
+    n: 12
+  idle_thrust_fraction:
+    low: 0.0329412
+    median: 0.0409091
+    high: 0.0510204
+    n: 5
+  pressure_ratio:
+    low: 3.8
+    median: 3.9
+    high: 4.0
+    n: 4
+mass_correlation:
+  coefficient: 0.00232506
+  exponent: 1.24446
+  n: 12
+  max_abs_relative_residual: 0.328187
+metrics:
+  amt_lynx:
+    thrust_N: 1569.0
+    mass_kg: 25.65
+    mass_basis: system
+    sfc_kg_N_s: 3.82409e-05
+    sfc_basis: mass_flow
+    specific_thrust_N_s_kg: null
+    thrust_per_frontal_area_N_m2: 29236.3
+    thrust_to_weight: 6.23756
+    idle_thrust_fraction: null
+    pressure_ratio: null
+    implied_fuel_density_kg_m3: null
+  amt_nike:
+    thrust_N: 784.0
+    mass_kg: 11.3
+    mass_basis: system
+    sfc_kg_N_s: 3.93282e-05
+    sfc_basis: mass_flow
+    specific_thrust_N_s_kg: 627.2
+    thrust_per_frontal_area_N_m2: 24707.8
+    thrust_to_weight: 7.07485
+    idle_thrust_fraction: 0.0510204
+    pressure_ratio: 4.0
+    implied_fuel_density_kg_m3: null
+  amt_titan:
+    thrust_N: 392.0
+    mass_kg: 5.211
+    mass_basis: system
+    sfc_kg_N_s: null
+    sfc_basis: null
+    specific_thrust_N_s_kg: 593.939
+    thrust_per_frontal_area_N_m2: 23097.3
+    thrust_to_weight: 7.67086
+    idle_thrust_fraction: 0.0331633
+    pressure_ratio: 3.8
+    implied_fuel_density_kg_m3: null
+  jetcat_p1000_pro:
+    thrust_N: 1100.0
+    mass_kg: 11.57
+    mass_basis: system
+    sfc_kg_N_s: 3.52778e-05
+    sfc_basis: published
+    specific_thrust_N_s_kg: 611.111
+    thrust_per_frontal_area_N_m2: 25578.3
+    thrust_to_weight: 9.6948
+    idle_thrust_fraction: 0.0409091
+    pressure_ratio: 4.0
+    implied_fuel_density_kg_m3: 802.874
+  jetcat_p400_pro:
+    thrust_N: 425.0
+    mass_kg: 4.06
+    mass_basis: system
+    sfc_kg_N_s: 4.38889e-05
+    sfc_basis: published
+    specific_thrust_N_s_kg: 634.328
+    thrust_per_frontal_area_N_m2: 24571.5
+    thrust_to_weight: 10.6744
+    idle_thrust_fraction: 0.0329412
+    pressure_ratio: 3.8
+    implied_fuel_density_kg_m3: 803.999
+  jetcat_p550_pro:
+    thrust_N: 550.0
+    mass_kg: 4.9
+    mass_basis: system
+    sfc_kg_N_s: 4.0e-05
+    sfc_basis: published
+    specific_thrust_N_s_kg: 591.398
+    thrust_per_frontal_area_N_m2: 22866.3
+    thrust_to_weight: 11.4458
+    idle_thrust_fraction: 0.0509091
+    pressure_ratio: null
+    implied_fuel_density_kg_m3: 800.0
+  pbs_tj100:
+    thrust_N: 1300.0
+    mass_kg: 19.5
+    mass_basis: system
+    sfc_kg_N_s: 3.22222e-05
+    sfc_basis: published
+    specific_thrust_N_s_kg: null
+    thrust_per_frontal_area_N_m2: 22372.6
+    thrust_to_weight: 6.79811
+    idle_thrust_fraction: null
+    pressure_ratio: null
+    implied_fuel_density_kg_m3: 805.556
+  pbs_tj150:
+    thrust_N: 1500.0
+    mass_kg: 19.6
+    mass_basis: system
+    sfc_kg_N_s: 3.30556e-05
+    sfc_basis: published
+    specific_thrust_N_s_kg: null
+    thrust_per_frontal_area_N_m2: 25814.5
+    thrust_to_weight: 7.80395
+    idle_thrust_fraction: null
+    pressure_ratio: null
+    implied_fuel_density_kg_m3: null
+  pbs_tj40_g1:
+    thrust_N: 395.0
+    mass_kg: 3.4
+    mass_basis: system
+    sfc_kg_N_s: 4.1519e-05
+    sfc_basis: volume_flow
+    specific_thrust_N_s_kg: 506.41
+    thrust_per_frontal_area_N_m2: 23274.1
+    thrust_to_weight: 11.8467
+    idle_thrust_fraction: null
+    pressure_ratio: null
+    implied_fuel_density_kg_m3: null
+  pbs_tj40_g2:
+    thrust_N: 395.0
+    mass_kg: 4.0
+    mass_basis: system
+    sfc_kg_N_s: null
+    sfc_basis: null
+    specific_thrust_N_s_kg: 506.41
+    thrust_per_frontal_area_N_m2: 23274.1
+    thrust_to_weight: 10.0697
+    idle_thrust_fraction: null
+    pressure_ratio: null
+    implied_fuel_density_kg_m3: null
+  pbs_tj80_120:
+    thrust_N: 1200.0
+    mass_kg: 13.0
+    mass_basis: system
+    sfc_kg_N_s: 3.61111e-05
+    sfc_basis: published
+    specific_thrust_N_s_kg: null
+    thrust_per_frontal_area_N_m2: 27666.6
+    thrust_to_weight: 9.41277
+    idle_thrust_fraction: null
+    pressure_ratio: null
+    implied_fuel_density_kg_m3: null
+  pbs_tj80_90:
+    thrust_N: 900.0
+    mass_kg: 12.5
+    mass_basis: system
+    sfc_kg_N_s: 3.41667e-05
+    sfc_basis: published
+    specific_thrust_N_s_kg: 612.245
+    thrust_per_frontal_area_N_m2: 20749.9
+    thrust_to_weight: 7.34196
+    idle_thrust_fraction: null
+    pressure_ratio: null
+    implied_fuel_density_kg_m3: 802.174
+missing_datasheet_fields:
+  amt_lynx:
+  - thrust_idle_N
+  - length_m
+  - air_mass_flow_kg_s
+  - pressure_ratio
+  - sfc_kg_N_h
+  - egt_max_K
+  - rpm_max
+  amt_nike:
+  - sfc_kg_N_h
+  - egt_max_K
+  amt_titan:
+  - sfc_kg_N_h
+  - egt_max_K
+  - fuel_flow_max
+  jetcat_p550_pro:
+  - length_m
+  - pressure_ratio
+  pbs_tj100:
+  - thrust_idle_N
+  - mass_engine_kg
+  - air_mass_flow_kg_s
+  - pressure_ratio
+  - egt_max_K
+  pbs_tj150:
+  - thrust_idle_N
+  - mass_engine_kg
+  - air_mass_flow_kg_s
+  - pressure_ratio
+  - egt_max_K
+  - fuel_flow_max
+  pbs_tj40_g1:
+  - thrust_idle_N
+  - pressure_ratio
+  - sfc_kg_N_h
+  pbs_tj40_g2:
+  - thrust_idle_N
+  - pressure_ratio
+  - sfc_kg_N_h
+  - egt_max_K
+  - fuel_flow_max
+  pbs_tj80_120:
+  - thrust_idle_N
+  - mass_engine_kg
+  - air_mass_flow_kg_s
+  - pressure_ratio
+  - egt_max_K
+  - rpm_max
+  - fuel_flow_max
+  pbs_tj80_90:
+  - thrust_idle_N
+  - mass_engine_kg
+  - pressure_ratio
+  - egt_max_K
