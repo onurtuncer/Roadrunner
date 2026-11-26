@@ -4,7 +4,7 @@ Status: Proposed (2026-11-26)
 
 ## Context
 
-ADR-0015 to ADR-0020 add an aerodynamics stage, an engine deck, a
+ADR-0015 to ADR-0020 and ADR-0023 add an aerodynamics stage, an engine deck, a
 constraint analysis, a mission analysis and an uncertainty and
 sensitivity stage. The sequence of ADR-0013 no longer matches.
 
@@ -19,13 +19,13 @@ unchanged.
 | 1 | `evidence_ledger` | Public evidence, tiers, distributions | `evidence.yaml` |
 | 2 | `geometry_from_imagery` | Scaled measurements, engine envelope, reference area | `geometry.yaml` |
 | 3 | `aerodynamics` | Polar versus Mach by two methods, bounds (ADR-0016) | `aero.yaml` |
-| 4 | `reference_engines` | Database survey, technology bounds, mass correlation | `technology.yaml` |
-| 5 | `method_validation` | Blind pyCycle test on held-out engines (ADR-0012) | `validation.yaml` |
-| 6 | `engine_deck` | pyCycle design and off-design runs, deck, interpolation error (ADR-0015) | `engine_deck.yaml` |
+| 4 | `reference_engines` | Purchasable-engine catalogue survey, technology bounds (ADR-0023) | `technology.yaml` |
+| 5 | `method_validation` | Leave-one-out blind pyCycle test over the catalogue (ADR-0012, ADR-0023) | `validation.yaml` |
+| 6 | `engine_deck` | pyCycle anchored to each datasheet; deck per candidate, interpolation error (ADR-0015, ADR-0023) | `engine_deck.yaml` |
 | 7 | `constraint_analysis` | Constraint diagram, active constraints (ADR-0019) | `constraints.yaml` |
 | 8 | `mission_analysis` | Sample mission, weight by segment, weight check (ADR-0018) | `mission.yaml` |
-| 9 | `cycle_design_point` | OP1 pyCycle solution, station walk-through, installed vs uninstalled | `cycle.yaml` |
-| 10 | `engine_flowpath_sizing` | Flowpath sizing; fit in the measured envelope | `engine.yaml` |
+| 9 | `engine_selection` | Derived requirements, feasibility of each candidate, selected pair (ADR-0023) | `engine_selection.yaml` |
+| 10 | `cycle_design_point` | Selected engine at OP1: pyCycle station walk-through, installed vs uninstalled | `cycle.yaml` |
 | 11 | `off_design` | Thrust floor, dash, cruise; throttle line | `off_design.yaml` |
 | 12 | `uncertainty_and_sensitivity` | Propagation, feasible family, Morris, Sobol (ADR-0006, ADR-0020) | `uq.yaml` |
 | 13 | `design_summary` | Pure reader: results, intervals, ranking, standing findings | none |
