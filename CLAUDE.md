@@ -145,6 +145,9 @@ deck), `engine_selection.py`, `installation.py`, `inverse.py` (sampling and reje
   lowest closed take-off mass wins, deterministically. "No catalogue
   engine fits" is a valid result to report, not an error to design
   around.
+- **Paper exercise**: "purchasable" means a catalogue product with a
+  public datasheet. Do not consider, record or filter on price, lead
+  time or export controls (ADR-0023).
 - **Catalogue numbers come from the vendor datasheet** with a source
   URL. `null` means not yet retrieved; never fill one from memory.
 - **Validation is leave-one-out** over the catalogue: the engine being

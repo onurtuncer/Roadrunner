@@ -46,9 +46,10 @@ its propulsor (its ADR-0003).
 - If **no** catalogue engine is feasible, that is a result, reported
   with the shortfall. It is also the test of the manufacturer's
   "most power-dense" claim (Tier X, ADR-0005).
-- Price, lead time and export-licence status are recorded per engine as
-  procurement checks to confirm with the vendor; they are not used to
-  filter.
+- **This is a paper exercise; nothing is being procured.** "Purchasable"
+  means only that the engine is a catalogue product with a public
+  datasheet. Price, lead time and export controls are not considered,
+  not recorded and not used anywhere in the selection.
 
 ## Consequences
 

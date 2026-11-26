@@ -11,8 +11,8 @@
 # (ECU, pump, valves, ...). Vendors draw that line differently; read the
 # note before comparing.
 #
-# Price, lead time and export-licence status are procurement checks, not
-# published data: all three are to be confirmed with the vendor.
+# This is a paper exercise (ADR-0023): price, lead time and export
+# controls are not considered and are not recorded here.
 # accessed: 2026-11-26 for every entry.
 
 - id: pbs_tj40_g1
@@ -165,7 +165,7 @@
   rpm_max: 61500
   tier: A
   source: https://www.jetcat.de/en/productdetails/produkte/jetcat/produkte/Professionell/P1000-PRO-GH
-  note: Idle fuel flow 550 ml/min. Listed "price on request".
+  note: Idle fuel flow 550 ml/min.
 
 - id: amt_titan
   vendor: AMT Netherlands
