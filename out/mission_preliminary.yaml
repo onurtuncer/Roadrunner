@@ -1,5 +1,5 @@
-# Handoff of notebooks/constraint_analysis.ipynb. Generated; do not edit (ADR-0001).
-notebook: constraint_analysis
+# Handoff of notebooks/mission_analysis_preliminary.ipynb. Generated; do not edit (ADR-0001).
+notebook: mission_analysis_preliminary
 status: first iteration, rough by intent (ADR-0029)
 simplifications:
 - thrust lapse is the algebraic turbojet model, not an engine deck; the cycle analysis
@@ -31,61 +31,74 @@ design_point:
   binding_constraint: vertical_launch
   landing_floor_window_margin: 12.4444
   iterations: 2
-constraints:
-- id: vertical_launch
+segments:
+- id: launch
   type: vertical_launch
-  sense: lower_bound
-  weight_at: launch
-  beta: 1.0
-  thrust_loading: 1.47422
-  lapse: 0.881822
-  mach: 0.0
-  altitude_m: 0.0
-- id: landing_floor
-  type: vertical_landing_floor
-  sense: upper_bound
-  weight_at: landing
-  beta: 0.858006
-  thrust_loading: 18.345729
-  lapse: null
-  mach: 0.0
-  altitude_m: 0.0
-- id: dash
-  type: level_flight
-  sense: lower_bound
-  weight_at: dash_out
-  beta: 0.989128
-  thrust_loading: 0.75545
-  lapse: 0.737304
-  mach: 0.8
-  altitude_m: 3000.0
-- id: initial_climb
+  mass_start_kg: 85.0
+  mass_end_kg: 84.699523
+  fuel_kg: 0.300477
+  weight_fraction: 0.99646497
+  duration_s: 10.0
+  distance_m: 0.0
+- id: climb_out
   type: climb
-  sense: lower_bound
-  weight_at: climb_out
-  beta: 0.996465
-  thrust_loading: 0.635319
-  lapse: 0.876342
-  mach: 0.6
-  altitude_m: 0.0
-- id: manoeuvre
-  type: sustained_load_factor
-  sense: lower_bound
-  weight_at: dash_out
-  beta: 0.989128
-  thrust_loading: 0.926768
-  lapse: 0.703574
-  mach: 0.6
-  altitude_m: 3000.0
-- id: loiter_ceiling
-  type: ceiling
-  sense: lower_bound
-  weight_at: loiter
-  beta: 0.963248
-  thrust_loading: 0.384597
-  lapse: 0.689308
-  mach: 0.5
-  altitude_m: 3000.0
+  mass_start_kg: 84.699523
+  mass_end_kg: 84.07588
+  fuel_kg: 0.623643
+  weight_fraction: 0.992637
+  duration_s: 17.88
+  distance_m: 3712.9
+- id: dash_out
+  type: dash
+  mass_start_kg: 84.07588
+  mass_end_kg: 81.876098
+  fuel_kg: 2.199782
+  weight_fraction: 0.97383575
+  duration_s: 121.231
+  distance_m: 32669.9
+- id: loiter
+  type: loiter
+  mass_start_kg: 81.876098
+  mass_end_kg: 74.889121
+  fuel_kg: 6.986977
+  weight_fraction: 0.91466402
+  duration_s: 900.0
+  distance_m: 153265.1
+- id: cruise_back
+  type: cruise
+  mass_start_kg: 74.889121
+  mass_end_kg: 73.296998
+  fuel_kg: 1.592122
+  weight_fraction: 0.97874027
+  duration_s: 150.962
+  distance_m: 30779.7
+- id: descent
+  type: descent
+  mass_start_kg: 73.296998
+  mass_end_kg: 72.930513
+  fuel_kg: 0.366485
+  weight_fraction: 0.995
+  duration_s: 0.0
+  distance_m: 0.0
+- id: landing
+  type: vertical_landing
+  mass_start_kg: 72.930513
+  mass_end_kg: 72.15981
+  fuel_kg: 0.770703
+  weight_fraction: 0.98943236
+  duration_s: 30.0
+  distance_m: 0.0
+fuel:
+  mission_kg: 12.84019
+  reserve_kg: 1.284019
+  total_kg: 14.124209
+masses:
+  takeoff_kg: 85.0
+  payload_kg: 10.0
+  implied_empty_kg: 60.875791
+  engine_each_kg: 7.275164
+  propulsion_kg: 14.550328
+  propulsion_fraction_of_empty: 0.239
 takeoff_mass_sweep:
 - takeoff_mass_kg: 40.0
   feasible: true
