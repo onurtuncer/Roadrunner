@@ -91,8 +91,9 @@ repo does.
   (in use), `aero` and `uq` (not yet imported anywhere).
 - **ADR-0001 to 0031 are all Accepted** (0003 to 0031 on 2026-11-26).
   0013 is superseded by 0021; 0006, 0007, 0008, 0009, 0010, 0012, 0014,
-  0015, 0016, 0018, 0019, 0021, 0015, 0019, 0021, 0022, 0023 and 0026 carry amendments (see `adr/README.md`). Read an amended ADR
-  together with the ADRs that amend it.
+  0015, 0016, 0018, 0019, 0021, 0022, 0023, 0026, 0029 and 0030 carry
+  amendments (see `adr/README.md`). Read an amended ADR together with the
+  ADRs that amend it.
 - A change of direction needs a new ADR that amends or supersedes, not
   an edit of an accepted one.
 - **First-iteration coupled analysis exists (ADR-0029)** and is rough by
