@@ -1,0 +1,67 @@
+name: CI
+
+# Tier-1 CI (ADR-0014). The lint and test jobs switch themselves on when
+# the Python package lands (pyproject.toml); until then CI checks that
+# the ADR index and the ADR files agree.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  adr-index:
+    name: ADR index is complete
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Every ADR file is listed in adr/README.md and vice versa
+        run: |
+          set -euo pipefail
+          files=$(cd adr && ls [0-9][0-9][0-9][0-9]-*.md | sort)
+          listed=$(grep -oE '\]\([0-9]{4}-[^)]+\.md\)' adr/README.md | tr -d ']()' | sort)
+          if ! diff <(echo "$files") <(echo "$listed"); then
+            echo "::error::adr/README.md and the files in adr/ disagree (see diff above)"
+            exit 1
+          fi
+          echo "ADR index OK: $(echo "$files" | wc -l) records"
+
+  lint:
+    name: Lint (ruff)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/ruff-action@v3
+        with:
+          args: check scripts
+
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0   # setuptools-scm needs tags for the version
+      - id: pkg
+        run: echo "present=$([ -f pyproject.toml ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+      - uses: actions/setup-python@v7
+        if: steps.pkg.outputs.present == 'true'
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install package
+        if: steps.pkg.outputs.present == 'true'
+        run: pip install -e ".[dev]"
+      - name: Run tests
+        if: steps.pkg.outputs.present == 'true'
+        run: pytest -v
+      - name: No package yet
+        if: steps.pkg.outputs.present != 'true'
+        run: echo "pyproject.toml not present yet; tests start with the repo skeleton."

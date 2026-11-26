@@ -1,0 +1,54 @@
+name: Design Pipeline
+
+# Tier-2 CI (ADR-0014, ADR-0022): build the documentation site and, on
+# main, publish it to GitHub Pages. The notebook-execution job is added
+# with the repo skeleton; when it exists, the docs job takes its rendered
+# notebooks as an extra input (second argument of scripts/build_site.py).
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: design-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-site:
+    name: Build documentation site
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install site builder dependency
+        run: pip install markdown
+      - name: Build site (README + ADRs)
+        run: python scripts/build_site.py site
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: site
+
+  deploy:
+    name: Publish to GitHub Pages
+    needs: build-site
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

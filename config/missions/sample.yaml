@@ -1,0 +1,78 @@
+# Sample mission profile (ADR-0018). Baseline for all results.
+#
+# Shape: taken from the manufacturer's qualitative claims
+# (config/evidence/claims.yaml): vertical launch, fast transit, loiter in
+# an area, return, vertical landing, ready for reuse.
+#
+# Numbers: NOT published by anyone. Every value below is an assumption
+# chosen to be consistent with the cited claim, with deliberately wide
+# low/high bounds. All of them are uncertain inputs to the uncertainty
+# and sensitivity analysis (ADR-0020), uniform between low and high
+# unless a `dist` says otherwise. Change a number here, re-run the
+# pipeline.
+#
+# Energy accounting only (ADR-0004): the payload stays on board for the
+# whole mission; there is no engagement segment.
+#
+# Flight condition convention (ADR-0017): geopotential altitude in
+# metres, Mach number, ISA temperature offset in kelvin.
+
+name: sample
+
+day:
+  dT_isa_K: {value: 20.0, low: 0.0, high: 30.0}
+  basis: {assumption: "Hot day for the whole mission; vertical launch on a hot day is the engine sizing case (ADR-0009). No claim constrains it."}
+
+payload:
+  mass_kg: {value: 10.0, low: 5.0, high: 20.0}
+  basis: {assumption: "Placeholder. No payload mass is published; this is the least supported number in the file and is expected to rank high in the sensitivity analysis."}
+
+segments:
+
+  - id: launch
+    type: vertical_launch
+    altitude_m: 0.0
+    duration_s: {value: 10.0, low: 5.0, high: 20.0}
+    basis: {evidence: vtol_launch_and_landing, assumption: "Thrust-borne time before the vehicle is wing- and body-borne. Engine start time (engine_start_seconds) is before launch and burns negligible fuel."}
+
+  - id: climb_out
+    type: climb            # includes the transition to wing-borne flight
+    to_altitude_m: {value: 3000.0, low: 1000.0, high: 6000.0}
+    mach: {value: 0.60, low: 0.50, high: 0.70}
+    basis: {evidence: altitude_significant, assumption: "'Significant altitude' is not quantified; a low-to-medium altitude band is assumed."}
+
+  - id: dash_out
+    type: dash
+    altitude_m: {from_segment: climb_out}
+    mach: {value: 0.80, low: 0.70, high: 0.90}
+    distance_m: {value: 30000.0, low: 10000.0, high: 60000.0}
+    basis: {evidence: [speed_high_subsonic, range_relatively_long], assumption: "'High subsonic' read as Mach 0.7 to 0.9. Distance is a free assumption; 'relatively long range' gives no number."}
+
+  - id: loiter
+    type: loiter
+    altitude_m: {from_segment: climb_out}
+    mach: {value: 0.50, low: 0.40, high: 0.60}
+    duration_s: {value: 900.0, low: 300.0, high: 1800.0}
+    basis: {evidence: loiter_and_return, assumption: "Loiter is claimed, its duration is not. A turbojet at part throttle is thirsty, so this segment is expected to drive the fuel fraction."}
+
+  - id: cruise_back
+    type: cruise
+    altitude_m: {from_segment: climb_out}
+    mach: {value: 0.60, low: 0.50, high: 0.80}
+    distance_m: {from_segment: dash_out}   # return to the launch point
+    basis: {evidence: loiter_and_return, assumption: "Return at an economical speed rather than at dash speed."}
+
+  - id: descent
+    type: descent          # includes the transition back to thrust-borne flight
+    to_altitude_m: 0.0
+    basis: {assumption: "Idle descent; fuel burn small but accounted."}
+
+  - id: landing
+    type: vertical_landing
+    altitude_m: 0.0
+    duration_s: {value: 30.0, low: 15.0, high: 60.0}
+    basis: {evidence: vtol_launch_and_landing, assumption: "Hover and touchdown at landing weight. This is the thrust-floor condition (ADR-0009, OP2)."}
+
+reserve:
+  fraction_of_mission_fuel: {value: 0.10, low: 0.05, high: 0.15}
+  basis: {assumption: "Conventional reserve; no claim constrains it."}

@@ -1,0 +1,225 @@
+# Purchasable small turbojets (ADR-0010, ADR-0023).
+#
+# Candidate catalogue for engine selection, and the technology database.
+# Every number is the vendor's published sea-level static, standard-day
+# figure unless noted. `null` means "not yet retrieved from a citable
+# source", never zero. Tier A = vendor datasheet or product page;
+# tier B = secondary source (to be replaced by the vendor datasheet).
+#
+# Masses: `mass_engine_kg` is the bare engine as the vendor states it;
+# `mass_system_kg` includes the airborne accessories the vendor lists
+# (ECU, pump, valves, ...). Vendors draw that line differently; read the
+# note before comparing.
+#
+# This is a paper exercise (ADR-0023): price, lead time and export
+# controls are not considered and are not recorded here.
+# accessed: 2026-11-26 for every entry.
+
+- id: pbs_tj40_g1
+  vendor: PBS Velka Bites
+  model: TJ40-G1
+  thrust_max_N: 395            # take-off rating, limited to 5 minutes
+  thrust_idle_N: null
+  mass_engine_kg: 3.2
+  mass_system_kg: 3.4          # engine + 0.2 kg accessories
+  diameter_m: 0.147
+  length_m: 0.305
+  air_mass_flow_kg_s: 0.78
+  pressure_ratio: null
+  fuel_flow_max: {value: 1230, unit: ml_min}
+  sfc_kg_N_h: null
+  egt_max_K: 1053.15           # 780 degC
+  rpm_max: 98000
+  tier: A
+  source: https://pdf.aeroexpo.online/pdf/pbs-velka-bites/tj-40-g1-turbojet-engine/170284-303.html
+  note: Fuel-lubricated (3 % oil in fuel). Kerosene or diesel.
+
+- id: pbs_tj40_g2
+  vendor: PBS Velka Bites
+  model: TJ40-G2
+  thrust_max_N: 395            # take-off rating, limited to 5 minutes
+  thrust_idle_N: null
+  mass_engine_kg: 3.8
+  mass_system_kg: 4.0
+  diameter_m: 0.147
+  length_m: 0.373
+  air_mass_flow_kg_s: 0.78
+  pressure_ratio: null
+  fuel_flow_max: null
+  sfc_kg_N_h: null
+  egt_max_K: null
+  rpm_max: 98000
+  tier: A
+  source: https://pdf.aeroexpo.online/pdf/pbs-velka-bites/tj-40-g2-turbojet-engine/170284-304.html
+  note: G1 with an 800 W generator; longer and heavier.
+
+- id: pbs_tj80_120
+  vendor: PBS Velka Bites
+  model: TJ80-120
+  thrust_max_N: 1200
+  thrust_idle_N: null
+  mass_engine_kg: null
+  mass_system_kg: 12.8         # "including the accessories"
+  diameter_m: 0.235
+  length_m: null
+  air_mass_flow_kg_s: null
+  pressure_ratio: null
+  fuel_flow_max: null
+  sfc_kg_N_h: null
+  egt_max_K: null
+  rpm_max: null
+  tier: B
+  source: https://en.wikipedia.org/wiki/PBS_TJ80-120
+  note: Secondary source; replace with the PBS datasheet.
+
+- id: pbs_tj100
+  vendor: PBS Velka Bites
+  model: TJ100
+  thrust_max_N: {low: 1100, high: 1250}   # by version
+  thrust_idle_N: null
+  mass_engine_kg: null
+  mass_system_kg: null
+  diameter_m: 0.272
+  length_m: null
+  air_mass_flow_kg_s: null
+  pressure_ratio: null
+  fuel_flow_max: null
+  sfc_kg_N_h: null
+  egt_max_K: null
+  rpm_max: null
+  tier: B
+  source: https://en.wikipedia.org/wiki/PBS_TJ100
+  note: Secondary source; replace with the PBS datasheet. Built-in starter-generator, ground and in-flight start.
+
+- id: pbs_tj150
+  vendor: PBS Velka Bites
+  model: TJ150
+  thrust_max_N: 1500
+  thrust_idle_N: null
+  mass_engine_kg: null
+  mass_system_kg: 19.6
+  diameter_m: 0.272
+  length_m: 0.520
+  air_mass_flow_kg_s: null
+  pressure_ratio: null
+  fuel_flow_max: null
+  sfc_kg_N_h: 0.119
+  egt_max_K: null
+  rpm_max: 55300
+  tier: A
+  source: https://pdf.aeroexpo.online/pdf/pbs-velka-bites/pbs-turbojet-engine-tj150/170284-12431.html
+  note: Mass conflict to resolve against the PBS datasheet - a secondary source gives 17.1 kg dry (https://en.wikipedia.org/wiki/PBS_TJ150). 600 W electrical output at 28 V DC.
+
+- id: jetcat_p400_pro
+  vendor: JetCat
+  model: P400-PRO-GL-LN
+  thrust_max_N: 425
+  thrust_idle_N: 14
+  mass_engine_kg: 4.06
+  mass_system_kg: 4.06         # ECU, pump and valves are integrated
+  diameter_m: 0.1484
+  length_m: 0.380
+  air_mass_flow_kg_s: 0.67
+  pressure_ratio: 3.8
+  fuel_flow_max: {value: 1392, unit: ml_min}
+  sfc_kg_N_h: 0.158
+  egt_max_K: 1023.15           # 750 degC
+  rpm_max: 98000
+  tier: A
+  source: https://www.jetcat.de/en/productdetails/produkte/jetcat/produkte/Professionell/p400%20pro%20-%20GL
+  note: Idle fuel flow 200 ml/min.
+
+- id: jetcat_p550_pro
+  vendor: JetCat
+  model: P550-PRO
+  thrust_max_N: 550
+  thrust_idle_N: 28            # lower end of the stated thrust range
+  mass_engine_kg: 4.9
+  mass_system_kg: 4.9          # ECU, pump and valves are integrated
+  diameter_m: 0.175
+  length_m: null
+  air_mass_flow_kg_s: 0.93
+  pressure_ratio: null
+  fuel_flow_max: {value: 1650, unit: ml_min}
+  sfc_kg_N_h: 0.144
+  egt_max_K: 1023.15           # 750 degC
+  rpm_max: 83000
+  tier: A
+  source: https://www.jetcat.de/jetcat/anleitungen/P550-PRO-Datasheet.pdf
+  note: Fuel-lubricated (3-5 % oil in Jet A-1 or diesel). Several nozzle lengths.
+
+- id: jetcat_p1000_pro
+  vendor: JetCat
+  model: P1000-PRO-GH
+  thrust_max_N: 1100
+  thrust_idle_N: 45
+  mass_engine_kg: 11.57
+  mass_system_kg: 11.57        # ECU, pump and valves are integrated
+  diameter_m: 0.234
+  length_m: 0.505
+  air_mass_flow_kg_s: 1.8
+  pressure_ratio: 4.0
+  fuel_flow_max: {value: 2900, unit: ml_min}
+  sfc_kg_N_h: 0.127
+  egt_max_K: 993.15            # 720 degC
+  rpm_max: 61500
+  tier: A
+  source: https://www.jetcat.de/en/productdetails/produkte/jetcat/produkte/Professionell/P1000-PRO-GH
+  note: Idle fuel flow 550 ml/min.
+
+- id: amt_titan
+  vendor: AMT Netherlands
+  model: Titan
+  thrust_max_N: 392
+  thrust_idle_N: 13
+  mass_engine_kg: 3.645
+  mass_system_kg: 5.211
+  diameter_m: 0.147
+  length_m: 0.385
+  air_mass_flow_kg_s: 0.66
+  pressure_ratio: 3.8
+  fuel_flow_max: null
+  sfc_kg_N_h: null
+  egt_max_K: null
+  rpm_max: 96000
+  tier: A
+  source: https://amtjets.com/pdf/Titan_specifications.pdf
+  note: Fuel-lubricated, no separate oil system.
+
+- id: amt_nike
+  vendor: AMT Netherlands
+  model: Nike
+  thrust_max_N: 784
+  thrust_idle_N: 40
+  mass_engine_kg: 9.15
+  mass_system_kg: 11.3
+  diameter_m: 0.201
+  length_m: 0.524
+  air_mass_flow_kg_s: 1.25
+  pressure_ratio: 4.0
+  fuel_flow_max: {value: 1850, unit: g_min}
+  sfc_kg_N_h: null             # derive from fuel flow and thrust in code
+  egt_max_K: null
+  rpm_max: 61500
+  tier: A
+  source: https://www.amtjets.com/pdf/Nike_specification.pdf
+  note: Fuel flow from https://www.amtjets.com/Nike.php. Start-up under 30 s.
+
+- id: amt_lynx
+  vendor: AMT Netherlands
+  model: Lynx
+  thrust_max_N: 1569
+  thrust_idle_N: null
+  mass_engine_kg: 21.45
+  mass_system_kg: 25.65
+  diameter_m: 0.2614
+  length_m: null
+  air_mass_flow_kg_s: null
+  pressure_ratio: null
+  fuel_flow_max: {value: 3600, unit: g_min}
+  sfc_kg_N_h: null             # derive from fuel flow and thrust in code
+  egt_max_K: null
+  rpm_max: null
+  tier: A
+  source: https://www.amtjets.com/lynx.php
+  note: In production since December 2018.

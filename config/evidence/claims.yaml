@@ -1,0 +1,66 @@
+# Evidence ledger (ADR-0005): manufacturer claims the sample mission rests on.
+#
+# These are the entries config/missions/sample.yaml cites by id. The rest
+# of the ledger (geometry, length anchor, engine facts) is added by the
+# evidence_ledger notebook stage.
+#
+# Tiers: A stated by the manufacturer on the record; B secondary report
+# or our own measurement; C inferred; X marketing comparative, never an
+# input. Every claim below is QUALITATIVE: Anduril has published no
+# figure for speed, range, endurance, altitude, mass or thrust.
+
+- id: speed_high_subsonic
+  statement: Flies at "high subsonic" speed; no Mach number or speed published.
+  quantity: null
+  tier: A
+  source: https://defensescoop.com/2023/12/01/anduril-develops-new-roadrunner-drones-that-it-says-can-perform-air-defense-missions/
+  accessed: 2026-11-26
+
+- id: vtol_launch_and_landing
+  statement: Takes off vertically and lands vertically for reuse.
+  quantity: null
+  tier: A
+  source: https://www.twz.com/roadrunner-reusable-anti-air-interceptor-breaks-cover
+  accessed: 2026-11-26
+
+- id: engine_start_seconds
+  statement: Engines are quick starting, cold to launch "in seconds" (founder, reported).
+  quantity: null
+  tier: A
+  source: https://defensedaily.com/anduril-set-to-produce-reusable-jet-powered-autonomous-air-vehicles-for-air-defense-other-missions/uncategorized
+  accessed: 2026-11-26
+
+- id: loiter_and_return
+  statement: Can be sent out to loiter in an area and, if not expended, return to a pre-designated location and land.
+  quantity: null
+  tier: A
+  source: https://insideunmannedsystems.com/anduril-unveils-jet-powered-roadrunner-roadrunner-m-uas/
+  accessed: 2026-11-26
+
+- id: quick_turnaround
+  statement: Can land, be refuelled and take off again "inside of a couple minutes" (founder).
+  quantity: null
+  tier: A
+  source: https://www.twz.com/roadrunner-reusable-anti-air-interceptor-breaks-cover
+  accessed: 2026-11-26
+
+- id: altitude_significant
+  statement: Operates at "significant speed and significant altitude" (founder); no altitude published.
+  quantity: null
+  tier: A
+  source: https://www.ocbj.com/technology/andurils-roadrunner-aims-to-revolutionize-warfare/
+  accessed: 2026-11-26
+
+- id: range_relatively_long
+  statement: Reported as having a "relatively long range"; no range published.
+  quantity: null
+  tier: B
+  source: https://www.ocbj.com/technology/andurils-roadrunner-aims-to-revolutionize-warfare/
+  accessed: 2026-11-26
+
+- id: range_ten_times_comparators
+  statement: Press release claims ten times the one-way effective range of unnamed "similar offerings".
+  quantity: null
+  tier: X          # no baseline stated; hypothesis to test, never an input
+  source: https://www.twz.com/roadrunner-reusable-anti-air-interceptor-breaks-cover
+  accessed: 2026-11-26
