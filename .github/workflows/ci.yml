@@ -58,4 +58,6 @@ jobs:
       - name: Install package
         run: pip install -e ".[dev]"
       - name: Run tests
-        run: pytest -v
+        # Design-output pins validate regenerable handoffs (out/); they run
+        # in the design pipeline against freshly generated ones.
+        run: pytest -v --ignore=tests/test_design_outputs.py

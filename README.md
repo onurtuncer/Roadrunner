@@ -19,9 +19,9 @@ uncertain each one is, and which missing fact matters most.
 
 ## Status
 
-Early stage. The architecture decision records are written and the
-package skeleton exists (config loaders, standard atmosphere, tests).
-No results yet. See [`adr/`](adr/README.md).
+Early stage. The architecture decision records are written, the
+package skeleton exists and the first notebook (the evidence ledger)
+runs. No engineering results yet. See [`adr/`](adr/README.md).
 
 ## Method
 
@@ -43,8 +43,8 @@ adr/         architecture decision records (start here)
 config/      inputs, evidence ledger, mission, engine catalogue
 src/         all physics, as the roadrunner_re package
 tests/       unit tests and regression pins
-notebooks/   thin Jupyter notebooks, run in a fixed order  (planned)
-out/         handoff files written by the notebooks        (planned)
+notebooks/   thin Jupyter notebooks, run in a fixed order
+out/         handoff files written by the notebooks
 ```
 
 ## Scope

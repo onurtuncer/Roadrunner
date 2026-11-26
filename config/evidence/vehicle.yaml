@@ -1,0 +1,124 @@
+# Evidence ledger (ADR-0005): what is publicly reported about the vehicle.
+#
+# Same schema as claims.yaml. Entries with a `quantity` carry a nominal
+# value and the low/high bounds actually used downstream. Where sources
+# disagree the entry says so; the bounds are then wide enough to cover
+# the disagreement, and that width is a result, not a defect.
+# accessed: 2026-11-26 for every entry.
+
+- id: length_overall
+  statement: About 1.5 m (5 ft) long; the founder said it is shorter than he is tall.
+  quantity: length_overall_m
+  value: {value: 1.5, low: 1.4, high: 1.8}
+  tier: B
+  source: https://www.designation-systems.net/dusrm/app4/roadrunner.html
+  accessed: 2026-11-26
+  corroboration:
+    - https://en.defence-ua.com/weapon_and_tech/us_anduril_company_unveiled_drone_killing_reusable_missile-8761.html
+    - https://www.twz.com/roadrunner-reusable-anti-air-interceptor-breaks-cover
+    - https://en.topwar.ru/231561-barrazhirujuschij-boepripas-perehvatchik-anduril-roadrunner-ssha.html
+    - https://www.strategypage.com/htmw/htada/articles/2025010804622.aspx
+  note: >-
+    No dimension is published by the manufacturer. Two secondary sources
+    give about 1.5 m; one reads the "shorter than the founder" remark as
+    no more than 1.7 to 1.8 m; one gives 1.8 m. The upper bound covers
+    the outlier. This is the single length anchor for all geometry
+    (ADR-0007): a better anchor rescales everything.
+
+- id: mass_reported
+  statement: One secondary source gives a weight of 85 kg.
+  quantity: takeoff_mass_kg
+  value: {value: 85.0, low: 40.0, high: 150.0}
+  tier: B
+  source: https://www.strategypage.com/htmw/htada/articles/2025010804622.aspx
+  accessed: 2026-11-26
+  note: >-
+    Single uncorroborated source that also misidentifies the company's
+    nationality and gives 1.8 m height, so treat with caution. The bounds
+    are judgement, set wide. Not stated whether this is take-off or empty
+    mass. The manufacturer has published no mass.
+
+- id: speed_reported
+  statement: The same secondary source gives a top speed of about 700 km/h.
+  quantity: speed_max_m_s
+  value: {value: 194.4, low: 170.0, high: 300.0}
+  tier: B
+  source: https://www.strategypage.com/htmw/htada/articles/2025010804622.aspx
+  accessed: 2026-11-26
+  note: >-
+    194.4 m/s is 700 km/h. Uncorroborated; the manufacturer says only
+    "high subsonic" (claim speed_high_subsonic). The sample mission's
+    dash Mach number rests on that claim, not on this figure; the two
+    are compared in the summary.
+
+- id: movable_by_one_person
+  statement: Company officials said it is small enough to be moved around by a single average individual.
+  quantity: null
+  tier: A
+  source: https://www.twz.com/roadrunner-reusable-anti-air-interceptor-breaks-cover
+  accessed: 2026-11-26
+  note: Qualitative upper hint on mass; does not say lifted or carried.
+
+- id: twin_turbojets
+  statement: Powered by two small turbojet engines.
+  quantity: null
+  tier: A
+  source: https://www.twz.com/roadrunner-reusable-anti-air-interceptor-breaks-cover
+  accessed: 2026-11-26
+
+- id: thrust_vectoring
+  statement: The two turbojets are thrust-vectored.
+  quantity: null
+  tier: B
+  source: https://overtdefense.com/2023/12/04/anduril-industries-reveals-roadrunner-vtol-drone-family
+  accessed: 2026-11-26
+  corroboration:
+    - https://www.designation-systems.net/dusrm/app4/roadrunner.html
+  note: Mechanism (vanes, gimballed nozzle, other) not stated; to be read from imagery if it resolves.
+
+- id: engines_in_house
+  statement: The engines are designed and built by the vehicle manufacturer, not bought in.
+  quantity: null
+  tier: A
+  source: https://defensedaily.com/anduril-set-to-produce-reusable-jet-powered-autonomous-air-vehicles-for-air-defense-other-missions/uncategorized
+  accessed: 2026-11-26
+  note: So no catalogue engine is the real one; ADR-0023 looks for the nearest purchasable equivalent.
+
+- id: fuel_standard_jet
+  statement: The engines run on standard jet fuel.
+  quantity: null
+  tier: B
+  source: https://en.defence-ua.com/weapon_and_tech/us_anduril_company_unveiled_drone_killing_reusable_missile-8761.html
+  accessed: 2026-11-26
+
+- id: landing_legs
+  statement: Lands vertically on extendable legs; sources disagree on the number (three or four).
+  quantity: null
+  tier: B
+  source: https://janes.com/defence-news/anduril-unveils-roadrunner-vtol-and-c-uas
+  accessed: 2026-11-26
+  corroboration:
+    - https://www.twz.com/roadrunner-reusable-anti-air-interceptor-breaks-cover
+  note: One source says three extendable legs, another four flip-down outriggers. To be settled from imagery.
+
+- id: airframe_carbon_fibre
+  statement: The airframe makes heavy use of carbon fibre.
+  quantity: null
+  tier: B
+  source: https://www.twz.com/roadrunner-reusable-anti-air-interceptor-breaks-cover
+  accessed: 2026-11-26
+
+- id: uas_group_3
+  statement: Described in one report as a "Group 3" drone.
+  quantity: null
+  tier: B
+  source: https://overtdefense.com/2023/12/04/anduril-industries-reveals-roadrunner-vtol-drone-family
+  accessed: 2026-11-26
+  note: A weight-and-speed class label; must be reconciled with "high subsonic" before it is used to bound anything.
+
+- id: engines_most_power_dense
+  statement: The founder called the engines the most power-dense turbojets ever built, as far as he is aware.
+  quantity: null
+  tier: X          # no figure, no baseline; tested at the end (ADR-0023), never an input
+  source: https://insideunmannedsystems.com/anduril-unveils-jet-powered-roadrunner-roadrunner-m-uas/
+  accessed: 2026-11-26
