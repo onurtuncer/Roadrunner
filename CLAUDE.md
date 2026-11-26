@@ -70,7 +70,9 @@ repo does.
   pixel coordinates or dimensions.
 - `config/` holds `atmosphere.yaml`, `geometry.yaml`,
   `evidence/claims.yaml`, `evidence/vehicle.yaml`,
-  `evidence/imagery.yaml`, `missions/sample.yaml`, `fuel.yaml`,
+  `evidence/imagery.yaml`, `missions/sample.yaml`, `constraints.yaml` (the performance
+  requirements as an input, ADR-0027: launch margin, landing floor, dash,
+  climb, manoeuvre, loiter ceiling; conditions taken from the mission), `fuel.yaml`,
   `cycle.yaml`, `validation.yaml` and
   `reference_engines.yaml` (nine purchasable turbojets from PBS
   and AMT, all from vendor material; some fields still `null`,
@@ -85,9 +87,9 @@ repo does.
   two come from one uncorroborated secondary source.
 - Dependencies are optional extras in `pyproject.toml`: `cycle`
   (in use), `aero` and `uq` (not yet imported anywhere).
-- **ADR-0001 to 0026 are all Accepted** (0003 to 0026 on 2026-11-26).
+- **ADR-0001 to 0027 are all Accepted** (0003 to 0027 on 2026-11-26).
   0013 is superseded by 0021; 0006, 0007, 0008, 0009, 0010, 0012, 0014,
-  0015, 0016, 0018, 0021 and 0023 carry amendments (see `adr/README.md`). Read an amended ADR
+  0015, 0016, 0018, 0019, 0021, 0023 and 0026 carry amendments (see `adr/README.md`). Read an amended ADR
   together with the ADRs that amend it.
 - A change of direction needs a new ADR that amends or supersedes, not
   an edit of an accepted one.
@@ -140,7 +142,8 @@ to `out/` and reads only earlier handoffs:
 12. `uncertainty_and_sensitivity` -> `out/uq.yaml`
 13. `design_summary` (pure reader, writes nothing)
 14. `mission_profile` -> `out/mission_profile.yaml` (quotes and plots the
-    sample mission; reads only config, ADR-0026)
+    sample mission and its requirements; reads only config, ADR-0026,
+    ADR-0027)
 
 The constraint/mission/mass/engine coupling is resolved inside
 `roadrunner_re.design_point.solve_design_point()`, the **single call

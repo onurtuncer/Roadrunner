@@ -168,3 +168,32 @@ def mission_table(views) -> str:
                     f"{cell(v.true_airspeed_m_s):>17s}{cell(v.duration_s):>19s}"
                     f"{cell(v.distance_m, 1e-3, '.1f'):>17s}")
     return "\n".join(rows)
+
+
+def constraint_table(constraints) -> str:
+    """Each requirement with its resolved parameters. `*` marks a value taken from the mission."""
+    rows = [f"{'constraint':16s}{'sense':>13s}  {'weight at':12s}parameters", "-" * 100]
+    for c in constraints.constraints:
+        parts = []
+        for name in c.params:
+            u = constraints.resolve(c.id, name)
+            star = "*" if isinstance(c.params[name], str) else ""
+            text = f"{u.value:g}" if u.is_fixed else f"{u.value:g} ({u.low:g}-{u.high:g})"
+            parts.append(f"{name}{star} = {text}")
+        rows.append(f"{c.id:16s}{c.sense:>13s}  {c.weight_at:12s}" + "; ".join(parts))
+    return "\n".join(rows)
+
+
+def constraint_quotes(constraints, claims: dict[str, Claim]) -> str:
+    """Each requirement with the ledger statements it cites and its stated assumption."""
+    lines = []
+    for c in constraints.constraints:
+        lines += [f"{c.id}  ({c.type}, {c.sense})", "-" * _WIDTH]
+        for claim_id in c.basis.evidence:
+            claim = claims[claim_id]
+            lines += textwrap.wrap(f"[{claim.tier}] {claim.id}: \"{claim.statement}\"", _WIDTH,
+                                   initial_indent="  ", subsequent_indent="      ")
+        lines += textwrap.wrap(f"assumption: {c.basis.assumption}", _WIDTH,
+                               initial_indent="  ", subsequent_indent="      ")
+        lines.append("")
+    return "\n".join(lines).rstrip()

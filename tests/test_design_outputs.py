@@ -77,3 +77,12 @@ def test_mission_profile_pins():
     dash = seg["dash_out"]
     assert (dash["true_airspeed_m_s"]["value"], dash["duration_s"]["value"]) == pytest.approx((272.0, 110.0), rel=0.01)
     assert dash["distance_m"] == seg["cruise_back"]["distance_m"]  # return flies the outbound distance
+
+
+def test_mission_profile_requirements_pins():
+    m = yaml.safe_load((OUT / "mission_profile.yaml").read_text(encoding="utf-8"))
+    req = {c["id"]: c for c in m["constraints"]}
+    assert list(req) == ["vertical_launch", "landing_floor", "dash", "initial_climb", "manoeuvre", "loiter_ceiling"]
+    assert req["vertical_launch"]["parameters"]["thrust_to_weight_margin"] == {"value": 1.3, "low": 1.15, "high": 1.6}
+    assert req["dash"]["taken_from_mission"] == ["altitude_m", "mach"]
+    assert "constraint.vertical_launch.thrust_to_weight_margin" in m["uncertain_inputs"]
