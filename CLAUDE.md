@@ -145,20 +145,22 @@ config/*.yaml  ->  src/roadrunner_re/  ->  notebooks/  ->  out/
 Notebook order is load-bearing and linear, 15 notebooks numbered by
 position (ADR-0031, which supersedes the table of ADR-0021). Each writes
 one YAML handoff to `out/` and reads only earlier handoffs. Built (B) or
-planned (P):
+planned (P); every planned notebook exists as a stub (narrative only, no code,
+no handoff) and is in `NOTEBOOK_ORDER`, so the published report shows the whole
+sequence:
 
 1. `evidence_ledger` -> `out/evidence.yaml` (B)
 2. `mission_profile` -> `out/mission_profile.yaml` (B; quotes and plots the
    sample mission and its requirements; reads only config, ADR-0026,
    ADR-0027)
-3. `geometry_from_imagery` -> `out/geometry.yaml` (P, blocked on measurement)
+3. `geometry_from_imagery` -> `out/geometry.yaml` (P, stub; blocked on measurement)
 4. `aerodynamics` -> `out/aero.yaml` (P)
 5. `reference_engines` -> `out/technology.yaml` (B)
 6. `method_validation` -> `out/validation.yaml` (B)
 7. `constraint_analysis_preliminary` -> `out/constraints_preliminary.yaml` (B)
 8. `mission_analysis_preliminary` -> `out/mission_preliminary.yaml` (B)
 9. `cycle_design_point` -> `out/cycle.yaml` (B)
-10. `off_design` -> `out/off_design.yaml` (P, next)
+10. `off_design` -> `out/off_design.yaml` (P, stub; next)
 11. `constraint_analysis` -> `out/constraints.yaml` (P; lapse from 10)
 12. `mission_analysis` -> `out/mission.yaml` (P; thrust and fuel flow from 10)
 13. `engine_selection` -> `out/engine_selection.yaml` (P)
