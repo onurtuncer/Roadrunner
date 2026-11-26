@@ -17,8 +17,9 @@ env:
   # Single source of truth for the pipeline order (ADR-0021). Adding a
   # notebook here is the only edit needed for it to run and be published.
   NOTEBOOK_ORDER: >-
-    evidence_ledger reference_engines method_validation constraint_analysis
-    mission_analysis cycle_design_point mission_profile
+    evidence_ledger mission_profile reference_engines method_validation
+    constraint_analysis_preliminary mission_analysis_preliminary
+    cycle_design_point
   MPLBACKEND: Agg
 
 concurrency:

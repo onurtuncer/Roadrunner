@@ -1,4 +1,4 @@
-"""Figures for the constraint_analysis and mission_analysis notebooks."""
+"""Figures for the preliminary constraint and mission analysis notebooks (ADR-0029, ADR-0031)."""
 from __future__ import annotations
 
 from pathlib import Path

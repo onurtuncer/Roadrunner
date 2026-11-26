@@ -63,7 +63,7 @@ def _common(inputs: AnalysisInputs, notebook: str) -> dict:
 
 
 def constraints_out(inputs: AnalysisInputs, dp: DesignPoint, sweep: list[dict]) -> dict:
-    return {**_common(inputs, "constraint_analysis"), "design_point": _design_block(dp, inputs),
+    return {**_common(inputs, "constraint_analysis_preliminary"), "design_point": _design_block(dp, inputs),
             "constraints": [{"id": c.id, "type": c.type, "sense": c.sense, "weight_at": c.weight_at,
                              "beta": _r(c.beta), "thrust_loading": _r(c.thrust_loading), "lapse": _r(c.lapse),
                              "mach": c.mach, "altitude_m": c.altitude_m} for c in dp.constraints],
@@ -72,7 +72,7 @@ def constraints_out(inputs: AnalysisInputs, dp: DesignPoint, sweep: list[dict]) 
 
 def mission_out(inputs: AnalysisInputs, dp: DesignPoint, sweep: list[dict]) -> dict:
     m = dp.mission
-    return {**_common(inputs, "mission_analysis"), "design_point": _design_block(dp, inputs),
+    return {**_common(inputs, "mission_analysis_preliminary"), "design_point": _design_block(dp, inputs),
             "segments": [{"id": s.id, "type": s.type, "mass_start_kg": _r(s.mass_start_kg), "mass_end_kg": _r(s.mass_end_kg),
                           "fuel_kg": _r(s.fuel_kg), "weight_fraction": _r(s.weight_fraction, 8),
                           "duration_s": _r(s.duration_s, 3), "distance_m": _r(s.distance_m, 1)} for s in m.segments],

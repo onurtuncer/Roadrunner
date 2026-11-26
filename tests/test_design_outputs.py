@@ -27,7 +27,7 @@ def test_evidence_pins():
 
 
 def test_technology_pins():
-    """Catalogue-derived technology levels (notebook 4). Vendor data in, so these move only with the catalogue."""
+    """Catalogue-derived technology levels (reference_engines). Vendor data in, so these move only with the catalogue."""
     t = yaml.safe_load((OUT / "technology.yaml").read_text(encoding="utf-8"))
     assert t["engines"] == 9 and len(t["vendors"]) == 2
     b = t["bounds"]
@@ -51,7 +51,7 @@ def test_datasheets_imply_the_configured_fuel_density_within_one_percent():
 
 
 def test_validation_pins():
-    """Anchored cycle model and leave-one-out blind test (notebook 5). Solver results: pinned to 0.1 %."""
+    """Anchored cycle model and leave-one-out blind test (method_validation). Solver results: pinned to 0.1 %."""
     v = yaml.safe_load((OUT / "validation.yaml").read_text(encoding="utf-8"))
     assert v["pass_counts"] == {"specific_thrust_N_s_kg": {"passed": 2, "of": 5}, "sfc_kg_N_s": {"passed": 1, "of": 3}}
     t = v["anchored_technology"]
@@ -67,7 +67,7 @@ def test_validation_pins():
 
 
 def test_mission_profile_pins():
-    """Mission profile laid out in time (notebook 14). Inputs in, so these move only with config/missions."""
+    """Mission profile laid out in time (mission_profile). Inputs in, so these move only with config/missions."""
     m = yaml.safe_load((OUT / "mission_profile.yaml").read_text(encoding="utf-8"))
     ids = [s["id"] for s in m["segments"]]
     assert ids == ["launch", "climb_out", "dash_out", "loiter", "cruise_back", "descent", "landing"]
@@ -89,8 +89,8 @@ def test_mission_profile_requirements_pins():
 
 
 def test_constraint_analysis_pins():
-    """First-iteration coupled analysis (notebook 7, ADR-0029): nominal point exact to 1e-4."""
-    c = yaml.safe_load((OUT / "constraints.yaml").read_text(encoding="utf-8"))
+    """First-iteration coupled analysis (constraint_analysis_preliminary, ADR-0029): nominal point exact to 1e-4."""
+    c = yaml.safe_load((OUT / "constraints_preliminary.yaml").read_text(encoding="utf-8"))
     d = c["design_point"]
     assert d["binding_constraint"] == "vertical_launch"
     assert (d["takeoff_mass_kg"], d["thrust_loading"], d["thrust_per_engine_N"]) == \
@@ -101,8 +101,8 @@ def test_constraint_analysis_pins():
 
 
 def test_mission_analysis_pins():
-    """Fuel and weight fractions of the sample mission (notebook 8, ADR-0029)."""
-    m = yaml.safe_load((OUT / "mission.yaml").read_text(encoding="utf-8"))
+    """Fuel and weight fractions of the sample mission (mission_analysis_preliminary, ADR-0029)."""
+    m = yaml.safe_load((OUT / "mission_preliminary.yaml").read_text(encoding="utf-8"))
     assert [s["id"] for s in m["segments"]] == ["launch", "climb_out", "dash_out", "loiter", "cruise_back", "descent", "landing"]
     assert (m["fuel"]["mission_kg"], m["fuel"]["total_kg"]) == pytest.approx((12.8402, 14.1242), rel=1e-4)
     assert m["masses"]["implied_empty_kg"] == pytest.approx(60.8758, rel=1e-4)
@@ -110,7 +110,7 @@ def test_mission_analysis_pins():
 
 
 def test_cycle_design_point_pins():
-    """On-design pyCycle point at OP1 (notebook 10, ADR-0030). Solver results: pinned to 0.1 %."""
+    """On-design pyCycle point at OP1 (cycle_design_point, ADR-0030). Solver results: pinned to 0.1 %."""
     c = yaml.safe_load((OUT / "cycle.yaml").read_text(encoding="utf-8"))
     assert c["requirement"]["thrust_per_engine_N"] == pytest.approx(541.82, rel=1e-3)
     e = c["engine"]

@@ -19,12 +19,10 @@ repo does.
   (incl. `design.py`, ADR-0030), `validation.py`, `notebook.py`, `reports.py`,
   `plots/`. Everything else in the layout
   below is still to be written.
-- Notebooks 1 (`evidence_ledger`), 4 (`reference_engines`), 5
-  (`method_validation`), 7 (`constraint_analysis`), 8 (`mission_analysis`),
-  10 (`cycle_design_point`, ADR-0030) and 14 (`mission_profile`, ADR-0026) exist, write
-  `out/evidence.yaml`, `out/technology.yaml`, `out/validation.yaml`,
-  `out/constraints.yaml`, `out/mission.yaml`, `out/cycle.yaml` and
-  `out/mission_profile.yaml`, and are the entries
+- Notebooks 1, 2, 5, 6, 7, 8 and 9 exist (see the list under "Architecture"),
+  write `out/evidence.yaml`, `out/mission_profile.yaml`, `out/technology.yaml`,
+  `out/validation.yaml`, `out/constraints_preliminary.yaml`,
+  `out/mission_preliminary.yaml` and `out/cycle.yaml`, and are the entries
   of `NOTEBOOK_ORDER` in `design-pipeline.yml`.
   `tests/test_design_outputs.py` pins the handoffs and runs in the
   pipeline, not in `ci.yml`.
@@ -52,7 +50,7 @@ repo does.
   EGT (model Tt5 is 121 K below it); anchored Tt4 (1088 to 1275 K)
   depends on the assumed efficiencies; the datasheet fuel-density
   cross-check rests on two engines.
-- Off-design is NOT built yet; that is the `engine_deck` stage. A
+- Off-design is NOT built yet; that is notebook 10, `off_design`. A
   prototype (not committed) showed pyCycle off-design converging at
   fixed shaft speed over hot day, altitude and Mach with the FAR balance
   on shaft power and the W balance on nozzle throat area; below about
@@ -91,7 +89,7 @@ repo does.
   two come from one uncorroborated secondary source.
 - Dependencies are optional extras in `pyproject.toml`: `cycle`
   (in use), `aero` and `uq` (not yet imported anywhere).
-- **ADR-0001 to 0030 are all Accepted** (0003 to 0030 on 2026-11-26).
+- **ADR-0001 to 0031 are all Accepted** (0003 to 0031 on 2026-11-26).
   0013 is superseded by 0021; 0006, 0007, 0008, 0009, 0010, 0012, 0014,
   0015, 0016, 0018, 0019, 0021, 0015, 0019, 0021, 0022, 0023 and 0026 carry amendments (see `adr/README.md`). Read an amended ADR
   together with the ADRs that amend it.
@@ -99,19 +97,20 @@ repo does.
   an edit of an accepted one.
 - **First-iteration coupled analysis exists (ADR-0029)** and is rough by
   intent: algebraic turbojet lapse plus constant catalogue-median TSFC,
-  hand-estimate polar on `S_ref`, `config/analysis.yaml`. Nominal point
+  hand-estimate polar on `S_ref`, `config/analysis.yaml`; now the
+  *preliminary* pair (notebooks 7, 8, ADR-0031). Nominal point
   (85 kg): vertical launch binds, T_SL/W_TO 1.47, 614 N per engine, fuel
   14.1 kg with reserve. The cycle analysis and engine deck replace the
   lapse; take-off mass is swept, not solved (no ADR-0008 build-up).
 - **On-design cycle point exists (ADR-0030)**: pyCycle at OP1 (hot-day SLS) for
   the launch thrust, 542 N per engine -> 0.95 kg/s air, specific thrust 568
   N s/kg, Tt4 anchored 1232 K; bounds one input at a time. Next is
-  `off_design` (11), which replaces the algebraic lapse and constant TSFC;
-  `engine_deck` (6) and `engine_selection` (9) are deferred, any deck is a
-  by-product of off-design.
+  `off_design` (10), which replaces the algebraic lapse and constant TSFC;
+  the second analysis pair (11, 12) then repeats the coupled analysis on
+  its results and reports the difference from the preliminary pair (7, 8).
 - Next step is the pixel measurements, then `geometry_from_imagery`,
   then the remaining notebooks in ADR-0021 order. `off_design`
-  (notebook 11) does not depend on geometry and can go ahead; it is what
+  (notebook 10) does not depend on geometry and can go ahead; it is what
   closes the lapse and TSFC of ADR-0029.
 - Everything below the next heading describes the *intended* structure
   per the ADRs.
@@ -142,25 +141,32 @@ config/*.yaml  ->  src/roadrunner_re/  ->  notebooks/  ->  out/
 (inputs+evidence)  (ALL physics)           (orchestrate)   (handoffs)
 ```
 
-Notebook order is load-bearing (ADR-0021). Each writes one YAML handoff
-to `out/` and reads only earlier handoffs:
+Notebook order is load-bearing and linear, 15 notebooks numbered by
+position (ADR-0031, which supersedes the table of ADR-0021). Each writes
+one YAML handoff to `out/` and reads only earlier handoffs. Built (B) or
+planned (P):
 
-1. `evidence_ledger` -> `out/evidence.yaml`
-2. `geometry_from_imagery` -> `out/geometry.yaml`
-3. `aerodynamics` -> `out/aero.yaml`
-4. `reference_engines` -> `out/technology.yaml`
-5. `method_validation` -> `out/validation.yaml`
-6. `engine_deck` -> `out/engine_deck.yaml`
-7. `constraint_analysis` -> `out/constraints.yaml`
-8. `mission_analysis` -> `out/mission.yaml`
-9. `engine_selection` -> `out/engine_selection.yaml`
-10. `cycle_design_point` -> `out/cycle.yaml`
-11. `off_design` -> `out/off_design.yaml`
-12. `uncertainty_and_sensitivity` -> `out/uq.yaml`
-13. `design_summary` (pure reader, writes nothing)
-14. `mission_profile` -> `out/mission_profile.yaml` (quotes and plots the
-    sample mission and its requirements; reads only config, ADR-0026,
-    ADR-0027)
+1. `evidence_ledger` -> `out/evidence.yaml` (B)
+2. `mission_profile` -> `out/mission_profile.yaml` (B; quotes and plots the
+   sample mission and its requirements; reads only config, ADR-0026,
+   ADR-0027)
+3. `geometry_from_imagery` -> `out/geometry.yaml` (P, blocked on measurement)
+4. `aerodynamics` -> `out/aero.yaml` (P)
+5. `reference_engines` -> `out/technology.yaml` (B)
+6. `method_validation` -> `out/validation.yaml` (B)
+7. `constraint_analysis_preliminary` -> `out/constraints_preliminary.yaml` (B)
+8. `mission_analysis_preliminary` -> `out/mission_preliminary.yaml` (B)
+9. `cycle_design_point` -> `out/cycle.yaml` (B)
+10. `off_design` -> `out/off_design.yaml` (P, next)
+11. `constraint_analysis` -> `out/constraints.yaml` (P; lapse from 10)
+12. `mission_analysis` -> `out/mission.yaml` (P; thrust and fuel flow from 10)
+13. `engine_selection` -> `out/engine_selection.yaml` (P)
+14. `uncertainty_and_sensitivity` -> `out/uq.yaml` (P)
+15. `design_summary` (P; pure reader, writes nothing)
+
+There is no `engine_deck` notebook (ADR-0030): any deck for the sampler is
+a by-product of `off_design`. File names carry no number; titles carry
+"notebook N of 15".
 
 The constraint/mission/mass/engine coupling is resolved inside
 `roadrunner_re.design_point.solve_design_point()`, the **single call
