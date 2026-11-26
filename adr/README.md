@@ -40,5 +40,6 @@ Format: one file per decision, `NNNN-kebab-title.md`, each with
 | [0027](0027-performance-requirements-as-an-input.md) | Performance requirements are an input beside the mission | Accepted |
 | [0028](0028-pages-site-in-the-design-report-format.md) | The Pages site is a design report in the tailsitter format | Accepted |
 | [0029](0029-first-iteration-constraint-and-mission-analysis.md) | First-iteration coupled constraint and mission analysis | Accepted; amended by 0031 |
-| [0030](0030-cycle-design-point-and-off-design-before-engine-deck.md) | On-design cycle point and off-design performance come before a stand-alone engine deck | Accepted; amended by 0031 |
+| [0030](0030-cycle-design-point-and-off-design-before-engine-deck.md) | On-design cycle point and off-design performance come before a stand-alone engine deck | Accepted; amended by 0031, 0032 |
 | [0031](0031-linear-notebook-sequence-and-second-analysis-pair.md) | Linear notebook sequence, preliminary analysis pair and a cycle-based pair | Accepted |
+| [0032](0032-off-design-model-conventions.md) | Off-design model conventions | Accepted |

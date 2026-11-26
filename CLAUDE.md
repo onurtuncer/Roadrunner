@@ -16,13 +16,14 @@ repo does.
   `geometry.py` (pixel measurements to length intervals, engine
   envelope), `lapse.py`, `analysis_inputs.py`, `constraints.py`, `mission.py`,
   `design_point.py` (first-iteration coupled analysis, ADR-0029), `cycle/`
-  (incl. `design.py`, ADR-0030), `validation.py`, `notebook.py`, `reports.py`,
+  (incl. `design.py`, ADR-0030, and `offdesign.py`, ADR-0032), `off_design.py`, `validation.py`, `notebook.py`, `reports.py`,
   `plots/`. Everything else in the layout
   below is still to be written.
-- Notebooks 1, 2, 5, 6, 7, 8 and 9 exist (see the list under "Architecture"),
+- Notebooks 1, 2, 5, 6, 7, 8, 9 and 10 exist (see the list under "Architecture"),
   write `out/evidence.yaml`, `out/mission_profile.yaml`, `out/technology.yaml`,
   `out/validation.yaml`, `out/constraints_preliminary.yaml`,
-  `out/mission_preliminary.yaml` and `out/cycle.yaml`, and are the entries
+  `out/mission_preliminary.yaml`, `out/cycle.yaml` and `out/off_design.yaml`,
+  and are the entries
   of `NOTEBOOK_ORDER` in `design-pipeline.yml`.
   `tests/test_design_outputs.py` pins the handoffs and runs in the
   pipeline, not in `ci.yml`.
@@ -50,14 +51,21 @@ repo does.
   EGT (model Tt5 is 121 K below it); anchored Tt4 (1088 to 1275 K)
   depends on the assumed efficiencies; the datasheet fuel-density
   cross-check rests on two engines.
-- Off-design is NOT built yet; that is notebook 10, `off_design`. A
-  prototype (not committed) showed pyCycle off-design converging at
-  fixed shaft speed over hot day, altitude and Mach with the FAR balance
-  on shaft power and the W balance on nozzle throat area; below about
-  80 % speed the generic axial maps give non-physical results (turbine
-  inlet temperature rising as speed falls), so part-throttle needs care.
-  The deck is to be expressed in specific thrust, SFC and relative air
-  flow (ADR-0024).
+- **Off-design is built** (notebook 10, `cycle/offdesign.py`, `off_design.py`,
+  ADR-0032): the sized engine run in a pyCycle multi-point problem with
+  scaled generic maps (shaft speed balances power, air flow balances the
+  throat area; throttle by Tt4 or thrust). Points below 0.80 of design shaft
+  speed are flagged invalid (generic maps misbehave there) and never used
+  downstream. Results: the cycle's maximum-power lapse is within 6 % (mean)
+  and 10.5 % (max) of the algebraic lapse, which is optimistic at Mach 0.3 to
+  0.6 by 6 to 9 %; SFC is flat to about 60 % thrust, 28 to 36 % worse at 30 %;
+  the loiter needs about 28 % of maximum thrust, where real SFC is 1.73 times
+  the preliminary constant TSFC (1.29 of it the flight condition); landing
+  needs 66 % of maximum thrust and is met with margin. Fuel is ideal over a
+  constant median combustion efficiency (0.855), so part-throttle fuel is
+  probably understated. The deck is the handoff's grid and part-throttle
+  tables (specific thrust, SFC and relative air flow, ADR-0024); a sampler
+  deck is built when notebook 14 needs it.
 - `technology.py` is datasheet arithmetic only (figures of merit,
   catalogue bounds, mass power law, implied fuel density). Result so
   far: specific thrust is 594 to 627 N s/kg for three of the five
@@ -89,7 +97,7 @@ repo does.
   two come from one uncorroborated secondary source.
 - Dependencies are optional extras in `pyproject.toml`: `cycle`
   (in use), `aero` and `uq` (not yet imported anywhere).
-- **ADR-0001 to 0031 are all Accepted** (0003 to 0031 on 2026-11-26).
+- **ADR-0001 to 0032 are all Accepted** (0003 to 0032 on 2026-11-26).
   0013 is superseded by 0021; 0006, 0007, 0008, 0009, 0010, 0012, 0014,
   0015, 0016, 0018, 0019, 0021, 0022, 0023, 0026, 0029 and 0030 carry
   amendments (see `adr/README.md`). Read an amended ADR together with the
@@ -105,14 +113,14 @@ repo does.
   lapse; take-off mass is swept, not solved (no ADR-0008 build-up).
 - **On-design cycle point exists (ADR-0030)**: pyCycle at OP1 (hot-day SLS) for
   the launch thrust, 542 N per engine -> 0.95 kg/s air, specific thrust 568
-  N s/kg, Tt4 anchored 1232 K; bounds one input at a time. Next is
-  `off_design` (10), which replaces the algebraic lapse and constant TSFC;
-  the second analysis pair (11, 12) then repeats the coupled analysis on
-  its results and reports the difference from the preliminary pair (7, 8).
+  N s/kg, Tt4 anchored 1232 K; bounds one input at a time. Next is the
+  second analysis pair (11, 12): the coupled analysis repeated on the
+  off-design results, reporting the difference from the preliminary pair
+  (7, 8). They are still stubs.
 - Next step is the pixel measurements, then `geometry_from_imagery`,
-  then the remaining notebooks in ADR-0021 order. `off_design`
-  (notebook 10) does not depend on geometry and can go ahead; it is what
-  closes the lapse and TSFC of ADR-0029.
+  then the remaining notebooks in the order of ADR-0031. Notebooks 11 and 12
+  do not depend on geometry and can go ahead; they close the lapse and TSFC of
+  ADR-0029.
 - Everything below the next heading describes the *intended* structure
   per the ADRs.
 
@@ -160,7 +168,7 @@ sequence:
 7. `constraint_analysis_preliminary` -> `out/constraints_preliminary.yaml` (B)
 8. `mission_analysis_preliminary` -> `out/mission_preliminary.yaml` (B)
 9. `cycle_design_point` -> `out/cycle.yaml` (B)
-10. `off_design` -> `out/off_design.yaml` (P, stub; next)
+10. `off_design` -> `out/off_design.yaml` (B; ADR-0032)
 11. `constraint_analysis` -> `out/constraints.yaml` (P; lapse from 10)
 12. `mission_analysis` -> `out/mission.yaml` (P; thrust and fuel flow from 10)
 13. `engine_selection` -> `out/engine_selection.yaml` (P)

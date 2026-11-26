@@ -1,0 +1,42 @@
+# Off-design performance of the required engine (notebook off_design, ADR-0030, ADR-0032).
+#
+# The engine is the on-design point of notebook cycle_design_point, run at
+# other flight conditions and throttle settings in pyCycle with scaled
+# generic maps. Everything below is a convention or an assumption.
+
+rating:
+  # Maximum power holds the turbine inlet temperature at its design value
+  # at every flight condition (no extra temperature on a cold day, no
+  # derating on a hot one beyond what the cycle does by itself).
+  max_power: design_Tt4
+  basis: {assumption: "Flat-rated at the design turbine inlet temperature; the owner's lapse of ADR-0029 is the comparison, not the input."}
+
+validity:
+  # Below this fraction of design shaft speed the generic maps give
+  # non-physical results (turbine inlet temperature rising as speed falls),
+  # so points below it are flagged and never used downstream.
+  min_speed_fraction: 0.80
+  basis: {assumption: "Prototype finding (CLAUDE.md, 2026-11): the generic axial maps misbehave below about 80 % speed. A guard limit, not a property of the engine."}
+
+fuel:
+  # Fuel flow in the model is ideal (complete combustion). The real fuel
+  # flow is the ideal one divided by the lumped combustion efficiency of
+  # the anchored technology level (out/validation.yaml, median of the
+  # catalogue). Held constant with throttle: real combustion efficiency
+  # falls at part load, so part-throttle fuel flow is understated.
+  combustion_efficiency: from_validation_median
+  basis: {assumption: "Constant lumped combustion efficiency at every condition and throttle setting."}
+
+# Maximum-power lapse grid. The mission's hot day is always added to the
+# standard day.
+lapse_grid:
+  altitudes_m: [0.0, 1500.0, 3000.0]
+  machs: [0.0, 0.3, 0.5, 0.6, 0.8]
+  extra_dT_isa_K: [0.0]
+
+# Part-throttle SFC at the mission's own conditions: segments of the
+# mission (altitude and Mach are read from it) plus sea-level static.
+part_throttle:
+  segments: [dash_out, loiter, cruise_back]
+  sea_level_static: true
+  thrust_fractions: [1.0, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.25, 0.2]
