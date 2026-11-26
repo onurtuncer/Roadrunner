@@ -33,6 +33,12 @@ class DesignPoint:
     iterations: int
 
     @property
+    def launch_thrust_per_engine_N(self) -> float:
+        """Hot-day sea-level static thrust each engine must give at launch (the OP1 cycle requirement)."""
+        launch = next(c for c in self.constraints if c.type == "vertical_launch")
+        return launch.lapse * self.thrust_per_engine_N
+
+    @property
     def upper_bound(self) -> float | None:
         bounds = [c.thrust_loading for c in self.constraints if c.sense == "upper_bound"]
         return min(bounds) if bounds else None

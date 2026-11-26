@@ -18,7 +18,7 @@ env:
   # notebook here is the only edit needed for it to run and be published.
   NOTEBOOK_ORDER: >-
     evidence_ledger reference_engines method_validation constraint_analysis
-    mission_analysis mission_profile
+    mission_analysis cycle_design_point mission_profile
   MPLBACKEND: Agg
 
 concurrency:

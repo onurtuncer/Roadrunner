@@ -107,3 +107,15 @@ def test_mission_analysis_pins():
     assert (m["fuel"]["mission_kg"], m["fuel"]["total_kg"]) == pytest.approx((12.8402, 14.1242), rel=1e-4)
     assert m["masses"]["implied_empty_kg"] == pytest.approx(60.8758, rel=1e-4)
     assert len(m["simplifications"]) == 7
+
+
+def test_cycle_design_point_pins():
+    """On-design pyCycle point at OP1 (notebook 10, ADR-0030). Solver results: pinned to 0.1 %."""
+    c = yaml.safe_load((OUT / "cycle.yaml").read_text(encoding="utf-8"))
+    assert c["requirement"]["thrust_per_engine_N"] == pytest.approx(541.82, rel=1e-3)
+    e = c["engine"]
+    assert (e["air_mass_flow_kg_s"], e["specific_thrust_N_s_kg"], e["Tt4_K"]) == pytest.approx((0.95332, 568.35, 1231.6), rel=1e-3)
+    assert e["sfc_kg_N_s"] == pytest.approx(3.3618e-05, rel=1e-3)
+    assert set(c["stations_ARP755"]) == {"2", "3", "4", "5", "8"}
+    assert all(v["inside_catalogue_range"] for v in c["technology_comparison"].values())
+    assert len(c["one_at_a_time"]) == 2 * 7

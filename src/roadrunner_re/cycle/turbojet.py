@@ -18,7 +18,7 @@ combustion efficiency of ``roadrunner_re.validation``.
 from __future__ import annotations
 
 import warnings
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 import openmdao.api as om
@@ -93,6 +93,8 @@ class CycleResult:
     exit_velocity_m_s: float
     ambient_temperature_K: float
     ambient_pressure_Pa: float
+    #: ARP755 station -> (total temperature K, total pressure Pa, mass flow kg/s)
+    stations: dict = field(default_factory=dict, compare=False)
 
 
 class _Turbojet(pyc.Cycle):
@@ -190,6 +192,10 @@ def _set_common(problem: om.Problem, condition: FlightCondition, air_mass_flow_k
     problem.set_val("turb.MN", station_mach["turbine_exit"])
 
 
+#: ARP755 stations and the pyCycle flow they are read from.
+_STATIONS = {"2": "inlet.Fl_O", "3": "comp.Fl_O", "4": "burner.Fl_O", "5": "turb.Fl_O", "8": "nozz.Fl_O"}
+
+
 def _result(problem: om.Problem) -> CycleResult:
     def get(name: str, units: str | None = None) -> float:
         return float(problem.get_val(name, units=units)[0])
@@ -203,6 +209,8 @@ def _result(problem: om.Problem) -> CycleResult:
         turbine_pressure_ratio=get("balance.turb_PR"), nozzle_pressure_ratio=get("nozz.PR"),
         exit_velocity_m_s=get("nozz.Fl_O:stat:V", "m/s"),
         ambient_temperature_K=get("fc.Fl_O:stat:T", "degK"), ambient_pressure_Pa=get("fc.Fl_O:stat:P", "Pa"),
+        stations={name: (get(f"{path}:tot:T", "degK"), get(f"{path}:tot:P", "Pa"), get(f"{path}:stat:W", "kg/s"))
+                  for name, path in _STATIONS.items()},
     )
 
 

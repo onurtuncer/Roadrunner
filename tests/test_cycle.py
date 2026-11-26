@@ -72,3 +72,25 @@ def test_pycycle_atmosphere_agrees_with_ours(settings, altitude_m, dT_isa_K):
                               condition=FlightCondition(altitude_m, 0.5, dT_isa_K))
     assert theirs.ambient_temperature_K == pytest.approx(ours.temperature_K, rel=5e-4)
     assert theirs.ambient_pressure_Pa == pytest.approx(ours.pressure_Pa, rel=5e-4)
+
+
+def test_design_point_sizing_closes_on_thrust_and_scales_with_it(settings):
+    """Air flow follows thrust linearly at fixed Tt4 and pressure ratio (ADR-0030)."""
+    from roadrunner_re.cycle.design import DesignInputs, size_design_point
+    base = DesignInputs(500.0, 3.9, 1230.0, FlightCondition(0.0, 0.0, 20.0), settings.nominal_losses())
+    r1 = size_design_point(settings, base)
+    r2 = size_design_point(settings, DesignInputs(1000.0, 3.9, 1230.0, base.condition, base.losses))
+    assert r1.thrust_N == pytest.approx(500.0, rel=1e-6)
+    assert r2.air_mass_flow_kg_s == pytest.approx(2.0 * r1.air_mass_flow_kg_s, rel=1e-5)
+    assert r2.specific_thrust_N_s_kg == pytest.approx(r1.specific_thrust_N_s_kg, rel=1e-5)
+
+
+def test_design_point_stations_are_ordered_and_consistent(settings):
+    from roadrunner_re.cycle.design import DesignInputs, size_design_point
+    r = size_design_point(settings, DesignInputs(500.0, 3.9, 1230.0, FlightCondition(0.0, 0.0, 20.0), settings.nominal_losses()))
+    t = {k: v[0] for k, v in r.stations.items()}
+    p = {k: v[1] for k, v in r.stations.items()}
+    assert t["2"] == pytest.approx(r.ambient_temperature_K, rel=1e-3)         # static, recovered
+    assert t["2"] < t["3"] < t["5"] < t["4"]
+    assert p["3"] > p["4"] > p["5"]                                            # burner loss, then turbine expansion
+    assert r.stations["4"][2] > r.stations["3"][2]                             # fuel added
