@@ -33,5 +33,6 @@ Format: one file per decision, `NNNN-kebab-title.md`, each with
 | [0020](0020-uncertainty-quantification-and-sensitivity.md) | Uncertainty quantification and sensitivity analysis | Accepted |
 | [0021](0021-notebook-sequence-revision-1.md) | Notebook sequence, revision 1 | Accepted |
 | [0022](0022-documentation-on-github-pages.md) | Documentation on GitHub Pages | Accepted |
-| [0023](0023-engine-from-a-purchasable-catalogue.md) | The engine is chosen from a purchasable catalogue | Accepted |
+| [0023](0023-engine-from-a-purchasable-catalogue.md) | The engine is chosen from a purchasable catalogue | Accepted; amended by 0025 |
 | [0024](0024-specific-thrust-and-sfc-no-area-scaling.md) | Engines are characterised by specific thrust and SFC; nothing is scaled with frontal area | Accepted |
+| [0025](0025-drop-jetcat-from-the-catalogue.md) | JetCat engines are dropped from the catalogue | Accepted |

@@ -39,13 +39,14 @@ repo does.
   Solving for compressor efficiency from fuel flow instead was tried
   and rejected: it gave efficiencies of 0.54 to 0.73 and Tt4 up to
   1540 K, which are not credible for these engines.
-- Validation result (leave-one-out, specific terms): specific thrust is
-  inside the predicted interval for 5 of 8 engines (nominal error -6 to
-  +3 % for the mainstream engines, +20 % for the one low outlier core);
-  SFC for 6 of 6 (-11 to +18 %). The three failures are the catalogue's
-  two extremes. Standing findings: model Tt5 differs from published EGT
-  by -121 to +134 K; anchored Tt4 (1088 to 1301 K) depends on the
-  assumed efficiencies.
+- Validation result (leave-one-out, specific terms; JetCat dropped,
+  ADR-0025): specific thrust is inside the predicted interval for 2 of 5
+  engines (nominal error -12 to +21 %); SFC for 1 of 3 (-12 to +17 %).
+  With nine engines the catalogue is thin and the blind test is weak
+  evidence either way. Standing findings: only one engine publishes an
+  EGT (model Tt5 is 121 K below it); anchored Tt4 (1088 to 1275 K)
+  depends on the assumed efficiencies; the datasheet fuel-density
+  cross-check rests on two engines.
 - Off-design is NOT built yet; that is the `engine_deck` stage. A
   prototype (not committed) showed pyCycle off-design converging at
   fixed shaft speed over hot day, altitude and Mach with the FAR balance
@@ -56,9 +57,9 @@ repo does.
   flow (ADR-0024).
 - `technology.py` is datasheet arithmetic only (figures of merit,
   catalogue bounds, mass power law, implied fuel density). Result so
-  far: specific thrust is 590 to 635 N s/kg for seven of the eight
+  far: specific thrust is 594 to 627 N s/kg for four of the five
   engines that publish an air flow (one core sits at 506); SFC is 0.116
-  to 0.158 kg/(N h), improving with size.
+  to 0.150 kg/(N h), improving with size.
 - **Geometry is blocked on measurement.** `config/evidence/imagery.yaml`
   lists five public image sources but holds NO pixel measurements, so
   notebook 2 (`geometry_from_imagery`) is not written and nothing
@@ -70,8 +71,8 @@ repo does.
   `evidence/claims.yaml`, `evidence/vehicle.yaml`,
   `evidence/imagery.yaml`, `missions/sample.yaml`, `fuel.yaml`,
   `cycle.yaml`, `validation.yaml` and
-  `reference_engines.yaml` (twelve purchasable turbojets from PBS,
-  JetCat and AMT, all from vendor material; some fields still `null`,
+  `reference_engines.yaml` (nine purchasable turbojets from PBS
+  and AMT, all from vendor material; some fields still `null`,
   and PBS datasheet revisions disagree in places, as noted per entry).
 - The only quantified evidence is overall length (1.5 m, 1.4 to 1.8),
   a reported mass (85 kg) and a reported top speed (700 km/h); the last

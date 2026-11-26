@@ -9,7 +9,7 @@ import numpy as np
 from roadrunner_re.engine_catalogue import Engine
 from roadrunner_re.technology import SECONDS_PER_HOUR, EngineMetrics, MassCorrelation
 
-VENDOR_MARKERS = {"PBS Velka Bites": "o", "JetCat": "s", "AMT Netherlands": "^"}
+VENDOR_MARKERS = {"PBS Velka Bites": "o", "AMT Netherlands": "^"}
 
 
 def catalogue_overview(engines: dict[str, Engine], metrics: dict[str, EngineMetrics],
