@@ -29,8 +29,10 @@ configuration and notebooks follow. See [`adr/`](adr/README.md).
 3. Estimate aerodynamics from that geometry.
 4. Define a sample mission; run constraint analysis and mission analysis
    on a standard atmosphere.
-5. Model the turbojet cycle with [pyCycle](https://github.com/OpenMDAO/pyCycle),
-   after testing the method blind on an engine with a known datasheet.
+5. Choose the engine pair from a catalogue of purchasable turbojets
+   (PBS, JetCat, AMT), with [pyCycle](https://github.com/OpenMDAO/pyCycle)
+   models anchored to each vendor datasheet for hot-day, altitude and
+   part-throttle performance.
 6. Propagate the input uncertainty and rank the inputs by sensitivity.
 
 ## Repository layout

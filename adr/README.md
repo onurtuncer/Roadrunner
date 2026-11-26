@@ -20,9 +20,9 @@ Format: one file per decision, `NNNN-kebab-title.md`, each with
 | [0007](0007-geometry-from-scaled-imagery.md) | Geometry from scaled public imagery, as measured intervals | Accepted |
 | [0008](0008-vehicle-model-as-requirements-generator.md) | The vehicle model is a requirements generator, no more | Accepted; amended by 0016, 0018 |
 | [0009](0009-operating-points-and-cycle-design-point.md) | Four operating points; the cycle design point is static launch | Accepted; amended by 0015, 0018, 0019 |
-| [0010](0010-in-house-cycle-model-and-technology-levels.md) | In-house SI cycle model; technology levels from a reference-engine database | Accepted; amended by 0015 |
+| [0010](0010-in-house-cycle-model-and-technology-levels.md) | In-house SI cycle model; technology levels from a reference-engine database | Accepted; amended by 0015, 0023 |
 | [0011](0011-installation-and-thrust-vectoring-as-losses.md) | Installation and thrust vectoring enter as bounded loss terms | Accepted |
-| [0012](0012-blind-validation-on-a-known-engine.md) | Validate the method blind on a known engine before applying it | Accepted |
+| [0012](0012-blind-validation-on-a-known-engine.md) | Validate the method blind on a known engine before applying it | Accepted; amended by 0023 |
 | [0013](0013-notebook-sequence-and-handoffs.md) | Notebook sequence and handoffs | Accepted; superseded by 0021 once accepted |
 | [0014](0014-versioning-and-ci-tiers.md) | Tag-driven versioning and tiered CI | Accepted; amended by 0022 |
 | [0015](0015-pycycle-is-the-cycle-engine.md) | pyCycle is the cycle engine | Proposed |
@@ -33,3 +33,4 @@ Format: one file per decision, `NNNN-kebab-title.md`, each with
 | [0020](0020-uncertainty-quantification-and-sensitivity.md) | Uncertainty quantification and sensitivity analysis | Proposed |
 | [0021](0021-notebook-sequence-revision-1.md) | Notebook sequence, revision 1 | Proposed |
 | [0022](0022-documentation-on-github-pages.md) | Documentation on GitHub Pages | Proposed |
+| [0023](0023-engine-from-a-purchasable-catalogue.md) | The engine is chosen from a purchasable catalogue | Proposed |

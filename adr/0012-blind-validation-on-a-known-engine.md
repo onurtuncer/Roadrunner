@@ -1,6 +1,6 @@
 # 12. Validate the method blind on a known engine before applying it
 
-Status: Accepted (2026-11-26)
+Status: Accepted (2026-11-26); amended by ADR-0023 (proposed)
 
 ## Context
 

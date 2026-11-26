@@ -4,9 +4,11 @@ Status: Proposed (2026-11-26)
 
 ## Context
 
-ADR-0015 to ADR-0020 and ADR-0023 add an aerodynamics stage, an engine deck, a
-constraint analysis, a mission analysis and an uncertainty and
-sensitivity stage. The sequence of ADR-0013 no longer matches.
+ADR-0015 to ADR-0020 and ADR-0023 add an aerodynamics stage, an engine
+deck, a constraint analysis, a mission analysis, an engine selection
+from a purchasable catalogue (replacing flowpath sizing) and an
+uncertainty and sensitivity stage. The sequence of ADR-0013 no longer
+matches.
 
 ## Decision
 

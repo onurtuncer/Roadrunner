@@ -10,9 +10,11 @@ repo does.
 ## Current state (update this section as it changes)
 
 - The ADRs, the README, two workflows and `scripts/build_site.py`
-  exist. `config/` holds two files: `config/evidence/claims.yaml` (the
-  manufacturer claims the mission cites) and
-  `config/missions/sample.yaml`. No `src/`, `notebooks/`, `tests/` or
+  exist. `config/` holds three files: `config/evidence/claims.yaml` (the
+  manufacturer claims the mission cites),
+  `config/missions/sample.yaml` and `config/reference_engines.yaml`
+  (eleven purchasable turbojets from PBS, JetCat and AMT; several
+  fields still `null`, three PBS entries from a secondary source). No `src/`, `notebooks/`, `tests/` or
   `pyproject.toml` yet.
 - `ci.yml` currently checks the ADR index and lints `scripts/`; its test
   job switches on when `pyproject.toml` appears. `design-pipeline.yml`
@@ -20,6 +22,8 @@ repo does.
   notebook-execution job is still to be added. ADR-0022 (docs on Pages)
   is Proposed.
 - ADR-0001 to 0014 are Accepted (0003 to 0014 on 2026-11-26).
+- ADR-0023 (engine chosen from a purchasable catalogue, replacing
+  flowpath sizing) is **Proposed**; it amends 0010, 0012 and 0015.
 - ADR-0015 to 0021 are **Proposed** (owner's direction of 2026-11-26:
   pyCycle as the cycle engine, aerodynamics from open-source evidence,
   standard atmosphere, sample mission + mission analysis, constraint
@@ -72,8 +76,8 @@ to `out/` and reads only earlier handoffs:
 6. `engine_deck` -> `out/engine_deck.yaml`
 7. `constraint_analysis` -> `out/constraints.yaml`
 8. `mission_analysis` -> `out/mission.yaml`
-9. `cycle_design_point` -> `out/cycle.yaml`
-10. `engine_flowpath_sizing` -> `out/engine.yaml`
+9. `engine_selection` -> `out/engine_selection.yaml`
+10. `cycle_design_point` -> `out/cycle.yaml`
 11. `off_design` -> `out/off_design.yaml`
 12. `uncertainty_and_sensitivity` -> `out/uq.yaml`
 13. `design_summary` (pure reader, writes nothing)
@@ -87,8 +91,8 @@ back-edges: a downstream discovery is fed back by changing
 Intended `src/roadrunner_re/` layout: `notebook.py` (`nb_setup()`),
 `design_point.py`, `evidence.py`, `geometry.py`, `atmosphere.py`,
 `aero/`, `vehicle/` (mass build-up), `mission.py`, `constraints.py`,
-`cycle/` (pyCycle model, unit boundary, engine deck), `installation.py`,
-`flowpath.py`, `inverse.py` (sampling and rejection), `uq.py`
+`cycle/` (pyCycle model, datasheet calibration, unit boundary, engine
+deck), `engine_selection.py`, `installation.py`, `inverse.py` (sampling and rejection), `uq.py`
 (propagation, Morris, Sobol), `plots/`, `reports.py`,
 `design_summary.py`.
 
@@ -136,8 +140,16 @@ Intended `src/roadrunner_re/` layout: `notebook.py` (`nb_setup()`),
 - **Sampling is seeded.** Seed and sample count are config values.
 - **Images of the vehicle are not committed**; record URL, access date
   and pixel measurements instead (ADR-0007).
-- **Validation engines stay held out** of the technology-level
-  derivation (ADR-0012).
+- **The engine is selected, not designed** (ADR-0023): two identical
+  engines from `config/reference_engines.yaml`, requirements derived,
+  lowest closed take-off mass wins, deterministically. "No catalogue
+  engine fits" is a valid result to report, not an error to design
+  around.
+- **Catalogue numbers come from the vendor datasheet** with a source
+  URL. `null` means not yet retrieved; never fill one from memory.
+- **Validation is leave-one-out** over the catalogue: the engine being
+  predicted is excluded from the technology-level derivation
+  (ADR-0012, ADR-0023).
 - **ADRs**: architectural decisions go in `adr/`, one file each, never
   rewritten; amend or supersede with a new ADR and update
   `adr/README.md` (CI fails if the index and the files disagree).
