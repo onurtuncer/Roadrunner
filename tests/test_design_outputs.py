@@ -86,3 +86,24 @@ def test_mission_profile_requirements_pins():
     assert req["vertical_launch"]["parameters"]["thrust_to_weight_margin"] == {"value": 1.3, "low": 1.15, "high": 1.6}
     assert req["dash"]["taken_from_mission"] == ["altitude_m", "mach"]
     assert "constraint.vertical_launch.thrust_to_weight_margin" in m["uncertain_inputs"]
+
+
+def test_constraint_analysis_pins():
+    """First-iteration coupled analysis (notebook 7, ADR-0029): nominal point exact to 1e-4."""
+    c = yaml.safe_load((OUT / "constraints.yaml").read_text(encoding="utf-8"))
+    d = c["design_point"]
+    assert d["binding_constraint"] == "vertical_launch"
+    assert (d["takeoff_mass_kg"], d["thrust_loading"], d["thrust_per_engine_N"]) == \
+        pytest.approx((85.0, 1.47422, 614.43), rel=1e-4)
+    assert {r["id"] for r in c["constraints"]} == {"vertical_launch", "landing_floor", "dash", "initial_climb",
+                                                 "manoeuvre", "loiter_ceiling"}
+    assert len(c["takeoff_mass_sweep"]) == 12 and c["takeoff_mass_sweep"][0]["binding_constraint"] == "dash"
+
+
+def test_mission_analysis_pins():
+    """Fuel and weight fractions of the sample mission (notebook 8, ADR-0029)."""
+    m = yaml.safe_load((OUT / "mission.yaml").read_text(encoding="utf-8"))
+    assert [s["id"] for s in m["segments"]] == ["launch", "climb_out", "dash_out", "loiter", "cruise_back", "descent", "landing"]
+    assert (m["fuel"]["mission_kg"], m["fuel"]["total_kg"]) == pytest.approx((12.8402, 14.1242), rel=1e-4)
+    assert m["masses"]["implied_empty_kg"] == pytest.approx(60.8758, rel=1e-4)
+    assert len(m["simplifications"]) == 7

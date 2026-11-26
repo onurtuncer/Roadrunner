@@ -197,3 +197,32 @@ def constraint_quotes(constraints, claims: dict[str, Claim]) -> str:
                                initial_indent="  ", subsequent_indent="      ")
         lines.append("")
     return "\n".join(lines).rstrip()
+
+
+def lapse_table(inputs, conditions) -> str:
+    """Installed thrust lapse alpha at (label, altitude_m, mach) conditions, on the mission's day."""
+    dT = inputs.mission.dT_isa_K.value
+    rows = [f"{'condition':22s}{'alt [m]':>9s}{'Mach':>7s}{'alpha':>8s}", "-" * 46]
+    for label, h, mach in conditions:
+        rows.append(f"{label:22s}{h:9.0f}{mach:7.2f}{inputs.lapse.alpha(inputs.atmosphere, h, mach, dT):8.3f}")
+    return "\n".join(rows)
+
+
+def design_constraint_table(dp) -> str:
+    rows = [f"{'constraint':16s}{'sense':>13s}{'beta':>8s}{'alpha':>8s}{'T_SL/W_TO':>11s}", "-" * 56]
+    for c in dp.constraints:
+        mark = "  <- binds" if c.id == dp.binding_constraint else ""
+        lapse = "-" if c.lapse is None else f"{c.lapse:.3f}"
+        rows.append(f"{c.id:16s}{c.sense:>13s}{c.beta:8.4f}{lapse:>8s}{c.thrust_loading:11.3f}{mark}")
+    return "\n".join(rows)
+
+
+def weight_fraction_table(dp) -> str:
+    """Segment weight fractions, in the manner of the lecture's mission table."""
+    rows = [f"{'segment':14s}{'m_start [kg]':>13s}{'m_end/m_start':>14s}{'fuel [kg]':>10s}{'time [s]':>9s}{'dist [km]':>10s}", "-" * 70]
+    for s in dp.mission.segments:
+        rows.append(f"{s.id:14s}{s.mass_start_kg:13.3f}{s.weight_fraction:14.5f}{s.fuel_kg:10.3f}{s.duration_s:9.1f}{s.distance_m / 1000:10.1f}")
+    m = dp.mission
+    rows += ["-" * 70, f"{'mission':14s}{m.takeoff_mass_kg:13.3f}{m.segments[-1].mass_end_kg / m.takeoff_mass_kg:14.5f}{m.mission_fuel_kg:10.3f}",
+             f"reserve {m.reserve_fraction:.0%}: {m.reserve_fuel_kg:.3f} kg; fuel loaded {m.total_fuel_kg:.3f} kg"]
+    return "\n".join(rows)
