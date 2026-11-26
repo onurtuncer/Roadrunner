@@ -1,6 +1,4 @@
 """Datasheet arithmetic for the engine catalogue (ADR-0010, ADR-0023)."""
-import math
-
 import pytest
 
 from roadrunner_re import ConfigError, load_engine_catalogue
@@ -45,9 +43,8 @@ def test_system_mass_is_preferred_and_the_basis_is_recorded():
     assert engine_metrics(engine(), RHO, G).thrust_to_weight is None
 
 
-def test_frontal_area_specific_thrust_and_idle_fraction():
+def test_specific_thrust_and_idle_fraction():
     m = engine_metrics(engine(air_mass_flow_kg_s=1.6, thrust_idle_N=40.0), RHO, G)
-    assert m.thrust_per_frontal_area_N_m2 == pytest.approx(1000.0 / (math.pi * 0.01))
     assert m.specific_thrust_N_s_kg == pytest.approx(625.0)
     assert m.idle_thrust_fraction == pytest.approx(0.04)
 
@@ -74,8 +71,14 @@ def test_bounds_ignore_missing_values_and_report_the_sample_size():
                "c": engine_metrics(engine(id="c"), RHO, G)}
     b = technology_bounds(metrics)
     assert b["sfc_kg_N_s"]["n"] == 2 and b["sfc_kg_N_s"]["low"] == pytest.approx(0.12 / 3600.0)
-    assert b["thrust_per_frontal_area_N_m2"]["n"] == 3
     assert "specific_thrust_N_s_kg" not in b
+
+
+def test_nothing_is_scaled_with_frontal_area():
+    """ADR-0024: engines are characterised by specific thrust and SFC; diameter is a fit check only."""
+    m = engine_metrics(engine(air_mass_flow_kg_s=1.6), RHO, G)
+    assert not any("area" in name for name in m.__dataclass_fields__)
+    assert not any("area" in name for name in technology_bounds({"a": m}))
 
 
 def test_repo_catalogue_is_internally_consistent():
@@ -85,4 +88,4 @@ def test_repo_catalogue_is_internally_consistent():
     implied = implied_fuel_densities(metrics)
     assert len(implied) >= 3
     assert all(density.low <= rho <= density.high for rho in implied.values())
-    assert all(isinstance(m, EngineMetrics) and m.thrust_per_frontal_area_N_m2 > 0 for m in metrics.values())
+    assert all(isinstance(m, EngineMetrics) for m in metrics.values())

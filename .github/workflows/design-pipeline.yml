@@ -17,7 +17,7 @@ env:
   # Single source of truth for the pipeline order (ADR-0021). Adding a
   # notebook here is the only edit needed for it to run and be published.
   NOTEBOOK_ORDER: >-
-    evidence_ledger reference_engines
+    evidence_ledger reference_engines method_validation
   MPLBACKEND: Agg
 
 concurrency:
@@ -37,8 +37,11 @@ jobs:
         with:
           python-version: "3.12"
           cache: pip
-      - name: Install package with notebook deps
-        run: pip install -e ".[notebooks,dev]" markdown
+      - name: Install package with pyCycle and notebook deps
+        run: pip install -e ".[cycle,notebooks,dev]" markdown
+
+      - name: Cycle-model tests (need pyCycle; skipped in ci.yml)
+        run: pytest tests/test_cycle.py -v
 
       - name: Execute notebooks (pipeline order)
         run: |

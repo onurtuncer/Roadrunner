@@ -14,12 +14,12 @@ VENDOR_MARKERS = {"PBS Velka Bites": "o", "JetCat": "s", "AMT Netherlands": "^"}
 
 def catalogue_overview(engines: dict[str, Engine], metrics: dict[str, EngineMetrics],
                        correlation: MassCorrelation, save_path: str | Path | None = None):
-    """Mass, thrust per frontal area and SFC against thrust, one marker per vendor."""
+    """Specific thrust, SFC and mass against thrust, one marker per vendor."""
     fig, axes = plt.subplots(1, 3, figsize=(15, 4.4))
     panels = (
-        (axes[0], lambda m: m.mass_kg, "Mass with accessories [kg]"),
-        (axes[1], lambda m: m.thrust_per_frontal_area_N_m2 / 1e3, "Thrust per frontal area [kN/m$^2$]"),
-        (axes[2], lambda m: None if m.sfc_kg_N_s is None else m.sfc_kg_N_s * SECONDS_PER_HOUR, "SFC [kg/(N h)]"),
+        (axes[0], lambda m: m.specific_thrust_N_s_kg, "Specific thrust [N s/kg]"),
+        (axes[1], lambda m: None if m.sfc_kg_N_s is None else m.sfc_kg_N_s * SECONDS_PER_HOUR, "SFC [kg/(N h)]"),
+        (axes[2], lambda m: m.mass_kg, "Mass with accessories [kg]"),
     )
     for ax, pick, label in panels:
         for vendor, marker in VENDOR_MARKERS.items():
@@ -31,10 +31,10 @@ def catalogue_overview(engines: dict[str, Engine], metrics: dict[str, EngineMetr
         ax.set_ylabel(label)
         ax.grid(alpha=0.3)
     thrust = np.linspace(min(m.thrust_N for m in metrics.values()), max(m.thrust_N for m in metrics.values()), 50)
-    axes[0].plot(thrust, correlation.coefficient * thrust**correlation.exponent, "k--", lw=1,
+    axes[2].plot(thrust, correlation.coefficient * thrust**correlation.exponent, "k--", lw=1,
                  label=f"fit: m = {correlation.coefficient:.2e} F$^{{{correlation.exponent:.2f}}}$")
-    axes[0].legend(fontsize=8)
-    axes[1].set_ylim(bottom=0)
+    axes[2].legend(fontsize=8)
+    axes[0].set_ylim(bottom=0)
     fig.suptitle("Purchasable small turbojets: vendor sea-level static data")
     fig.tight_layout()
     if save_path is not None:

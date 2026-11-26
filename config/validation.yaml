@@ -1,0 +1,18 @@
+# Leave-one-out validation of the engine method (ADR-0012, ADR-0023, ADR-0024).
+#
+# Each catalogue engine in turn is predicted "blind": its specific
+# thrust and specific fuel consumption are computed by the cycle model
+# with technology levels taken from the OTHER engines. A prediction
+# passes if the published value lies inside the predicted interval AND
+# the interval is narrow enough to be useful. The limits were set before
+# the validation was run.
+
+# Largest acceptable interval width, as (high - low) / nominal.
+max_relative_width:
+  specific_thrust_N_s_kg: 0.6
+  sfc_kg_N_s: 0.6
+basis:
+  assumption: >-
+    A prediction wider than about +/-30 % would not discriminate between
+    catalogue engines and is counted as a failure even if it contains
+    the published value.

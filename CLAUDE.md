@@ -14,18 +14,51 @@ repo does.
   handoff), `mission_profile.py` (mission loader with the provenance
   check), `engine_catalogue.py` (catalogue loader), `technology.py`, `atmosphere.py` (ISA, tested against published tables),
   `geometry.py` (pixel measurements to length intervals, engine
-  envelope), `notebook.py`, `reports.py`, `plots/engines.py`. Everything else in the layout
+  envelope), `cycle/`, `validation.py`, `notebook.py`, `reports.py`,
+  `plots/`. Everything else in the layout
   below is still to be written.
-- Notebooks 1 (`evidence_ledger` -> `out/evidence.yaml`) and 4
-  (`reference_engines` -> `out/technology.yaml`) exist and are the
-  entries of `NOTEBOOK_ORDER` in `design-pipeline.yml`.
+- Notebooks 1 (`evidence_ledger`), 4 (`reference_engines`) and 5
+  (`method_validation`) exist, write `out/evidence.yaml`,
+  `out/technology.yaml` and `out/validation.yaml`, and are the entries
+  of `NOTEBOOK_ORDER` in `design-pipeline.yml`.
   `tests/test_design_outputs.py` pins the handoffs and runs in the
   pipeline, not in `ci.yml`.
+- **pyCycle is in use** (`cycle/turbojet.py`, design point only):
+  `run_design_point` (given Tt4) and `match_thrust` (given thrust).
+  `validation.py` anchors the model to each datasheet and runs the
+  leave-one-out blind test. `tests/test_cycle.py` needs pyCycle, is
+  skipped where it is not installed and runs in the pipeline.
+- **pyCycle is pinned to an upstream git commit**, not PyPI 4.4.0, whose
+  tabular thermo fails under NumPy 2 (see the comment in
+  `pyproject.toml`). Do not "tidy" the pin back to the PyPI release
+  without checking that release runs.
+- **Anchoring method** (decided while building, consistent with
+  ADR-0023): compressor and turbine efficiencies are ASSUMED
+  (`config/cycle.yaml`); thrust + air flow + pressure ratio give Tt4;
+  published fuel flow then gives a lumped combustion efficiency.
+  Solving for compressor efficiency from fuel flow instead was tried
+  and rejected: it gave efficiencies of 0.54 to 0.73 and Tt4 up to
+  1540 K, which are not credible for these engines.
+- Validation result (leave-one-out, specific terms): specific thrust is
+  inside the predicted interval for 5 of 8 engines (nominal error -6 to
+  +3 % for the mainstream engines, +20 % for the one low outlier core);
+  SFC for 6 of 6 (-11 to +18 %). The three failures are the catalogue's
+  two extremes. Standing findings: model Tt5 differs from published EGT
+  by -121 to +134 K; anchored Tt4 (1088 to 1301 K) depends on the
+  assumed efficiencies.
+- Off-design is NOT built yet; that is the `engine_deck` stage. A
+  prototype (not committed) showed pyCycle off-design converging at
+  fixed shaft speed over hot day, altitude and Mach with the FAR balance
+  on shaft power and the W balance on nozzle throat area; below about
+  80 % speed the generic axial maps give non-physical results (turbine
+  inlet temperature rising as speed falls), so part-throttle needs care.
+  The deck is to be expressed in specific thrust, SFC and relative air
+  flow (ADR-0024).
 - `technology.py` is datasheet arithmetic only (figures of merit,
   catalogue bounds, mass power law, implied fuel density). Result so
-  far: thrust per frontal area is 20.7 to 29.2 kN/m2 across all twelve
-  engines, the tightest figure of merit and the link from a measured
-  nacelle diameter to a thrust.
+  far: specific thrust is 590 to 635 N s/kg for seven of the eight
+  engines that publish an air flow (one core sits at 506); SFC is 0.116
+  to 0.158 kg/(N h), improving with size.
 - **Geometry is blocked on measurement.** `config/evidence/imagery.yaml`
   lists five public image sources but holds NO pixel measurements, so
   notebook 2 (`geometry_from_imagery`) is not written and nothing
@@ -35,26 +68,25 @@ repo does.
   pixel coordinates or dimensions.
 - `config/` holds `atmosphere.yaml`, `geometry.yaml`,
   `evidence/claims.yaml`, `evidence/vehicle.yaml`,
-  `evidence/imagery.yaml`, `missions/sample.yaml`, `fuel.yaml` and
+  `evidence/imagery.yaml`, `missions/sample.yaml`, `fuel.yaml`,
+  `cycle.yaml`, `validation.yaml` and
   `reference_engines.yaml` (twelve purchasable turbojets from PBS,
   JetCat and AMT, all from vendor material; some fields still `null`,
   and PBS datasheet revisions disagree in places, as noted per entry).
 - The only quantified evidence is overall length (1.5 m, 1.4 to 1.8),
   a reported mass (85 kg) and a reported top speed (700 km/h); the last
   two come from one uncorroborated secondary source.
-- Dependencies for later stages are optional extras in `pyproject.toml`
-  (`cycle`, `aero`, `uq`); pyCycle is pinned there and is not yet
-  imported anywhere.
-- **ADR-0001 to 0023 are all Accepted** (0003 to 0023 on 2026-11-26).
-  0013 is superseded by 0021; 0006, 0008, 0009, 0010, 0012, 0014 and
-  0015 carry amendments (see `adr/README.md`). Read an amended ADR
+- Dependencies are optional extras in `pyproject.toml`: `cycle`
+  (in use), `aero` and `uq` (not yet imported anywhere).
+- **ADR-0001 to 0024 are all Accepted** (0003 to 0024 on 2026-11-26).
+  0013 is superseded by 0021; 0006, 0007, 0008, 0009, 0010, 0012, 0014
+  and 0015 carry amendments (see `adr/README.md`). Read an amended ADR
   together with the ADRs that amend it.
 - A change of direction needs a new ADR that amends or supersedes, not
   an edit of an accepted one.
 - Next step is the pixel measurements, then `geometry_from_imagery`,
-  then the remaining notebooks in ADR-0021 order. The pyCycle stages
-  (`method_validation`, `engine_deck`) do not depend on geometry and
-  can go ahead.
+  then the remaining notebooks in ADR-0021 order. `engine_deck`
+  (notebook 6) does not depend on geometry and can go ahead.
 - Everything below the next heading describes the *intended* structure
   per the ADRs.
 
@@ -159,6 +191,12 @@ deck), `engine_selection.py`, `installation.py`, `inverse.py` (sampling and reje
 - **Sampling is seeded.** Seed and sample count are config values.
 - **Images of the vehicle are not committed**; record URL, access date
   and pixel measurements instead (ADR-0007).
+- **Specific thrust and SFC, never frontal-area scaling** (ADR-0024).
+  Characterise an engine by specific thrust (N s/kg) and SFC; size
+  enters only through air mass flow. Do not compute, report or use
+  thrust per frontal area or air flow per frontal area. Diameter and
+  length are a fit check only. The owner rejected area scaling
+  explicitly; lead reports with specific thrust and SFC.
 - **The engine is selected, not designed** (ADR-0023): two identical
   engines from `config/reference_engines.yaml`, requirements derived,
   lowest closed take-off mass wins, deterministically. "No catalogue
