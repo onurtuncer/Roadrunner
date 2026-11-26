@@ -1,6 +1,6 @@
 # 6. Reverse engineering is an inverse problem: report a feasible family
 
-Status: Accepted (2026-11-26)
+Status: Accepted (2026-11-26); amended by ADR-0020 (proposed)
 
 ## Context
 

@@ -1,6 +1,6 @@
 # 9. Four operating points; the cycle design point is static launch
 
-Status: Accepted (2026-11-26)
+Status: Accepted (2026-11-26); amended by ADR-0015, ADR-0018 and ADR-0019 (proposed)
 
 ## Context
 

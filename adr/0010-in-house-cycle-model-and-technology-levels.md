@@ -1,6 +1,6 @@
 # 10. In-house SI cycle model; technology levels from a reference-engine database
 
-Status: Accepted (2026-11-26)
+Status: Accepted (2026-11-26); cycle-model half amended by ADR-0015 (proposed)
 
 ## Context
 

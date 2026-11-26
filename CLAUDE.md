@@ -11,12 +11,19 @@ repo does.
 
 - Only the ADRs exist. No `config/`, `src/`, `notebooks/`, `tests/` or
   `pyproject.toml` yet.
-- ADR-0001 to 0014 are Accepted (0003 to 0014 on 2026-11-26). They are
-  the basis for all work; a change of direction needs a new ADR that
-  amends or supersedes, not an edit.
-- Next step is the repo skeleton (`pyproject.toml`, `config/`,
-  `src/roadrunner_re/`, `tests/`, CI) and then the notebooks in
-  ADR-0013 order.
+- ADR-0001 to 0014 are Accepted (0003 to 0014 on 2026-11-26).
+- ADR-0015 to 0021 are **Proposed** (owner's direction of 2026-11-26:
+  pyCycle as the cycle engine, aerodynamics from open-source evidence,
+  standard atmosphere, sample mission + mission analysis, constraint
+  analysis, uncertainty quantification and sensitivity analysis). They
+  amend 0006, 0008, 0009, 0010 and supersede 0013. The rest of this file
+  already describes the repo as these ADRs would have it; if one is
+  rejected, fix this file in the same commit.
+- A change of direction needs a new ADR that amends or supersedes, not
+  an edit of an accepted one.
+- Next step after acceptance is the repo skeleton (`pyproject.toml`,
+  `config/`, `src/roadrunner_re/`, `tests/`, CI) and then the notebooks
+  in ADR-0021 order.
 - Everything below the next heading describes the *intended* structure
   per the ADRs.
 
@@ -46,32 +53,36 @@ config/*.yaml  ->  src/roadrunner_re/  ->  notebooks/  ->  out/
 (inputs+evidence)  (ALL physics)           (orchestrate)   (handoffs)
 ```
 
-Notebook order is load-bearing (ADR-0013). Each writes one YAML handoff
+Notebook order is load-bearing (ADR-0021). Each writes one YAML handoff
 to `out/` and reads only earlier handoffs:
 
 1. `evidence_ledger` -> `out/evidence.yaml`
 2. `geometry_from_imagery` -> `out/geometry.yaml`
-3. `reference_engines` -> `out/technology.yaml`
-4. `method_validation` -> `out/validation.yaml`
-5. `vehicle_requirements` -> `out/requirements.yaml`
-6. `mission_mass_closure` -> `out/vehicle.yaml`
-7. `cycle_design_point` -> `out/cycle.yaml`
-8. `engine_flowpath_sizing` -> `out/engine.yaml`
-9. `off_design` -> `out/off_design.yaml`
-10. `feasible_family` -> `out/feasible_family.yaml`
-11. `design_summary` (pure reader, writes nothing)
+3. `aerodynamics` -> `out/aero.yaml`
+4. `reference_engines` -> `out/technology.yaml`
+5. `method_validation` -> `out/validation.yaml`
+6. `engine_deck` -> `out/engine_deck.yaml`
+7. `constraint_analysis` -> `out/constraints.yaml`
+8. `mission_analysis` -> `out/mission.yaml`
+9. `cycle_design_point` -> `out/cycle.yaml`
+10. `engine_flowpath_sizing` -> `out/engine.yaml`
+11. `off_design` -> `out/off_design.yaml`
+12. `uncertainty_and_sensitivity` -> `out/uq.yaml`
+13. `design_summary` (pure reader, writes nothing)
 
-The mass/engine coupling is resolved inside
+The constraint/mission/mass/engine coupling is resolved inside
 `roadrunner_re.design_point.solve_design_point()`, the **single call
 site** every notebook uses to reconstruct the design point. No
 back-edges: a downstream discovery is fed back by changing
 `config/`/`src/` and re-running, never by editing an `out/` file.
 
 Intended `src/roadrunner_re/` layout: `notebook.py` (`nb_setup()`),
-`design_point.py`, `evidence.py`, `geometry.py`, `vehicle/` (mass
-closure, drag, mission fuel), `cycle/` (gas model, components, design
-point, off-design), `installation.py`, `flowpath.py`, `inverse.py`
-(sampling and rejection), `plots/`, `reports.py`, `design_summary.py`.
+`design_point.py`, `evidence.py`, `geometry.py`, `atmosphere.py`,
+`aero/`, `vehicle/` (mass build-up), `mission.py`, `constraints.py`,
+`cycle/` (pyCycle model, unit boundary, engine deck), `installation.py`,
+`flowpath.py`, `inverse.py` (sampling and rejection), `uq.py`
+(propagation, Morris, Sobol), `plots/`, `reports.py`,
+`design_summary.py`.
 
 ## Hard rules
 
@@ -98,7 +109,18 @@ point, off-design), `installation.py`, `flowpath.py`, `inverse.py`
 - **Installed and uninstalled thrust are different quantities** and are
   always named as such (ADR-0011).
 - **The forward model is pure and fast**: no global state, no file I/O,
-  no plotting inside anything the inverse problem calls (ADR-0006).
+  no plotting inside anything the sampler calls (ADR-0006).
+- **pyCycle is never called inside a sampling loop.** Samplers read the
+  engine deck; the nominal point and family corners are re-run through
+  pyCycle directly (ADR-0015).
+- **One atmosphere**: ISA from `atmosphere.py`; a flight condition is
+  `(altitude_m, mach, dT_isa_K)`; pyCycle must agree with it (ADR-0017).
+- **The mission is an input** (`config/missions/sample.yaml`); its
+  values are owner-set assumptions with rationale (ADR-0018).
+- **Every uncertain input has a distribution**, and every headline
+  result has an interval and a sensitivity ranking (ADR-0020).
+- **SI at the pyCycle boundary**: native pyCycle units never leave the
+  `cycle/` wrapper.
 - **Sampling is seeded.** Seed and sample count are config values.
 - **Images of the vehicle are not committed**; record URL, access date
   and pixel measurements instead (ADR-0007).
@@ -124,9 +146,17 @@ visible in notebooks and summaries.
 
 ## Tools
 
-- The cycle model is in-house (ADR-0010). pyCycle and GasTurb are
-  verification oracles only: their numbers are pinned in `tests/`, they
-  are never runtime dependencies.
+- The cycle model is pyCycle on OpenMDAO (`om-pycycle`, ADR-0015):
+  tabular Jet-A thermo for pipeline runs, CEA as a cross-check on the
+  nominal point, scaled generic maps off-design. GasTurb is an optional
+  off-pipeline cross-check.
+- Aerodynamics: a cited semi-empirical build-up plus an open-source
+  build-up code on the same geometry (AeroSandbox is the working
+  candidate); the spread sets the bounds (ADR-0016).
+- Mission and constraint analysis follow Mattingly, Heiser and Pratt
+  (ADR-0018, ADR-0019).
+- Sensitivity indices from an open-source library (SALib is the working
+  candidate) (ADR-0020).
 - CI (ADR-0014): `ci.yml` (ruff, pytest), `design-pipeline.yml`
   (execute all notebooks, regression pins, Pages on `main`),
   `release.yml` (on `v*` tags). Version comes from git tags via
@@ -134,7 +164,9 @@ visible in notebooks and summaries.
 
 ## Tests and regression pins
 
-- Unit tests pin the cycle model against oracle values.
+- Unit tests: atmosphere against published tables and against pyCycle;
+  a closed-form ideal-cycle sanity band on the pyCycle model; engine-deck
+  interpolation error on held-out pyCycle points.
 - Loader tests enforce the provenance rule.
 - Blind-validation bands (ADR-0012) are tests; breaking them fails CI.
 - Design-regression tests pin the nominal point exactly and the
