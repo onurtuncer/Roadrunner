@@ -25,13 +25,13 @@ Format: one file per decision, `NNNN-kebab-title.md`, each with
 | [0012](0012-blind-validation-on-a-known-engine.md) | Validate the method blind on a known engine before applying it | Accepted; amended by 0023, 0024 |
 | [0013](0013-notebook-sequence-and-handoffs.md) | Notebook sequence and handoffs | Superseded by 0021 |
 | [0014](0014-versioning-and-ci-tiers.md) | Tag-driven versioning and tiered CI | Accepted; amended by 0022 |
-| [0015](0015-pycycle-is-the-cycle-engine.md) | pyCycle is the cycle engine | Accepted; amended by 0023, 0029 |
+| [0015](0015-pycycle-is-the-cycle-engine.md) | pyCycle is the cycle engine | Accepted; amended by 0023, 0029, 0030 |
 | [0016](0016-aerodynamics-from-open-source-evidence.md) | Aerodynamics estimated from open-source evidence | Accepted; amended by 0026 |
 | [0017](0017-standard-atmosphere.md) | One standard atmosphere model for everything | Accepted |
 | [0018](0018-sample-mission-profile-and-mission-analysis.md) | A sample mission profile is an input; mission analysis checks the weights | Accepted; amended by 0026 |
 | [0019](0019-constraint-analysis.md) | Constraint analysis in the thrust-loading / wing-loading plane | Accepted; amended by 0027, 0029 |
 | [0020](0020-uncertainty-quantification-and-sensitivity.md) | Uncertainty quantification and sensitivity analysis | Accepted |
-| [0021](0021-notebook-sequence-revision-1.md) | Notebook sequence, revision 1 | Accepted; amended by 0026 |
+| [0021](0021-notebook-sequence-revision-1.md) | Notebook sequence, revision 1 | Accepted; amended by 0026, 0030 |
 | [0022](0022-documentation-on-github-pages.md) | Documentation on GitHub Pages | Accepted; amended by 0028 |
 | [0023](0023-engine-from-a-purchasable-catalogue.md) | The engine is chosen from a purchasable catalogue | Accepted; amended by 0025 |
 | [0024](0024-specific-thrust-and-sfc-no-area-scaling.md) | Engines are characterised by specific thrust and SFC; nothing is scaled with frontal area | Accepted |
@@ -40,3 +40,4 @@ Format: one file per decision, `NNNN-kebab-title.md`, each with
 | [0027](0027-performance-requirements-as-an-input.md) | Performance requirements are an input beside the mission | Accepted |
 | [0028](0028-pages-site-in-the-design-report-format.md) | The Pages site is a design report in the tailsitter format | Accepted |
 | [0029](0029-first-iteration-constraint-and-mission-analysis.md) | First-iteration coupled constraint and mission analysis | Accepted |
+| [0030](0030-cycle-design-point-and-off-design-before-engine-deck.md) | On-design cycle point and off-design performance come before a stand-alone engine deck | Accepted |

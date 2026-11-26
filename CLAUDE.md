@@ -15,14 +15,16 @@ repo does.
   check), `engine_catalogue.py` (catalogue loader), `technology.py`, `atmosphere.py` (ISA, tested against published tables),
   `geometry.py` (pixel measurements to length intervals, engine
   envelope), `lapse.py`, `analysis_inputs.py`, `constraints.py`, `mission.py`,
-  `design_point.py` (first-iteration coupled analysis, ADR-0029), `cycle/`, `validation.py`, `notebook.py`, `reports.py`,
+  `design_point.py` (first-iteration coupled analysis, ADR-0029), `cycle/`
+  (incl. `design.py`, ADR-0030), `validation.py`, `notebook.py`, `reports.py`,
   `plots/`. Everything else in the layout
   below is still to be written.
 - Notebooks 1 (`evidence_ledger`), 4 (`reference_engines`), 5
-  (`method_validation`), 7 (`constraint_analysis`), 8 (`mission_analysis`)
-  and 14 (`mission_profile`, ADR-0026) exist, write
+  (`method_validation`), 7 (`constraint_analysis`), 8 (`mission_analysis`),
+  10 (`cycle_design_point`, ADR-0030) and 14 (`mission_profile`, ADR-0026) exist, write
   `out/evidence.yaml`, `out/technology.yaml`, `out/validation.yaml`,
-  `out/constraints.yaml`, `out/mission.yaml` and `out/mission_profile.yaml`, and are the entries
+  `out/constraints.yaml`, `out/mission.yaml`, `out/cycle.yaml` and
+  `out/mission_profile.yaml`, and are the entries
   of `NOTEBOOK_ORDER` in `design-pipeline.yml`.
   `tests/test_design_outputs.py` pins the handoffs and runs in the
   pipeline, not in `ci.yml`.
@@ -89,9 +91,9 @@ repo does.
   two come from one uncorroborated secondary source.
 - Dependencies are optional extras in `pyproject.toml`: `cycle`
   (in use), `aero` and `uq` (not yet imported anywhere).
-- **ADR-0001 to 0029 are all Accepted** (0003 to 0029 on 2026-11-26).
+- **ADR-0001 to 0030 are all Accepted** (0003 to 0030 on 2026-11-26).
   0013 is superseded by 0021; 0006, 0007, 0008, 0009, 0010, 0012, 0014,
-  0015, 0016, 0018, 0019, 0021, 0015, 0019, 0022, 0023 and 0026 carry amendments (see `adr/README.md`). Read an amended ADR
+  0015, 0016, 0018, 0019, 0021, 0015, 0019, 0021, 0022, 0023 and 0026 carry amendments (see `adr/README.md`). Read an amended ADR
   together with the ADRs that amend it.
 - A change of direction needs a new ADR that amends or supersedes, not
   an edit of an accepted one.
@@ -101,9 +103,15 @@ repo does.
   (85 kg): vertical launch binds, T_SL/W_TO 1.47, 614 N per engine, fuel
   14.1 kg with reserve. The cycle analysis and engine deck replace the
   lapse; take-off mass is swept, not solved (no ADR-0008 build-up).
+- **On-design cycle point exists (ADR-0030)**: pyCycle at OP1 (hot-day SLS) for
+  the launch thrust, 542 N per engine -> 0.95 kg/s air, specific thrust 568
+  N s/kg, Tt4 anchored 1232 K; bounds one input at a time. Next is
+  `off_design` (11), which replaces the algebraic lapse and constant TSFC;
+  `engine_deck` (6) and `engine_selection` (9) are deferred, any deck is a
+  by-product of off-design.
 - Next step is the pixel measurements, then `geometry_from_imagery`,
-  then the remaining notebooks in ADR-0021 order. `engine_deck`
-  (notebook 6) does not depend on geometry and can go ahead; it is what
+  then the remaining notebooks in ADR-0021 order. `off_design`
+  (notebook 11) does not depend on geometry and can go ahead; it is what
   closes the lapse and TSFC of ADR-0029.
 - Everything below the next heading describes the *intended* structure
   per the ADRs.

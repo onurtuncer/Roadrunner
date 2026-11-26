@@ -1,0 +1,198 @@
+# Handoff of notebooks/cycle_design_point.ipynb. Generated; do not edit (ADR-0001).
+notebook: cycle_design_point
+status: on-design point at OP1, first iteration (ADR-0030)
+notes:
+- required engine at OP1 on the mission's hot day, not a catalogue engine (ADR-0023)
+- Tt4 and the cycle losses are assumptions (config/cycle.yaml, anchored catalogue
+  Tt4); the bounds are one input at a time
+- 'installed thrust equals uninstalled thrust: no installation loss yet (ADR-0011)'
+- fuel flow is the ideal, complete-combustion value; a real engine burns more (lumped
+  combustion efficiency, ADR-0023)
+- generic pyCycle maps at design point only; off-design is the next notebook
+requirement:
+  thrust_per_engine_N: 541.8174
+  engine_count: 2
+  altitude_m: 0.0
+  mach: 0.0
+  dT_isa_K: 20.0
+inputs:
+  Tt4_K:
+    value: 1231.6
+    low: 1088.0
+    high: 1274.8
+  pressure_ratio:
+    value: 3.9
+    low: 3.8
+    high: 4.0
+  losses:
+    inlet_recovery_static: 0.99
+    compressor_efficiency: 0.74
+    burner_pressure_loss: 0.05
+    turbine_efficiency: 0.82
+    nozzle_velocity_coefficient: 0.98
+engine:
+  thrust_N: 541.8174
+  air_mass_flow_kg_s: 0.9533153
+  fuel_flow_kg_s: 0.018215
+  sfc_kg_N_s: 3.361834e-05
+  specific_thrust_N_s_kg: 568.3507
+  pressure_ratio: 3.9
+  compressor_efficiency: 0.74
+  fuel_air_ratio: 0.01910701
+  Tt3_K: 504.0128
+  Tt4_K: 1231.6
+  Tt5_K: 1070.061
+  turbine_pressure_ratio: 2.083434
+  nozzle_pressure_ratio: 1.760531
+  exit_velocity_m_s: 569.0758
+  ambient_temperature_K: 308.15
+  ambient_pressure_Pa: 101324.7
+pair:
+  air_mass_flow_kg_s: 1.906631
+  fuel_flow_kg_s: 0.03643
+  thrust_N: 1083.6348
+stations_ARP755:
+  '2':
+    Tt_K: 308.15
+    Pt_Pa: 100311.4
+    W_kg_s: 0.953315
+  '3':
+    Tt_K: 504.013
+    Pt_Pa: 391214.5
+    W_kg_s: 0.953315
+  '4':
+    Tt_K: 1231.6
+    Pt_Pa: 371653.8
+    W_kg_s: 0.97153
+  '5':
+    Tt_K: 1070.061
+    Pt_Pa: 178385.2
+    W_kg_s: 0.97153
+  '8':
+    Tt_K: 1070.061
+    Pt_Pa: 178385.2
+    W_kg_s: 0.97153
+technology_comparison:
+  specific_thrust_N_s_kg:
+    model: 568.350685931
+    catalogue_low: 506.41
+    catalogue_high: 627.2
+    inside_catalogue_range: true
+  sfc_kg_N_s:
+    model: 3.3618e-05
+    catalogue_low: 3.22222e-05
+    catalogue_high: 4.1519e-05
+    inside_catalogue_range: true
+one_at_a_time:
+- input: Tt4_K
+  bound: low
+  value: 1088.0
+  air_mass_flow_kg_s: 1.147644754
+  specific_thrust_N_s_kg: 472.112481425
+  sfc_kg_N_s: 3.1705e-05
+  Tt3_K: 504.012754753
+  Tt5_K: 920.595704544
+- input: pressure_ratio
+  bound: low
+  value: 3.8
+  air_mass_flow_kg_s: 0.957712301
+  specific_thrust_N_s_kg: 565.741310671
+  sfc_kg_N_s: 3.3968e-05
+  Tt3_K: 499.477855848
+  Tt5_K: 1073.939522318
+- input: inlet_recovery_static
+  bound: low
+  value: 0.97
+  air_mass_flow_kg_s: 0.971160469
+  specific_thrust_N_s_kg: 557.907194273
+  sfc_kg_N_s: 3.4239e-05
+  Tt3_K: 504.212212519
+  Tt5_K: 1069.890278812
+- input: compressor_efficiency
+  bound: low
+  value: 0.68
+  air_mass_flow_kg_s: 1.023957403
+  specific_thrust_N_s_kg: 529.140578572
+  sfc_kg_N_s: 3.5325e-05
+  Tt3_K: 521.016011446
+  Tt5_K: 1055.411237312
+- input: burner_pressure_loss
+  bound: low
+  value: 0.03
+  air_mass_flow_kg_s: 0.936453098
+  specific_thrust_N_s_kg: 578.584676338
+  sfc_kg_N_s: 3.3024e-05
+  Tt3_K: 504.012754753
+  Tt5_K: 1070.060894082
+- input: turbine_efficiency
+  bound: low
+  value: 0.76
+  air_mass_flow_kg_s: 1.008609276
+  specific_thrust_N_s_kg: 537.192573309
+  sfc_kg_N_s: 3.5568e-05
+  Tt3_K: 504.012754753
+  Tt5_K: 1070.060953587
+- input: nozzle_velocity_coefficient
+  bound: low
+  value: 0.96
+  air_mass_flow_kg_s: 0.973176062
+  specific_thrust_N_s_kg: 556.75168516
+  sfc_kg_N_s: 3.4319e-05
+  Tt3_K: 504.012754753
+  Tt5_K: 1070.060907473
+- input: Tt4_K
+  bound: high
+  value: 1274.8
+  air_mass_flow_kg_s: 0.911125885
+  specific_thrust_N_s_kg: 594.668005109
+  sfc_kg_N_s: 3.4286e-05
+  Tt3_K: 504.012754753
+  Tt5_K: 1114.920841174
+- input: pressure_ratio
+  bound: high
+  value: 4.0
+  air_mass_flow_kg_s: 0.947699584
+  specific_thrust_N_s_kg: 571.718529582
+  sfc_kg_N_s: 3.3242e-05
+  Tt3_K: 508.194093742
+  Tt5_K: 1066.482745128
+- input: inlet_recovery_static
+  bound: high
+  value: 1.0
+  air_mass_flow_kg_s: 0.944372936
+  specific_thrust_N_s_kg: 573.732464889
+  sfc_kg_N_s: 3.3312e-05
+  Tt3_K: 503.806920399
+  Tt5_K: 1070.23699374
+- input: compressor_efficiency
+  bound: high
+  value: 0.8
+  air_mass_flow_kg_s: 0.904228987
+  specific_thrust_N_s_kg: 599.203763701
+  sfc_kg_N_s: 3.2476e-05
+  Tt3_K: 489.509850155
+  Tt5_K: 1082.457232993
+- input: burner_pressure_loss
+  bound: high
+  value: 0.08
+  air_mass_flow_kg_s: 0.980408632
+  specific_thrust_N_s_kg: 552.64447361
+  sfc_kg_N_s: 3.4574e-05
+  Tt3_K: 504.012754753
+  Tt5_K: 1070.060927559
+- input: turbine_efficiency
+  bound: high
+  value: 0.88
+  air_mass_flow_kg_s: 0.913500066
+  specific_thrust_N_s_kg: 593.122466539
+  sfc_kg_N_s: 3.2214e-05
+  Tt3_K: 504.012754753
+  Tt5_K: 1070.060866885
+- input: nozzle_velocity_coefficient
+  bound: high
+  value: 0.99
+  air_mass_flow_kg_s: 0.94368586
+  specific_thrust_N_s_kg: 574.150186317
+  sfc_kg_N_s: 3.3279e-05
+  Tt3_K: 504.012754753
+  Tt5_K: 1070.060907473
