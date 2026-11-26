@@ -1,0 +1,44 @@
+name: Evidence notebook reproducibility
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  evidence:
+    runs-on: ubuntu-latest
+    env:
+      MPLBACKEND: Agg
+      TZ: UTC
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -e ".[notebooks]"
+      - name: Execute twice in fresh kernels and compare handoffs
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p evidence-audit
+          python -VV > evidence-audit/python.txt
+          python -m pip freeze --exclude-editable > evidence-audit/requirements.txt
+          for seed in 1 2; do
+            rm -f out/evidence.yaml
+            PYTHONHASHSEED=$seed python -m jupyter nbconvert --execute --to notebook \
+              --ExecutePreprocessor.kernel_name=python3 --output-dir=evidence-audit notebooks/evidence_ledger.ipynb
+            cp out/evidence.yaml "evidence-audit/evidence-$seed.yaml"
+          done
+          diff -u evidence-audit/evidence-{1,2}.yaml
+          python scripts/audit_evidence_run.py evidence-audit/manifest.json
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: evidence-audit
+          path: evidence-audit/
