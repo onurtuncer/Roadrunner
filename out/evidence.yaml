@@ -1,0 +1,44 @@
+# Handoff of notebooks/evidence_ledger.ipynb. Generated; do not edit (ADR-0001).
+counts_by_tier:
+  A: 9
+  B: 9
+  C: 0
+  X: 2
+quantities:
+  length_overall_m:
+    value: 1.5
+    low: 1.4
+    high: 1.8
+    dist: uniform
+    evidence: length_overall
+  speed_max_m_s:
+    value: 194.4
+    low: 170.0
+    high: 300.0
+    dist: uniform
+    evidence: speed_reported
+  takeoff_mass_kg:
+    value: 85.0
+    low: 40.0
+    high: 150.0
+    dist: uniform
+    evidence: mass_reported
+qualitative_inputs:
+- airframe_carbon_fibre
+- altitude_significant
+- engine_start_seconds
+- engines_in_house
+- fuel_standard_jet
+- landing_legs
+- loiter_and_return
+- movable_by_one_person
+- quick_turnaround
+- range_relatively_long
+- speed_high_subsonic
+- thrust_vectoring
+- twin_turbojets
+- uas_group_3
+- vtol_launch_and_landing
+hypotheses_not_inputs:
+- engines_most_power_dense
+- range_ten_times_comparators

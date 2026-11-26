@@ -16,8 +16,8 @@ permissions:
 env:
   # Single source of truth for the pipeline order (ADR-0021). Adding a
   # notebook here is the only edit needed for it to run and be published.
-  # Empty until the first notebook lands.
-  NOTEBOOK_ORDER: ""
+  NOTEBOOK_ORDER: >-
+    evidence_ledger
   MPLBACKEND: Agg
 
 concurrency:
@@ -52,7 +52,9 @@ jobs:
             jupyter nbconvert --to html --output-dir rendered "executed/${nb}.ipynb"
             echo "::endgroup::"
           done
-          [ -n "$NOTEBOOK_ORDER" ] || echo "No notebooks in the pipeline yet."
+
+      - name: Design regression pins
+        run: pytest tests/test_design_outputs.py -v
 
       - name: Upload design outputs
         if: always()

@@ -124,3 +124,19 @@ def test_catalogue_entry_with_a_non_positive_number_is_rejected(tmp_path):
 
 def test_config_directory_is_where_the_adrs_say():
     assert (CONFIG_DIR / "atmosphere.yaml").is_file()
+
+
+# --- quantified evidence -----------------------------------------------
+
+def test_length_anchor_is_in_the_ledger_with_bounds(claims):
+    from roadrunner_re import quantified
+    length = quantified(claims)["length_overall_m"]
+    assert length.low < length.value < length.high
+    assert claims["length_overall"].corroboration
+
+
+def test_tier_x_claim_cannot_carry_a_value(tmp_path):
+    entry = {"id": "x", "statement": "s", "tier": "X", "source": "https://example.org", "accessed": "2026-11-26",
+             "quantity": "q", "value": {"value": 1, "low": 0, "high": 2}}
+    with pytest.raises(ConfigError, match="cannot carry"):
+        load_claims(_write(tmp_path, [entry], "claims.yaml"))

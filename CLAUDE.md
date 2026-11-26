@@ -9,23 +9,34 @@ repo does.
 
 ## Current state (update this section as it changes)
 
-- Skeleton exists: `pyproject.toml`, the `roadrunner_re` package and
-  `tests/`. Implemented modules: `config.py` (paths, YAML),
-  `uncertain.py` (value with bounds and distribution), `evidence.py`
-  (ledger loader), `mission_profile.py` (mission loader with the
-  provenance check), `engine_catalogue.py` (catalogue loader, no unit
-  conversion yet), `atmosphere.py` (ISA, tested against published
-  tables). Everything else in the layout below is still to be written.
-- `config/` holds `atmosphere.yaml`, `evidence/claims.yaml` (the
-  manufacturer claims the mission cites), `missions/sample.yaml` and
+- Implemented modules: `config.py` (paths, YAML), `uncertain.py` (value
+  with bounds and distribution), `evidence.py` (ledger loader and
+  handoff), `mission_profile.py` (mission loader with the provenance
+  check), `engine_catalogue.py` (catalogue loader, no unit conversion
+  yet), `atmosphere.py` (ISA, tested against published tables),
+  `geometry.py` (pixel measurements to length intervals, engine
+  envelope), `notebook.py`, `reports.py`. Everything else in the layout
+  below is still to be written.
+- Notebook 1 (`evidence_ledger`) exists and writes `out/evidence.yaml`;
+  it is the only entry in `NOTEBOOK_ORDER` in `design-pipeline.yml`.
+  `tests/test_design_outputs.py` pins the handoffs and runs in the
+  pipeline, not in `ci.yml`.
+- **Geometry is blocked on measurement.** `config/evidence/imagery.yaml`
+  lists five public image sources but holds NO pixel measurements, so
+  notebook 2 (`geometry_from_imagery`) is not written and nothing
+  downstream of it (aerodynamics, engine fit) can run on real numbers.
+  The measurements must be taken by someone who can view the images
+  (in a browser, or from images the owner attaches). Do not invent
+  pixel coordinates or dimensions.
+- `config/` holds `atmosphere.yaml`, `geometry.yaml`,
+  `evidence/claims.yaml`, `evidence/vehicle.yaml`,
+  `evidence/imagery.yaml`, `missions/sample.yaml` and
   `reference_engines.yaml` (eleven purchasable turbojets from PBS,
   JetCat and AMT; several fields still `null`, three PBS entries from a
   secondary source).
-- No notebooks and no `out/` yet. `design-pipeline.yml` has the
-  notebook-execution loop with an empty `NOTEBOOK_ORDER`; adding a
-  notebook name there is the only CI edit a new notebook needs. The
-  design-regression test step is still to be added with the first
-  handoff.
+- The only quantified evidence is overall length (1.5 m, 1.4 to 1.8),
+  a reported mass (85 kg) and a reported top speed (700 km/h); the last
+  two come from one uncorroborated secondary source.
 - Dependencies for later stages are optional extras in `pyproject.toml`
   (`cycle`, `aero`, `uq`); pyCycle is pinned there and is not yet
   imported anywhere.
@@ -35,8 +46,9 @@ repo does.
   together with the ADRs that amend it.
 - A change of direction needs a new ADR that amends or supersedes, not
   an edit of an accepted one.
-- Next step is the notebooks in ADR-0021 order, starting with
-  `evidence_ledger` and `geometry_from_imagery`.
+- Next step is the pixel measurements, then `geometry_from_imagery`,
+  then the remaining notebooks in ADR-0021 order. `reference_engines`
+  (notebook 4) does not depend on geometry and can go ahead.
 - Everything below the next heading describes the *intended* structure
   per the ADRs.
 
