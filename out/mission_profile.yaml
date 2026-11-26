@@ -1,0 +1,188 @@
+# Handoff of notebooks/mission_profile.ipynb. Generated; do not edit (ADR-0001).
+name: sample
+day_dT_isa_K:
+  value: 20.0
+  low: 0.0
+  high: 30.0
+payload_mass_kg:
+  value: 10.0
+  low: 5.0
+  high: 20.0
+reserve_fraction_of_mission_fuel:
+  value: 0.1
+  low: 0.05
+  high: 0.15
+segments:
+- id: launch
+  type: vertical_launch
+  altitude_start_m:
+    value: 0.0
+    low: 0.0
+    high: 0.0
+  altitude_end_m:
+    value: 0.0
+    low: 0.0
+    high: 0.0
+  mach: null
+  true_airspeed_m_s: null
+  duration_s:
+    value: 10.0
+    low: 5.0
+    high: 20.0
+  distance_m: null
+  evidence:
+  - vtol_launch_and_landing
+- id: climb_out
+  type: climb
+  altitude_start_m:
+    value: 0.0
+    low: 0.0
+    high: 0.0
+  altitude_end_m:
+    value: 3000.0
+    low: 1000.0
+    high: 6000.0
+  mach:
+    value: 0.6
+    low: 0.5
+    high: 0.7
+  true_airspeed_m_s: null
+  duration_s: null
+  distance_m: null
+  evidence:
+  - altitude_significant
+- id: dash_out
+  type: dash
+  altitude_start_m:
+    value: 3000.0
+    low: 1000.0
+    high: 6000.0
+  altitude_end_m:
+    value: 3000.0
+    low: 1000.0
+    high: 6000.0
+  mach:
+    value: 0.8
+    low: 0.7
+    high: 0.9
+  true_airspeed_m_s:
+    value: 272.471
+    low: 221.5
+    high: 318.509
+  duration_s:
+    value: 110.103
+    low: 31.396
+    high: 270.881
+  distance_m:
+    value: 30000.0
+    low: 10000.0
+    high: 60000.0
+  evidence:
+  - speed_high_subsonic
+  - range_relatively_long
+- id: loiter
+  type: loiter
+  altitude_start_m:
+    value: 3000.0
+    low: 1000.0
+    high: 6000.0
+  altitude_end_m:
+    value: 3000.0
+    low: 1000.0
+    high: 6000.0
+  mach:
+    value: 0.5
+    low: 0.4
+    high: 0.6
+  true_airspeed_m_s:
+    value: 170.295
+    low: 126.571
+    high: 212.339
+  duration_s:
+    value: 900.0
+    low: 300.0
+    high: 1800.0
+  distance_m:
+    value: 153265.095
+    low: 37971.404
+    high: 382210.211
+  evidence:
+  - loiter_and_return
+- id: cruise_back
+  type: cruise
+  altitude_start_m:
+    value: 3000.0
+    low: 1000.0
+    high: 6000.0
+  altitude_end_m:
+    value: 3000.0
+    low: 1000.0
+    high: 6000.0
+  mach:
+    value: 0.6
+    low: 0.5
+    high: 0.8
+  true_airspeed_m_s:
+    value: 204.353
+    low: 158.214
+    high: 283.119
+  duration_s:
+    value: 146.804
+    low: 35.321
+    high: 379.233
+  distance_m:
+    value: 30000.0
+    low: 10000.0
+    high: 60000.0
+  evidence:
+  - loiter_and_return
+- id: descent
+  type: descent
+  altitude_start_m:
+    value: 3000.0
+    low: 1000.0
+    high: 6000.0
+  altitude_end_m:
+    value: 0.0
+    low: 0.0
+    high: 0.0
+  mach: null
+  true_airspeed_m_s: null
+  duration_s: null
+  distance_m: null
+  evidence: []
+- id: landing
+  type: vertical_landing
+  altitude_start_m:
+    value: 0.0
+    low: 0.0
+    high: 0.0
+  altitude_end_m:
+    value: 0.0
+    low: 0.0
+    high: 0.0
+  mach: null
+  true_airspeed_m_s: null
+  duration_s:
+    value: 30.0
+    low: 15.0
+    high: 60.0
+  distance_m: null
+  evidence:
+  - vtol_launch_and_landing
+uncertain_inputs:
+- climb_out.mach
+- climb_out.to_altitude_m
+- cruise_back.mach
+- dash_out.distance_m
+- dash_out.mach
+- day.dT_isa_K
+- landing.duration_s
+- launch.duration_s
+- loiter.duration_s
+- loiter.mach
+- payload.mass_kg
+- reserve.fraction_of_mission_fuel
+duration_not_fixed_by_profile:
+- climb_out
+- descent

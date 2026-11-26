@@ -135,3 +135,36 @@ def blind_prediction_table(predictions: dict, quantity: str, scale: float = 1.0,
         rows.append(f"{p.engine_id:18s}{_fmt(pub and pub * scale, '.3g', 11)}{u.value * scale:11.3g}"
                     f"{u.low * scale:9.3g}{u.high * scale:9.3g}{_fmt(error, '+.0%', 8)}  {verdict}")
     return "\n".join(rows)
+
+
+def mission_quotes(mission, claims: dict[str, Claim]) -> str:
+    """Each segment with the ledger statements it rests on, quoted, and the stated assumption."""
+    lines = []
+    for seg in mission.segments:
+        lines += [f"{seg.id}  ({seg.type})", "-" * _WIDTH]
+        for claim_id in seg.basis.evidence:
+            claim = claims[claim_id]
+            lines += textwrap.wrap(f"[{claim.tier}] {claim.id}: \"{claim.statement}\"", _WIDTH,
+                                   initial_indent="  ", subsequent_indent="      ")
+        if seg.basis.assumption:
+            lines += textwrap.wrap(f"assumption: {seg.basis.assumption}", _WIDTH,
+                                   initial_indent="  ", subsequent_indent="      ")
+        lines.append("")
+    return "\n".join(lines).rstrip()
+
+
+def mission_table(views) -> str:
+    """Segment numbers as nominal (low to high). A dash means the profile does not fix it."""
+    def cell(i, scale=1.0, spec=".0f"):
+        if i is None:
+            return "-"
+        if i.low == i.high:
+            return f"{i.value * scale:{spec}}"
+        return f"{i.value * scale:{spec}} ({i.low * scale:{spec}}-{i.high * scale:{spec}})"
+
+    rows = [f"{'segment':12s}{'alt end m':>18s}{'Mach':>17s}{'TAS m/s':>17s}{'time s':>19s}{'dist km':>17s}", "-" * 100]
+    for v in views:
+        rows.append(f"{v.id:12s}{cell(v.altitude_end_m):>18s}{cell(v.mach, spec='.2f'):>17s}"
+                    f"{cell(v.true_airspeed_m_s):>17s}{cell(v.duration_s):>19s}"
+                    f"{cell(v.distance_m, 1e-3, '.1f'):>17s}")
+    return "\n".join(rows)

@@ -17,9 +17,10 @@ repo does.
   envelope), `cycle/`, `validation.py`, `notebook.py`, `reports.py`,
   `plots/`. Everything else in the layout
   below is still to be written.
-- Notebooks 1 (`evidence_ledger`), 4 (`reference_engines`) and 5
-  (`method_validation`) exist, write `out/evidence.yaml`,
-  `out/technology.yaml` and `out/validation.yaml`, and are the entries
+- Notebooks 1 (`evidence_ledger`), 4 (`reference_engines`), 5
+  (`method_validation`) and 14 (`mission_profile`, ADR-0026) exist, write
+  `out/evidence.yaml`, `out/technology.yaml`, `out/validation.yaml` and
+  `out/mission_profile.yaml`, and are the entries
   of `NOTEBOOK_ORDER` in `design-pipeline.yml`.
   `tests/test_design_outputs.py` pins the handoffs and runs in the
   pipeline, not in `ci.yml`.
@@ -57,8 +58,8 @@ repo does.
   flow (ADR-0024).
 - `technology.py` is datasheet arithmetic only (figures of merit,
   catalogue bounds, mass power law, implied fuel density). Result so
-  far: specific thrust is 594 to 627 N s/kg for four of the five
-  engines that publish an air flow (one core sits at 506); SFC is 0.116
+  far: specific thrust is 594 to 627 N s/kg for three of the five
+  engines that publish an air flow (the two TJ40 cores sit at 506); SFC is 0.116
   to 0.150 kg/(N h), improving with size.
 - **Geometry is blocked on measurement.** `config/evidence/imagery.yaml`
   lists five public image sources but holds NO pixel measurements, so
@@ -74,14 +75,19 @@ repo does.
   `reference_engines.yaml` (nine purchasable turbojets from PBS
   and AMT, all from vendor material; some fields still `null`,
   and PBS datasheet revisions disagree in places, as noted per entry).
+- `config/aero_estimate.yaml` is the owner's hand aerodynamic estimate
+  (tier C, +/-30 %, photo-scaled assumptions; ADR-0026): S_ref 0.071 m2
+  (missile convention), C_N_alpha about 15 /rad, C_D0 about 0.20, K about
+  0.06, (L/D)max about 4.5. It is an input, not a measurement; it does not
+  unblock geometry, and its numbers are correlated.
 - The only quantified evidence is overall length (1.5 m, 1.4 to 1.8),
   a reported mass (85 kg) and a reported top speed (700 km/h); the last
   two come from one uncorroborated secondary source.
 - Dependencies are optional extras in `pyproject.toml`: `cycle`
   (in use), `aero` and `uq` (not yet imported anywhere).
-- **ADR-0001 to 0024 are all Accepted** (0003 to 0024 on 2026-11-26).
-  0013 is superseded by 0021; 0006, 0007, 0008, 0009, 0010, 0012, 0014
-  and 0015 carry amendments (see `adr/README.md`). Read an amended ADR
+- **ADR-0001 to 0026 are all Accepted** (0003 to 0026 on 2026-11-26).
+  0013 is superseded by 0021; 0006, 0007, 0008, 0009, 0010, 0012, 0014,
+  0015, 0016, 0018, 0021 and 0023 carry amendments (see `adr/README.md`). Read an amended ADR
   together with the ADRs that amend it.
 - A change of direction needs a new ADR that amends or supersedes, not
   an edit of an accepted one.
@@ -133,6 +139,8 @@ to `out/` and reads only earlier handoffs:
 11. `off_design` -> `out/off_design.yaml`
 12. `uncertainty_and_sensitivity` -> `out/uq.yaml`
 13. `design_summary` (pure reader, writes nothing)
+14. `mission_profile` -> `out/mission_profile.yaml` (quotes and plots the
+    sample mission; reads only config, ADR-0026)
 
 The constraint/mission/mass/engine coupling is resolved inside
 `roadrunner_re.design_point.solve_design_point()`, the **single call

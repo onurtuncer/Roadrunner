@@ -64,3 +64,16 @@ def test_validation_pins():
         pytest.approx((506.41, 627.2), rel=1e-3)
     titan = v["leave_one_out"]["amt_titan"]["specific_thrust_N_s_kg"]
     assert (titan["published"], titan["value"], titan["inside"]) == pytest.approx((593.94, 561.3, True), rel=2e-3)
+
+
+def test_mission_profile_pins():
+    """Mission profile laid out in time (notebook 14). Inputs in, so these move only with config/missions."""
+    m = yaml.safe_load((OUT / "mission_profile.yaml").read_text(encoding="utf-8"))
+    ids = [s["id"] for s in m["segments"]]
+    assert ids == ["launch", "climb_out", "dash_out", "loiter", "cruise_back", "descent", "landing"]
+    seg = {s["id"]: s for s in m["segments"]}
+    assert m["duration_not_fixed_by_profile"] == ["climb_out", "descent"]
+    assert seg["loiter"]["duration_s"] == {"value": 900.0, "low": 300.0, "high": 1800.0}
+    dash = seg["dash_out"]
+    assert (dash["true_airspeed_m_s"]["value"], dash["duration_s"]["value"]) == pytest.approx((272.0, 110.0), rel=0.01)
+    assert dash["distance_m"] == seg["cruise_back"]["distance_m"]  # return flies the outbound distance
