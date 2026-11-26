@@ -10,7 +10,9 @@ repo does.
 ## Current state (update this section as it changes)
 
 - The ADRs, the README, two workflows and `scripts/build_site.py`
-  exist. No `config/`, `src/`, `notebooks/`, `tests/` or
+  exist. `config/` holds two files: `config/evidence/claims.yaml` (the
+  manufacturer claims the mission cites) and
+  `config/missions/sample.yaml`. No `src/`, `notebooks/`, `tests/` or
   `pyproject.toml` yet.
 - `ci.yml` currently checks the ADR index and lints `scripts/`; its test
   job switches on when `pyproject.toml` appears. `design-pipeline.yml`
@@ -121,8 +123,12 @@ Intended `src/roadrunner_re/` layout: `notebook.py` (`nb_setup()`),
   pyCycle directly (ADR-0015).
 - **One atmosphere**: ISA from `atmosphere.py`; a flight condition is
   `(altitude_m, mach, dT_isa_K)`; pyCycle must agree with it (ADR-0017).
-- **The mission is an input** (`config/missions/sample.yaml`); its
-  values are owner-set assumptions with rationale (ADR-0018).
+- **The mission is an input** (`config/missions/sample.yaml`). Its
+  shape follows the manufacturer's qualitative claims; its numbers are
+  assumptions with bounds, all sampled in the uncertainty analysis
+  (ADR-0018). No public source gives any of those numbers.
+- **The engine deck is generated here** by the repo's pyCycle model; no
+  external deck exists or is used (ADR-0015).
 - **Every uncertain input has a distribution**, and every headline
   result has an interval and a sensitivity ranking (ADR-0020).
 - **SI at the pyCycle boundary**: native pyCycle units never leave the

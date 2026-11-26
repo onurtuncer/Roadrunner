@@ -32,9 +32,13 @@ weight through it.
   | 7 | Hover and vertical landing | time at landing weight |
   | 8 | Reserve | fraction of mission fuel |
 
-  Numerical values are **assumptions** set by the owner in the YAML with
-  rationale; where a value leans on evidence ("high subsonic" for the
-  dash Mach number) it cites the ledger `id`.
+  The **shape** of the profile follows the manufacturer's qualitative
+  claims (vertical launch, high-subsonic transit, loiter, return,
+  vertical landing, reuse), each cited by ledger `id`. The **numbers**
+  are published by no one: every value in `config/missions/sample.yaml`
+  is an assumption chosen to be consistent with the cited claim, carries
+  `low`/`high` bounds, and is an uncertain input to ADR-0020. The YAML,
+  not this ADR, is the single place the values live.
 - **Mission analysis** follows the weight-fraction method of Mattingly,
   Heiser and Pratt: each segment yields `W_final/W_initial` from the
   installed TSFC (engine deck, ADR-0015), the polar (ADR-0016) and the
