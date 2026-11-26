@@ -32,9 +32,10 @@ Format: one file per decision, `NNNN-kebab-title.md`, each with
 | [0019](0019-constraint-analysis.md) | Constraint analysis in the thrust-loading / wing-loading plane | Accepted; amended by 0027 |
 | [0020](0020-uncertainty-quantification-and-sensitivity.md) | Uncertainty quantification and sensitivity analysis | Accepted |
 | [0021](0021-notebook-sequence-revision-1.md) | Notebook sequence, revision 1 | Accepted; amended by 0026 |
-| [0022](0022-documentation-on-github-pages.md) | Documentation on GitHub Pages | Accepted |
+| [0022](0022-documentation-on-github-pages.md) | Documentation on GitHub Pages | Accepted; amended by 0028 |
 | [0023](0023-engine-from-a-purchasable-catalogue.md) | The engine is chosen from a purchasable catalogue | Accepted; amended by 0025 |
 | [0024](0024-specific-thrust-and-sfc-no-area-scaling.md) | Engines are characterised by specific thrust and SFC; nothing is scaled with frontal area | Accepted |
 | [0025](0025-drop-jetcat-from-the-catalogue.md) | JetCat engines are dropped from the catalogue | Accepted |
 | [0026](0026-mission-profile-notebook-and-hand-aero-estimate.md) | A mission-profile notebook, and the owner's hand aerodynamic estimate | Accepted; amended by 0027 |
 | [0027](0027-performance-requirements-as-an-input.md) | Performance requirements are an input beside the mission | Accepted |
+| [0028](0028-pages-site-in-the-design-report-format.md) | The Pages site is a design report in the tailsitter format | Accepted |

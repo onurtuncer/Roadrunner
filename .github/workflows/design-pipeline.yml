@@ -38,7 +38,7 @@ jobs:
           python-version: "3.12"
           cache: pip
       - name: Install package with pyCycle and notebook deps
-        run: pip install -e ".[cycle,notebooks,dev]" markdown
+        run: pip install -r requirements.txt
 
       - name: Cycle-model tests (need pyCycle; skipped in ci.yml)
         run: pytest tests/test_cycle.py -v
@@ -70,7 +70,7 @@ jobs:
           retention-days: 30
           if-no-files-found: ignore
 
-      - name: Build site (README + ADRs + rendered notebooks)
+      - name: Build site (design report, ADR-0028)
         run: python scripts/build_site.py site rendered
       - uses: actions/upload-pages-artifact@v5
         with:
