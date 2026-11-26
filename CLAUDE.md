@@ -12,15 +12,20 @@ repo does.
 - Implemented modules: `config.py` (paths, YAML), `uncertain.py` (value
   with bounds and distribution), `evidence.py` (ledger loader and
   handoff), `mission_profile.py` (mission loader with the provenance
-  check), `engine_catalogue.py` (catalogue loader, no unit conversion
-  yet), `atmosphere.py` (ISA, tested against published tables),
+  check), `engine_catalogue.py` (catalogue loader), `technology.py`, `atmosphere.py` (ISA, tested against published tables),
   `geometry.py` (pixel measurements to length intervals, engine
-  envelope), `notebook.py`, `reports.py`. Everything else in the layout
+  envelope), `notebook.py`, `reports.py`, `plots/engines.py`. Everything else in the layout
   below is still to be written.
-- Notebook 1 (`evidence_ledger`) exists and writes `out/evidence.yaml`;
-  it is the only entry in `NOTEBOOK_ORDER` in `design-pipeline.yml`.
+- Notebooks 1 (`evidence_ledger` -> `out/evidence.yaml`) and 4
+  (`reference_engines` -> `out/technology.yaml`) exist and are the
+  entries of `NOTEBOOK_ORDER` in `design-pipeline.yml`.
   `tests/test_design_outputs.py` pins the handoffs and runs in the
   pipeline, not in `ci.yml`.
+- `technology.py` is datasheet arithmetic only (figures of merit,
+  catalogue bounds, mass power law, implied fuel density). Result so
+  far: thrust per frontal area is 20.7 to 29.2 kN/m2 across all twelve
+  engines, the tightest figure of merit and the link from a measured
+  nacelle diameter to a thrust.
 - **Geometry is blocked on measurement.** `config/evidence/imagery.yaml`
   lists five public image sources but holds NO pixel measurements, so
   notebook 2 (`geometry_from_imagery`) is not written and nothing
@@ -30,10 +35,10 @@ repo does.
   pixel coordinates or dimensions.
 - `config/` holds `atmosphere.yaml`, `geometry.yaml`,
   `evidence/claims.yaml`, `evidence/vehicle.yaml`,
-  `evidence/imagery.yaml`, `missions/sample.yaml` and
-  `reference_engines.yaml` (eleven purchasable turbojets from PBS,
-  JetCat and AMT; several fields still `null`, three PBS entries from a
-  secondary source).
+  `evidence/imagery.yaml`, `missions/sample.yaml`, `fuel.yaml` and
+  `reference_engines.yaml` (twelve purchasable turbojets from PBS,
+  JetCat and AMT, all from vendor material; some fields still `null`,
+  and PBS datasheet revisions disagree in places, as noted per entry).
 - The only quantified evidence is overall length (1.5 m, 1.4 to 1.8),
   a reported mass (85 kg) and a reported top speed (700 km/h); the last
   two come from one uncorroborated secondary source.
@@ -47,8 +52,9 @@ repo does.
 - A change of direction needs a new ADR that amends or supersedes, not
   an edit of an accepted one.
 - Next step is the pixel measurements, then `geometry_from_imagery`,
-  then the remaining notebooks in ADR-0021 order. `reference_engines`
-  (notebook 4) does not depend on geometry and can go ahead.
+  then the remaining notebooks in ADR-0021 order. The pyCycle stages
+  (`method_validation`, `engine_deck`) do not depend on geometry and
+  can go ahead.
 - Everything below the next heading describes the *intended* structure
   per the ADRs.
 

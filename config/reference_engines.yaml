@@ -53,43 +53,77 @@
   source: https://pdf.aeroexpo.online/pdf/pbs-velka-bites/tj-40-g2-turbojet-engine/170284-304.html
   note: G1 with an 800 W generator; longer and heavier.
 
+- id: pbs_tj80_90
+  vendor: PBS Velka Bites
+  model: TJ80-90
+  thrust_max_N: 900            # take-off rating, limited to 5 minutes; 800 N continuous
+  thrust_idle_N: null
+  mass_engine_kg: null
+  mass_system_kg: 12.5         # "including accessories"
+  diameter_m: 0.235
+  length_m: 0.511
+  air_mass_flow_kg_s: 1.47
+  pressure_ratio: null
+  fuel_flow_max: {value: 2300, unit: ml_min}
+  sfc_kg_N_h: 0.123
+  egt_max_K: null
+  rpm_max: 58000
+  tier: A
+  source: https://www.pbs.cz/en/Aerospace/Aircraft-Engines/Jet-Engine-PBS-TJ80-90
+  note: >-
+    Mass, diameter and length from the vendor page. SFC and fuel flow
+    (460 ml/min idle, 2,300 ml/min max) from the datasheet at
+    https://pdf.aeroexpo.online/pdf/pbs-velka-bites/pbs-turbojet-engine-tj80/170284-12435.html
+    (which gives 12 kg, 514 mm). Air flow, speed and the 5-minute limit
+    from an older datasheet at
+    https://pdf.aeroexpo.online/pdf/pbs-velka-bites/tj80-turbojet-engine/170284-7558.html
+    (which gives 10.5 kg, SFC 0.122). Fuel-lubricated (3 % oil in fuel).
+
 - id: pbs_tj80_120
   vendor: PBS Velka Bites
   model: TJ80-120
-  thrust_max_N: 1200
+  thrust_max_N: {low: 900, high: 1200}   # as published; rating conditions not stated
   thrust_idle_N: null
   mass_engine_kg: null
-  mass_system_kg: 12.8         # "including the accessories"
+  mass_system_kg: 13.0
   diameter_m: 0.235
-  length_m: null
+  length_m: 0.512
   air_mass_flow_kg_s: null
   pressure_ratio: null
   fuel_flow_max: null
-  sfc_kg_N_h: null
+  sfc_kg_N_h: 0.130
   egt_max_K: null
   rpm_max: null
-  tier: B
-  source: https://en.wikipedia.org/wiki/PBS_TJ80-120
-  note: Secondary source; replace with the PBS datasheet.
+  tier: A
+  source: https://www.pbs.cz/api/documents/file/PBS_Brochure_Turbine_Engines.pdf
+  note: >-
+    Vendor brochure; same figures at
+    https://www.pbsaerospace.com/aerospace-products/engines/turbojet-engines/tj-80-120-turbojet-engine.
+    Brochure envelope: 6,000 m, Mach 0.6. Time between overhauls 25 h.
 
 - id: pbs_tj100
   vendor: PBS Velka Bites
   model: TJ100
-  thrust_max_N: {low: 1100, high: 1250}   # by version
+  thrust_max_N: {low: 1100, high: 1300}   # by version; SFC and fuel flow below are at 1,300 N
   thrust_idle_N: null
   mass_engine_kg: null
-  mass_system_kg: null
+  mass_system_kg: 19.5         # with accessories
   diameter_m: 0.272
-  length_m: null
+  length_m: 0.625
   air_mass_flow_kg_s: null
   pressure_ratio: null
-  fuel_flow_max: null
-  sfc_kg_N_h: null
+  fuel_flow_max: {value: 3120, unit: ml_min}
+  sfc_kg_N_h: 0.116
   egt_max_K: null
-  rpm_max: null
-  tier: B
-  source: https://en.wikipedia.org/wiki/PBS_TJ100
-  note: Secondary source; replace with the PBS datasheet. Built-in starter-generator, ground and in-flight start.
+  rpm_max: 60600
+  tier: A
+  source: https://pdf.aeroexpo.online/pdf/pbs-velka-bites/pbs-turbojet-engine-tj100/170284-12433.html
+  note: >-
+    Datasheet versions differ: another vendor page gives 1,000 to
+    1,250 N, SFC 0.126 kg/N/h, 636 mm and 17.6 kg
+    (https://www.pbsindia.com/aerospace/engines/turbojet-engines/pbs-tj100-turbojet-engine).
+    Idle fuel flow 700 ml/min. Start envelope to 6,000 m and Mach 0.6.
+    Built-in starter-generator, ground and in-flight start.
 
 - id: pbs_tj150
   vendor: PBS Velka Bites

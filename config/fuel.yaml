@@ -1,0 +1,11 @@
+# Fuel properties.
+
+# Density of aviation kerosene, used only to convert vendor fuel flows
+# published by volume (ml/min) into mass flow.
+density_kg_m3: {value: 800.0, low: 775.0, high: 840.0}
+basis:
+  assumption: >-
+    Bounds are the Jet A-1 specification range at 15 degC (DEF STAN
+    91-091 / ASTM D1655). The nominal is checked, not assumed: where a
+    vendor publishes both a specific fuel consumption and a volume flow,
+    the reference_engines stage reports the density they imply.
