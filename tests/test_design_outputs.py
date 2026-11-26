@@ -134,3 +134,24 @@ def test_off_design_pins():
     assert loiter["loiter_thrust_fraction"] == pytest.approx(0.279, rel=1e-2)
     assert loiter["ratio_cycle_to_preliminary"] == pytest.approx(1.727, rel=1e-2)
     assert h["landing"]["valid"] and h["landing"]["fraction_of_max_thrust"] == pytest.approx(0.66, rel=1e-2)
+
+
+def test_cycle_based_constraint_pins():
+    """Constraint analysis on the cycle lapse (constraint_analysis, ADR-0033): nominal point to 1e-3."""
+    c = yaml.safe_load((OUT / "constraints.yaml").read_text(encoding="utf-8"))
+    d = c["design_point"]
+    assert d["binding_constraint"] == "vertical_launch"
+    assert (d["thrust_loading"], d["thrust_per_engine_N"]) == pytest.approx((1.4688, 612.17), rel=1e-3)
+    cmp = c["comparison_with_preliminary"]
+    ratios = {r["id"]: r["ratio"] for r in cmp["constraints"]}
+    assert ratios["dash"] == pytest.approx(1.06, abs=0.02) and ratios["manoeuvre"] == pytest.approx(1.08, abs=0.02)
+
+
+def test_cycle_based_mission_pins():
+    """Mission on the cycle engine (mission_analysis, ADR-0033): fuel to 1e-3, ratio to the preliminary mission."""
+    m = yaml.safe_load((OUT / "mission.yaml").read_text(encoding="utf-8"))
+    assert (m["fuel"]["mission_kg"], m["fuel"]["total_kg"]) == pytest.approx((19.890, 21.879), rel=1e-3)
+    assert m["masses"]["implied_empty_kg"] == pytest.approx(53.121, rel=1e-3)
+    cmp = m["comparison_with_preliminary"]
+    assert cmp["mission_fuel_kg"]["ratio"] == pytest.approx(1.549, rel=1e-2)
+    assert {s["id"]: s["ratio"] for s in cmp["segments"]}["loiter"] == pytest.approx(1.71, rel=1e-2)

@@ -18,8 +18,12 @@ def _save(fig, save_path):
     return fig
 
 
-def constraint_diagram(inputs: AnalysisInputs, dp: DesignPoint, save_path: str | Path | None = None):
-    """Thrust loading against wing loading (W_TO g / S_ref), lecture style, with the feasible region."""
+def constraint_diagram(inputs: AnalysisInputs, dp: DesignPoint, save_path: str | Path | None = None, *,
+                       reference: tuple[AnalysisInputs, DesignPoint] | None = None):
+    """Thrust loading against wing loading (W_TO g / S_ref), lecture style, with the feasible region.
+
+    ``reference`` (inputs and design point of another engine model) is drawn dashed, same colours.
+    """
     d = inputs.settings["diagram"]
     x = np.linspace(d["wing_loading_min_Pa"], d["wing_loading_max_Pa"], int(d["points"]))
     betas = dp.mission.betas()
@@ -29,7 +33,12 @@ def constraint_diagram(inputs: AnalysisInputs, dp: DesignPoint, save_path: str |
         y = np.array(thrust_loading_curve(inputs, c, x, betas[c.weight_at]))
         if c.sense == "lower_bound":
             lower.append(y)
-            ax.plot(x, y, label=c.id)
+            (line,) = ax.plot(x, y, label=c.id)
+            if reference is not None:
+                ref_inputs, ref_dp = reference
+                ref_c = next(k for k in ref_inputs.requirements.constraints if k.id == c.id)
+                ax.plot(x, thrust_loading_curve(ref_inputs, ref_c, x, ref_dp.mission.betas()[ref_c.weight_at]),
+                        "--", color=line.get_color(), lw=1.0, alpha=0.8)
         else:
             ax.plot(x, y, "--", label=f"{c.id} (upper bound)")
     top = max(1.6 * dp.thrust_loading, 1.0)
@@ -40,7 +49,8 @@ def constraint_diagram(inputs: AnalysisInputs, dp: DesignPoint, save_path: str |
     ax.set_ylim(0, top)
     ax.set_xlabel(r"wing loading $W_{TO}\,g / S_{ref}$ [Pa]  (S_ref = body cross-section)")
     ax.set_ylabel(r"installed thrust loading $T_{SL}/W_{TO}$ [-]")
-    ax.set_title(f"Constraint diagram, ISA +{inputs.mission.dT_isa_K.value:.0f} K (first iteration)")
+    suffix = " (dashed: preliminary)" if reference is not None else " (first iteration)"
+    ax.set_title(f"Constraint diagram, ISA +{inputs.mission.dT_isa_K.value:.0f} K{suffix}")
     sec = ax.secondary_xaxis("top", functions=(lambda p: p * inputs.polar.area_m2 / inputs.gravity_m_s2,
                                                lambda m: m * inputs.gravity_m_s2 / inputs.polar.area_m2))
     sec.set_xlabel("take-off mass [kg]")
@@ -91,6 +101,23 @@ def mass_sweep_figure(sweep: list[dict], save_path: str | Path | None = None):
     ax.plot(m, [r["propulsion_mass_kg"] for r in rows], "s-", label="propulsion (2 engines, mass law)")
     ax.plot(m, [r["total_fuel_kg"] for r in rows], "^-", label="fuel incl. reserve")
     ax.set(xlabel="take-off mass [kg]", ylabel="mass [kg]", title="What a take-off mass leaves for the vehicle")
+    ax.legend(fontsize=8)
+    ax.grid(alpha=0.3)
+    return _save(fig, save_path)
+
+
+def fuel_comparison_figure(prelim: DesignPoint, cycle: DesignPoint, save_path: str | Path | None = None):
+    """Fuel burned per segment, preliminary model against the cycle engine."""
+    segs = [s.id for s in cycle.mission.segments]
+    before = {s.id: s.fuel_kg for s in prelim.mission.segments}
+    after = {s.id: s.fuel_kg for s in cycle.mission.segments}
+    y = np.arange(len(segs))
+    fig, ax = plt.subplots(figsize=(8, 4.5))
+    ax.barh(y + 0.2, [before[s] for s in segs], height=0.4, label="preliminary (constant TSFC)", color="tab:gray")
+    ax.barh(y - 0.2, [after[s] for s in segs], height=0.4, label="cycle engine (part-throttle SFC)", color="tab:orange")
+    ax.set_yticks(y, segs)
+    ax.invert_yaxis()
+    ax.set(xlabel="fuel burned [kg]", title="Fuel per segment")
     ax.legend(fontsize=8)
     ax.grid(alpha=0.3)
     return _save(fig, save_path)

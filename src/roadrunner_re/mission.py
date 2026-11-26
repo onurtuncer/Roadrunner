@@ -74,12 +74,13 @@ def drag_N(inputs: AnalysisInputs, mass_kg: float, h: float, mach: float, dT: fl
 
 def _energy_step(inputs, mass, thrust_SL, h0, m0, h1, m1, dT):
     """One energy-height step: returns (new mass, time s, ground distance m)."""
-    atm, g, C = inputs.atmosphere, inputs.gravity_m_s2, inputs.tsfc_kg_N_s
+    atm, g = inputs.atmosphere, inputs.gravity_m_s2
     V0, V1 = (float(atm.true_airspeed_m_s(h, m, dT)) for h, m in ((h0, m0), (h1, m1)))
     hm, mm = 0.5 * (h0 + h1), 0.5 * (m0 + m1)
     V = float(atm.true_airspeed_m_s(hm, mm, dT))
     dz = (h1 - h0) + (V1**2 - V0**2) / (2.0 * g)
-    T = inputs.lapse.alpha(atm, hm, mm, dT) * thrust_SL
+    T = inputs.engine.alpha(atm, hm, mm, dT) * thrust_SL
+    C = inputs.engine.sfc_kg_N_s(hm, mm, dT, 1.0, "flight")     # maximum power
     D = drag_N(inputs, mass, hm, mm, dT)
     if T <= D:
         raise InfeasibleMission(f"thrust {T:.0f} N below drag {D:.0f} N at h={hm:.0f} m, M={mm:.2f}")
@@ -88,22 +89,37 @@ def _energy_step(inputs, mass, thrust_SL, h0, m0, h1, m1, dT):
 
 
 def _level(inputs, mass, thrust_SL, h, mach, dT, steps, *, duration_s=None, distance_m=None):
-    atm, C = inputs.atmosphere, inputs.tsfc_kg_N_s
+    atm = inputs.atmosphere
     V = float(atm.true_airspeed_m_s(h, mach, dT))
     total_t = duration_s if duration_s is not None else distance_m / V
     dt = total_t / steps
-    available = inputs.lapse.alpha(atm, h, mach, dT) * thrust_SL
+    available = inputs.engine.alpha(atm, h, mach, dT) * thrust_SL
     for _ in range(steps):
         D = drag_N(inputs, mass, h, mach, dT)
         if D > available:
             raise InfeasibleMission(f"drag {D:.0f} N above thrust {available:.0f} N at h={h:.0f} m, M={mach:.2f}")
-        mass -= C * D * dt
+        mass -= inputs.engine.sfc_kg_N_s(h, mach, dT, D / available, "flight") * D * dt
     return mass, total_t, V * total_t
+
+
+def _hover(inputs, mass, thrust_SL, dT, duration_s, steps):
+    """Thrust equals weight at sea level; fuel rate is SFC at that throttle times weight (midpoint steps)."""
+    g, atm = inputs.gravity_m_s2, inputs.atmosphere
+    available = inputs.engine.alpha(atm, 0.0, 0.0, dT) * thrust_SL
+    dt = duration_s / steps
+
+    def rate(m):
+        return inputs.engine.sfc_kg_N_s(0.0, 0.0, dT, m * g / available, "hover") * m * g
+
+    for _ in range(steps):
+        half = mass - 0.5 * dt * rate(mass)
+        mass -= dt * rate(half)
+    return mass
 
 
 def fly_mission(inputs: AnalysisInputs, takeoff_mass_kg: float, thrust_SL_N: float) -> MissionResult:
     """Integrate the sample mission; ``thrust_SL_N`` is the installed sea-level static thrust of the pair."""
-    m, g, C = takeoff_mass_kg, inputs.gravity_m_s2, inputs.tsfc_kg_N_s
+    m = takeoff_mass_kg
     mission, dT = inputs.mission, inputs.mission.dT_isa_K.value
     steps = inputs.settings["integration"]
     val = lambda sid, name: mission.resolve(sid, name).value  # noqa: E731
@@ -117,7 +133,7 @@ def fly_mission(inputs: AnalysisInputs, takeoff_mass_kg: float, thrust_SL_N: flo
         start, t, d = m, 0.0, 0.0
         if seg.type == "vertical_launch":
             t = val(seg.id, "duration_s")
-            m *= math.exp(-g * C * t)                   # hover thrust, T = W
+            m = _hover(inputs, m, thrust_SL_N, dT, t, steps["level_steps"])      # hover thrust, T = W
         elif seg.type in ("climb", "dash", "cruise", "loiter"):
             tgt_mach = val(seg.id, "mach")
             if tgt_mach > mach and (seg.type != "climb"):   # accelerate at constant altitude
@@ -141,7 +157,7 @@ def fly_mission(inputs: AnalysisInputs, takeoff_mass_kg: float, thrust_SL_N: flo
             h, mach = 0.0, 0.0
         elif seg.type == "vertical_landing":
             t = val(seg.id, "duration_s")
-            m *= math.exp(-g * C * t)
+            m = _hover(inputs, m, thrust_SL_N, dT, t, steps["level_steps"])
         else:
             raise ValueError(f"unknown segment type {seg.type!r}")
         add(seg, start, m, t, d)

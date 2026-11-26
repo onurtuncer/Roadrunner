@@ -226,3 +226,23 @@ def weight_fraction_table(dp) -> str:
     rows += ["-" * 70, f"{'mission':14s}{m.takeoff_mass_kg:13.3f}{m.segments[-1].mass_end_kg / m.takeoff_mass_kg:14.5f}{m.mission_fuel_kg:10.3f}",
              f"reserve {m.reserve_fraction:.0%}: {m.reserve_fuel_kg:.3f} kg; fuel loaded {m.total_fuel_kg:.3f} kg"]
     return "\n".join(rows)
+
+
+def constraint_comparison_table(cmp: dict) -> str:
+    rows = [f"{'constraint':16s}{'preliminary':>13s}{'cycle':>9s}{'ratio':>8s}", "-" * 46]
+    for c in cmp["constraints"]:
+        rows.append(f"{c['id']:16s}{c['preliminary']:13.3f}{c['cycle']:9.3f}{c['ratio']:8.2f}")
+    tw, be, bc = cmp["thrust_loading"], cmp["thrust_per_engine_N"], cmp["binding_constraint"]
+    rows += ["-" * 46, f"binding: {bc['preliminary']} -> {bc['cycle']};  T_SL/W_TO {tw['preliminary']:.3f} -> {tw['cycle']:.3f};  "
+             f"per engine {be['preliminary']:.0f} -> {be['cycle']:.0f} N"]
+    return "\n".join(rows)
+
+
+def fuel_comparison_table(cmp: dict) -> str:
+    rows = [f"{'segment':14s}{'preliminary [kg]':>18s}{'cycle [kg]':>12s}{'ratio':>8s}", "-" * 52]
+    for s in cmp["segments"]:
+        rows.append(f"{s['id']:14s}{s['fuel_preliminary_kg']:18.3f}{s['fuel_cycle_kg']:12.3f}{s['ratio']:8.2f}")
+    f, t, e = cmp["mission_fuel_kg"], cmp["total_fuel_kg"], cmp["implied_empty_kg"]
+    rows += ["-" * 52, f"{'mission fuel':14s}{f['preliminary']:18.3f}{f['cycle']:12.3f}{f['ratio']:8.2f}",
+             f"fuel with reserve {t['preliminary']:.2f} -> {t['cycle']:.2f} kg;  implied empty mass {e['preliminary']:.1f} -> {e['cycle']:.1f} kg"]
+    return "\n".join(rows)

@@ -51,7 +51,7 @@ def constraint_thrust_loading(inputs: AnalysisInputs, c: Constraint, wing_loadin
 
     if c.type == "vertical_launch":
         h = _value(inputs, c, "altitude_m")
-        alpha = inputs.lapse.alpha(atm, h, 0.0, dT)
+        alpha = inputs.engine.alpha(atm, h, 0.0, dT)
         return make(_value(inputs, c, "thrust_to_weight_margin") / alpha, alpha, 0.0, h)
     if c.type == "vertical_landing_floor":
         floor = _value(inputs, c, "max_floor_to_landing_weight")
@@ -62,7 +62,7 @@ def constraint_thrust_loading(inputs: AnalysisInputs, c: Constraint, wing_loadin
     roc = _value(inputs, c, "rate_of_climb_m_s", 0.0)
     q = float(atm.dynamic_pressure_Pa(h, mach, dT))
     V = float(atm.true_airspeed_m_s(h, mach, dT))
-    alpha = inputs.lapse.alpha(atm, h, mach, dT)
+    alpha = inputs.engine.alpha(atm, h, mach, dT)
     p = inputs.polar
     bx_q = beta * wing_loading_Pa / q
     value = beta / alpha * (p.k1 * n**2 * bx_q + p.k2 * n + (p.cd0 + p.cdr) / bx_q + roc / V)
