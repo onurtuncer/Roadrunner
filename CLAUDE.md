@@ -9,8 +9,14 @@ repo does.
 
 ## Current state (update this section as it changes)
 
-- Only the ADRs exist. No `config/`, `src/`, `notebooks/`, `tests/` or
+- The ADRs, the README, two workflows and `scripts/build_site.py`
+  exist. No `config/`, `src/`, `notebooks/`, `tests/` or
   `pyproject.toml` yet.
+- `ci.yml` currently checks the ADR index and lints `scripts/`; its test
+  job switches on when `pyproject.toml` appears. `design-pipeline.yml`
+  currently only builds and (on `main`) deploys the docs site; the
+  notebook-execution job is still to be added. ADR-0022 (docs on Pages)
+  is Proposed.
 - ADR-0001 to 0014 are Accepted (0003 to 0014 on 2026-11-26).
 - ADR-0015 to 0021 are **Proposed** (owner's direction of 2026-11-26:
   pyCycle as the cycle engine, aerodynamics from open-source evidence,
@@ -128,7 +134,10 @@ Intended `src/roadrunner_re/` layout: `notebook.py` (`nb_setup()`),
   derivation (ADR-0012).
 - **ADRs**: architectural decisions go in `adr/`, one file each, never
   rewritten; amend or supersede with a new ADR and update
-  `adr/README.md`.
+  `adr/README.md` (CI fails if the index and the files disagree).
+- **Docs** are the README, the ADRs and the rendered notebooks,
+  published to <https://onurtuncer.github.io/Roadrunner/>. Do not write
+  site-only content.
 - **Changelog**: when a version is tagged, write a `CHANGELOG.md` entry.
 
 ## Operating points (ADR-0009)
@@ -157,8 +166,10 @@ visible in notebooks and summaries.
   (ADR-0018, ADR-0019).
 - Sensitivity indices from an open-source library (SALib is the working
   candidate) (ADR-0020).
-- CI (ADR-0014): `ci.yml` (ruff, pytest), `design-pipeline.yml`
-  (execute all notebooks, regression pins, Pages on `main`),
+- CI (ADR-0014, ADR-0022): `ci.yml` (ADR index check, ruff, pytest),
+  `design-pipeline.yml` (execute all notebooks, regression pins, build
+  the docs site with `scripts/build_site.py`, deploy Pages on `main`;
+  it is the only workflow that deploys Pages),
   `release.yml` (on `v*` tags). Version comes from git tags via
   setuptools-scm; never edit a version number by hand.
 
