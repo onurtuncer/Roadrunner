@@ -94,3 +94,37 @@ def test_design_point_stations_are_ordered_and_consistent(settings):
     assert t["2"] < t["3"] < t["5"] < t["4"]
     assert p["3"] > p["4"] > p["5"]                                            # burner loss, then turbine expansion
     assert r.stations["4"][2] > r.stations["3"][2]                             # fuel added
+
+
+@pytest.fixture(scope="module")
+def sized(settings):
+    from roadrunner_re.cycle.design import DesignInputs, size_design_point
+    inputs = DesignInputs(500.0, 3.9, 1230.0, FlightCondition(0.0, 0.0, 20.0), settings.nominal_losses())
+    return inputs, size_design_point(settings, inputs)
+
+
+def test_off_design_at_the_design_point_reproduces_the_design(settings, sized):
+    """The map scalars and throat area come from the design point, so it must close on itself (ADR-0032)."""
+    from roadrunner_re.cycle.offdesign import OffDesignRequest, run_off_design
+    inputs, design = sized
+    (r,) = run_off_design(settings, inputs, design, "Tt4", [OffDesignRequest(inputs.condition, inputs.Tt4_K)])
+    assert r.converged
+    assert r.thrust_N == pytest.approx(design.thrust_N, rel=1e-5)
+    assert r.air_mass_flow_kg_s == pytest.approx(design.air_mass_flow_kg_s, rel=1e-5)
+    assert r.speed_fraction == pytest.approx(1.0, abs=1e-5)
+
+
+def test_off_design_throttle_and_day_behave_physically(settings, sized):
+    from roadrunner_re.cycle.offdesign import OffDesignRequest, run_off_design
+    inputs, design = sized
+    cold, hot = FlightCondition(0.0, 0.0, 0.0), inputs.condition
+    r_cold, r_hot = run_off_design(settings, inputs, design, "Tt4",
+                                   [OffDesignRequest(cold, inputs.Tt4_K), OffDesignRequest(hot, inputs.Tt4_K)])
+    assert r_cold.thrust_N > r_hot.thrust_N                                     # denser air, more thrust
+    flight = FlightCondition(3000.0, 0.5, 20.0)
+    top, = run_off_design(settings, inputs, design, "Tt4", [OffDesignRequest(flight, inputs.Tt4_K)])
+    part = run_off_design(settings, inputs, design, "thrust", [OffDesignRequest(flight, f * top.thrust_N) for f in (0.8, 0.5)])
+    assert [p.thrust_N for p in part] == pytest.approx([0.8 * top.thrust_N, 0.5 * top.thrust_N], rel=1e-5)
+    assert top.Tt4_K > part[0].Tt4_K > part[1].Tt4_K                           # temperature falls with throttle
+    assert top.speed_fraction > part[0].speed_fraction > part[1].speed_fraction
+    assert part[1].sfc_kg_N_s > top.sfc_kg_N_s                                  # part load costs fuel

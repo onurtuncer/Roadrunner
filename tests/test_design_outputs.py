@@ -119,3 +119,18 @@ def test_cycle_design_point_pins():
     assert set(c["stations_ARP755"]) == {"2", "3", "4", "5", "8"}
     assert all(v["inside_catalogue_range"] for v in c["technology_comparison"].values())
     assert len(c["one_at_a_time"]) == 2 * 7
+
+
+def test_off_design_pins():
+    """Off-design performance of the required engine (off_design, ADR-0032). Solver results: pinned to 0.2 %."""
+    h = yaml.safe_load((OUT / "off_design.yaml").read_text(encoding="utf-8"))
+    assert h["reference"]["thrust_N"] == pytest.approx(612.17, rel=2e-3)
+    assert len(h["lapse_grid"]) == 30 and all(r["valid"] for r in h["lapse_grid"])
+    row = next(r for r in h["lapse_grid"] if (r["altitude_m"], r["mach"], r["dT_isa_K"]) == (3000.0, 0.5, 20.0))
+    assert row["lapse"] == pytest.approx(0.629, rel=5e-3)
+    assert h["comparison_with_algebraic_lapse"]["max_abs_relative_difference"] == pytest.approx(0.105, rel=2e-2)
+    assert len(h["part_throttle"]) == 4 * 10
+    loiter = h["loiter_against_preliminary"]
+    assert loiter["loiter_thrust_fraction"] == pytest.approx(0.279, rel=1e-2)
+    assert loiter["ratio_cycle_to_preliminary"] == pytest.approx(1.727, rel=1e-2)
+    assert h["landing"]["valid"] and h["landing"]["fraction_of_max_thrust"] == pytest.approx(0.66, rel=1e-2)

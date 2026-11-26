@@ -66,7 +66,7 @@ class MissionResult:
         return {s.id: s.mass_start_kg / self.takeoff_mass_kg for s in self.segments}
 
 
-def _drag_N(inputs: AnalysisInputs, mass_kg: float, h: float, mach: float, dT: float) -> float:
+def drag_N(inputs: AnalysisInputs, mass_kg: float, h: float, mach: float, dT: float) -> float:
     q = float(inputs.atmosphere.dynamic_pressure_Pa(h, mach, dT))
     cl = mass_kg * inputs.gravity_m_s2 / (q * inputs.polar.area_m2)
     return q * inputs.polar.area_m2 * inputs.polar.drag_coefficient(cl)
@@ -80,7 +80,7 @@ def _energy_step(inputs, mass, thrust_SL, h0, m0, h1, m1, dT):
     V = float(atm.true_airspeed_m_s(hm, mm, dT))
     dz = (h1 - h0) + (V1**2 - V0**2) / (2.0 * g)
     T = inputs.lapse.alpha(atm, hm, mm, dT) * thrust_SL
-    D = _drag_N(inputs, mass, hm, mm, dT)
+    D = drag_N(inputs, mass, hm, mm, dT)
     if T <= D:
         raise InfeasibleMission(f"thrust {T:.0f} N below drag {D:.0f} N at h={hm:.0f} m, M={mm:.2f}")
     dt = dz * mass * g / ((T - D) * V)
@@ -94,7 +94,7 @@ def _level(inputs, mass, thrust_SL, h, mach, dT, steps, *, duration_s=None, dist
     dt = total_t / steps
     available = inputs.lapse.alpha(atm, h, mach, dT) * thrust_SL
     for _ in range(steps):
-        D = _drag_N(inputs, mass, h, mach, dT)
+        D = drag_N(inputs, mass, h, mach, dT)
         if D > available:
             raise InfeasibleMission(f"drag {D:.0f} N above thrust {available:.0f} N at h={h:.0f} m, M={mach:.2f}")
         mass -= C * D * dt
