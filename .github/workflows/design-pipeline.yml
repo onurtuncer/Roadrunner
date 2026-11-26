@@ -1,9 +1,8 @@
 name: Design Pipeline
 
-# Tier-2 CI (ADR-0014, ADR-0022): build the documentation site and, on
-# main, publish it to GitHub Pages. The notebook-execution job is added
-# with the repo skeleton; when it exists, the docs job takes its rendered
-# notebooks as an extra input (second argument of scripts/build_site.py).
+# Tier-2 CI (ADR-0014, ADR-0022): execute the notebooks in pipeline
+# order, build the documentation site and, on main, publish it to GitHub
+# Pages. This is the only workflow that deploys Pages.
 
 on:
   push:
@@ -14,23 +13,60 @@ on:
 permissions:
   contents: read
 
+env:
+  # Single source of truth for the pipeline order (ADR-0021). Adding a
+  # notebook here is the only edit needed for it to run and be published.
+  # Empty until the first notebook lands.
+  NOTEBOOK_ORDER: ""
+  MPLBACKEND: Agg
+
 concurrency:
   group: design-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   build-site:
-    name: Build documentation site
+    name: Execute notebooks & build documentation site
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0   # setuptools-scm needs tags for the version
       - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
-      - name: Install site builder dependency
-        run: pip install markdown
-      - name: Build site (README + ADRs)
-        run: python scripts/build_site.py site
+          cache: pip
+      - name: Install package with notebook deps
+        run: pip install -e ".[notebooks,dev]" markdown
+
+      - name: Execute notebooks (pipeline order)
+        run: |
+          set -euo pipefail
+          mkdir -p executed rendered
+          for nb in $NOTEBOOK_ORDER; do
+            echo "::group::notebooks/${nb}.ipynb"
+            jupyter nbconvert --to notebook --execute \
+              --ExecutePreprocessor.timeout=1200 \
+              --output-dir executed "notebooks/${nb}.ipynb"
+            jupyter nbconvert --to html --output-dir rendered "executed/${nb}.ipynb"
+            echo "::endgroup::"
+          done
+          [ -n "$NOTEBOOK_ORDER" ] || echo "No notebooks in the pipeline yet."
+
+      - name: Upload design outputs
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: design-outputs
+          path: |
+            out/
+            executed/
+          retention-days: 30
+          if-no-files-found: ignore
+
+      - name: Build site (README + ADRs + rendered notebooks)
+        run: python scripts/build_site.py site rendered
       - uses: actions/upload-pages-artifact@v5
         with:
           path: site

@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=68", "setuptools-scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "roadrunner-re"
+dynamic = ["version"]
+description = "Propulsion reverse-engineering study of a small twin-turbojet VTOL air vehicle (course project)"
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [{ name = "Onur Tuncer", email = "onur.tuncer@itu.edu.tr" }]
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=1.24.4",
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+# Pinned per ADR-0015; installed by the stages that need it.
+cycle = ["om-pycycle==4.4.0", "openmdao>=3.10"]
+aero = ["aerosandbox>=4.2"]
+uq = ["SALib>=1.5"]
+notebooks = ["jupyter>=1.0", "matplotlib>=3.7.5"]
+dev = ["pytest>=7.4", "ruff>=0.4"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools_scm]
+# Version comes from git tags (v0.1.0, ...); never edited by hand (ADR-0014).
+version_file = "src/roadrunner_re/_version.py"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 120
+extend-exclude = ["notebooks", "out"]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "W"]
+
+[tool.ruff.lint.per-file-ignores]
+"src/roadrunner_re/__init__.py" = ["F401"]

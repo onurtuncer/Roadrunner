@@ -9,26 +9,34 @@ repo does.
 
 ## Current state (update this section as it changes)
 
-- The ADRs, the README, two workflows and `scripts/build_site.py`
-  exist. `config/` holds three files: `config/evidence/claims.yaml` (the
-  manufacturer claims the mission cites),
-  `config/missions/sample.yaml` and `config/reference_engines.yaml`
-  (eleven purchasable turbojets from PBS, JetCat and AMT; several
-  fields still `null`, three PBS entries from a secondary source). No `src/`, `notebooks/`, `tests/` or
-  `pyproject.toml` yet.
-- `ci.yml` currently checks the ADR index and lints `scripts/`; its test
-  job switches on when `pyproject.toml` appears. `design-pipeline.yml`
-  currently only builds and (on `main`) deploys the docs site; the
-  notebook-execution job is still to be added.
+- Skeleton exists: `pyproject.toml`, the `roadrunner_re` package and
+  `tests/`. Implemented modules: `config.py` (paths, YAML),
+  `uncertain.py` (value with bounds and distribution), `evidence.py`
+  (ledger loader), `mission_profile.py` (mission loader with the
+  provenance check), `engine_catalogue.py` (catalogue loader, no unit
+  conversion yet), `atmosphere.py` (ISA, tested against published
+  tables). Everything else in the layout below is still to be written.
+- `config/` holds `atmosphere.yaml`, `evidence/claims.yaml` (the
+  manufacturer claims the mission cites), `missions/sample.yaml` and
+  `reference_engines.yaml` (eleven purchasable turbojets from PBS,
+  JetCat and AMT; several fields still `null`, three PBS entries from a
+  secondary source).
+- No notebooks and no `out/` yet. `design-pipeline.yml` has the
+  notebook-execution loop with an empty `NOTEBOOK_ORDER`; adding a
+  notebook name there is the only CI edit a new notebook needs. The
+  design-regression test step is still to be added with the first
+  handoff.
+- Dependencies for later stages are optional extras in `pyproject.toml`
+  (`cycle`, `aero`, `uq`); pyCycle is pinned there and is not yet
+  imported anywhere.
 - **ADR-0001 to 0023 are all Accepted** (0003 to 0023 on 2026-11-26).
   0013 is superseded by 0021; 0006, 0008, 0009, 0010, 0012, 0014 and
   0015 carry amendments (see `adr/README.md`). Read an amended ADR
   together with the ADRs that amend it.
 - A change of direction needs a new ADR that amends or supersedes, not
   an edit of an accepted one.
-- Next step is the repo skeleton (`pyproject.toml`,
-  `config/`, `src/roadrunner_re/`, `tests/`, CI) and then the notebooks
-  in ADR-0021 order.
+- Next step is the notebooks in ADR-0021 order, starting with
+  `evidence_ledger` and `geometry_from_imagery`.
 - Everything below the next heading describes the *intended* structure
   per the ADRs.
 
@@ -207,4 +215,4 @@ visible in notebooks and summaries.
   barely closes, a crude model such as the scalar re-ingestion term);
   collect them programmatically in `design_summary`.
 - Run tests with `pip install -e ".[dev]"` then `pytest`; lint with
-  `ruff check src tests`.
+  `ruff check src tests scripts`.
