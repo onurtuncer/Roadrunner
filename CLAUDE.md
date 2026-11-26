@@ -15,14 +15,14 @@ repo does.
   check), `engine_catalogue.py` (catalogue loader), `technology.py`, `atmosphere.py` (ISA, tested against published tables),
   `geometry.py` (pixel measurements to length intervals, engine
   envelope), `lapse.py`, `analysis_inputs.py`, `constraints.py`, `mission.py`,
-  `design_point.py` (first-iteration coupled analysis, ADR-0029), `cycle/`
+  `design_point.py` (first-iteration coupled analysis, ADR-0029), `engine_model.py` (algebraic and cycle engine models, ADR-0033), `cycle/`
   (incl. `design.py`, ADR-0030, and `offdesign.py`, ADR-0032), `off_design.py`, `validation.py`, `notebook.py`, `reports.py`,
   `plots/`. Everything else in the layout
   below is still to be written.
-- Notebooks 1, 2, 5, 6, 7, 8, 9 and 10 exist (see the list under "Architecture"),
+- Notebooks 1, 2, 5, 6, 7, 8, 9, 10, 11 and 12 exist (see the list under "Architecture"),
   write `out/evidence.yaml`, `out/mission_profile.yaml`, `out/technology.yaml`,
   `out/validation.yaml`, `out/constraints_preliminary.yaml`,
-  `out/mission_preliminary.yaml`, `out/cycle.yaml` and `out/off_design.yaml`,
+  `out/mission_preliminary.yaml`, `out/cycle.yaml`, `out/off_design.yaml`, `out/constraints.yaml` and `out/mission.yaml`,
   and are the entries
   of `NOTEBOOK_ORDER` in `design-pipeline.yml`.
   `tests/test_design_outputs.py` pins the handoffs and runs in the
@@ -97,9 +97,9 @@ repo does.
   two come from one uncorroborated secondary source.
 - Dependencies are optional extras in `pyproject.toml`: `cycle`
   (in use), `aero` and `uq` (not yet imported anywhere).
-- **ADR-0001 to 0032 are all Accepted** (0003 to 0032 on 2026-11-26).
+- **ADR-0001 to 0033 are all Accepted** (0003 to 0033 on 2026-11-26).
   0013 is superseded by 0021; 0006, 0007, 0008, 0009, 0010, 0012, 0014,
-  0015, 0016, 0018, 0019, 0021, 0022, 0023, 0026, 0029 and 0030 carry
+  0015, 0016, 0018, 0019, 0021, 0022, 0023, 0026, 0029, 0030 and 0031 carry
   amendments (see `adr/README.md`). Read an amended ADR together with the
   ADRs that amend it.
 - A change of direction needs a new ADR that amends or supersedes, not
@@ -113,14 +113,21 @@ repo does.
   lapse; take-off mass is swept, not solved (no ADR-0008 build-up).
 - **On-design cycle point exists (ADR-0030)**: pyCycle at OP1 (hot-day SLS) for
   the launch thrust, 542 N per engine -> 0.95 kg/s air, specific thrust 568
-  N s/kg, Tt4 anchored 1232 K; bounds one input at a time. Next is the
-  second analysis pair (11, 12): the coupled analysis repeated on the
-  off-design results, reporting the difference from the preliminary pair
-  (7, 8). They are still stubs.
-- Next step is the pixel measurements, then `geometry_from_imagery`,
-  then the remaining notebooks in the order of ADR-0031. Notebooks 11 and 12
-  do not depend on geometry and can go ahead; they close the lapse and TSFC of
-  ADR-0029.
+  N s/kg, Tt4 anchored 1232 K; bounds one input at a time.
+- **Cycle-based analysis pair is built (notebooks 11, 12, ADR-0033)**: the same
+  `solve_design_point()` with `inputs.with_engine(CycleEngine(off_design))`
+  (`engine_model.py`; lapse and part-throttle SFC interpolated from
+  `out/off_design.yaml`, `OutsideEngineModel` outside the grid, no
+  extrapolation). Nominal point (85 kg): vertical launch still binds, T_SL/W_TO
+  1.469, 612 N per engine; flight requirements need 6 to 9 % more thrust loading
+  (cycle lapse is lower); mission fuel 19.9 kg against 12.8 kg preliminary
+  (+55 %, loiter 1.71 times: it runs at about 28 % throttle), 21.9 kg with
+  reserve, implied empty mass 53.1 kg. Part-throttle fuel is probably still
+  understated (constant combustion efficiency). The handoffs carry the
+  preliminary values beside the cycle ones.
+- Next step is the pixel measurements, then `geometry_from_imagery`, then
+  `aerodynamics`, and `engine_selection` (13), which needs no geometry for a
+  first thrust and fuel screen, in the order of ADR-0031.
 - Everything below the next heading describes the *intended* structure
   per the ADRs.
 
@@ -169,8 +176,8 @@ sequence:
 8. `mission_analysis_preliminary` -> `out/mission_preliminary.yaml` (B)
 9. `cycle_design_point` -> `out/cycle.yaml` (B)
 10. `off_design` -> `out/off_design.yaml` (B; ADR-0032)
-11. `constraint_analysis` -> `out/constraints.yaml` (P; lapse from 10)
-12. `mission_analysis` -> `out/mission.yaml` (P; thrust and fuel flow from 10)
+11. `constraint_analysis` -> `out/constraints.yaml` (B; lapse from 10, ADR-0033)
+12. `mission_analysis` -> `out/mission.yaml` (B; thrust and part-throttle SFC from 10, ADR-0033)
 13. `engine_selection` -> `out/engine_selection.yaml` (P)
 14. `uncertainty_and_sensitivity` -> `out/uq.yaml` (P)
 15. `design_summary` (P; pure reader, writes nothing)

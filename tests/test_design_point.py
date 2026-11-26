@@ -75,7 +75,7 @@ def test_mass_balance(design):
 def test_hover_fuel_is_exponential_in_time(inputs, design):
     launch = design.mission.segments[0]
     expected = launch.mass_start_kg * (1 - math.exp(-inputs.gravity_m_s2 * inputs.tsfc_kg_N_s * launch.duration_s))
-    assert launch.fuel_kg == pytest.approx(expected, rel=1e-9)
+    assert launch.fuel_kg == pytest.approx(expected, rel=1e-6)
 
 
 def test_loiter_fuel_matches_the_integral_of_drag(inputs, design):

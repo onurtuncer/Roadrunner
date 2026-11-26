@@ -39,7 +39,8 @@ Format: one file per decision, `NNNN-kebab-title.md`, each with
 | [0026](0026-mission-profile-notebook-and-hand-aero-estimate.md) | A mission-profile notebook, and the owner's hand aerodynamic estimate | Accepted; amended by 0027 |
 | [0027](0027-performance-requirements-as-an-input.md) | Performance requirements are an input beside the mission | Accepted |
 | [0028](0028-pages-site-in-the-design-report-format.md) | The Pages site is a design report in the tailsitter format | Accepted |
-| [0029](0029-first-iteration-constraint-and-mission-analysis.md) | First-iteration coupled constraint and mission analysis | Accepted; amended by 0031 |
+| [0029](0029-first-iteration-constraint-and-mission-analysis.md) | First-iteration coupled constraint and mission analysis | Accepted; amended by 0031, 0033 |
 | [0030](0030-cycle-design-point-and-off-design-before-engine-deck.md) | On-design cycle point and off-design performance come before a stand-alone engine deck | Accepted; amended by 0031, 0032 |
-| [0031](0031-linear-notebook-sequence-and-second-analysis-pair.md) | Linear notebook sequence, preliminary analysis pair and a cycle-based pair | Accepted |
+| [0031](0031-linear-notebook-sequence-and-second-analysis-pair.md) | Linear notebook sequence, preliminary analysis pair and a cycle-based pair | Accepted; amended by 0033 |
 | [0032](0032-off-design-model-conventions.md) | Off-design model conventions | Accepted |
+| [0033](0033-cycle-based-analysis-pair-and-engine-model.md) | Cycle-based analysis pair and the engine model | Accepted |

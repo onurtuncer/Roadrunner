@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import statistics
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 
 from roadrunner_re.aero_estimate import AeroEstimate, load_aero_estimate
@@ -11,6 +11,7 @@ from roadrunner_re.config import ConfigError, load_yaml
 from roadrunner_re.constraint_inputs import ConstraintSet, load_constraints
 from roadrunner_re.engine_catalogue import load_engine_catalogue
 from roadrunner_re.evidence import load_claims, quantified
+from roadrunner_re.engine_model import AlgebraicEngine
 from roadrunner_re.lapse import TurbojetLapse
 from roadrunner_re.technology import (MassCorrelation, catalogue_metrics, fit_mass_correlation, load_fuel_density,
                                       load_gravity)
@@ -47,6 +48,10 @@ class AnalysisInputs:
     engine_count: int
     settings: dict
     gravity_m_s2: float
+    engine: object = None      # AlgebraicEngine (preliminary) or CycleEngine (ADR-0033)
+
+    def with_engine(self, engine) -> "AnalysisInputs":
+        return replace(self, engine=engine)
 
     @property
     def mission(self):
@@ -84,4 +89,5 @@ def load_analysis_inputs(path: str | Path = "analysis.yaml") -> AnalysisInputs:
     return AnalysisInputs(
         atmosphere, requirements, aero, polar, lapse, throttle_ratio, tsfc, idle, fit_mass_correlation(metrics),
         quantified(claims)["takeoff_mass_kg"], parse_uncertain(raw["descent"]["weight_fraction"], f"{path}:descent"),
-        int(raw["propulsion"]["engine_count"]), {k: raw[k] for k in ("integration", "coupling", "diagram", "sweep")}, gravity)
+        int(raw["propulsion"]["engine_count"]), {k: raw[k] for k in ("integration", "coupling", "diagram", "sweep")}, gravity,
+        AlgebraicEngine(lapse, tsfc))
