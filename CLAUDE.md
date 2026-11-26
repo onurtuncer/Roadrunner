@@ -19,21 +19,14 @@ repo does.
 - `ci.yml` currently checks the ADR index and lints `scripts/`; its test
   job switches on when `pyproject.toml` appears. `design-pipeline.yml`
   currently only builds and (on `main`) deploys the docs site; the
-  notebook-execution job is still to be added. ADR-0022 (docs on Pages)
-  is Proposed.
-- ADR-0001 to 0014 are Accepted (0003 to 0014 on 2026-11-26).
-- ADR-0023 (engine chosen from a purchasable catalogue, replacing
-  flowpath sizing) is **Proposed**; it amends 0010, 0012 and 0015.
-- ADR-0015 to 0021 are **Proposed** (owner's direction of 2026-11-26:
-  pyCycle as the cycle engine, aerodynamics from open-source evidence,
-  standard atmosphere, sample mission + mission analysis, constraint
-  analysis, uncertainty quantification and sensitivity analysis). They
-  amend 0006, 0008, 0009, 0010 and supersede 0013. The rest of this file
-  already describes the repo as these ADRs would have it; if one is
-  rejected, fix this file in the same commit.
+  notebook-execution job is still to be added.
+- **ADR-0001 to 0023 are all Accepted** (0003 to 0023 on 2026-11-26).
+  0013 is superseded by 0021; 0006, 0008, 0009, 0010, 0012, 0014 and
+  0015 carry amendments (see `adr/README.md`). Read an amended ADR
+  together with the ADRs that amend it.
 - A change of direction needs a new ADR that amends or supersedes, not
   an edit of an accepted one.
-- Next step after acceptance is the repo skeleton (`pyproject.toml`,
+- Next step is the repo skeleton (`pyproject.toml`,
   `config/`, `src/roadrunner_re/`, `tests/`, CI) and then the notebooks
   in ADR-0021 order.
 - Everything below the next heading describes the *intended* structure

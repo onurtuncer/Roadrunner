@@ -1,6 +1,6 @@
 # 22. Documentation on GitHub Pages (amends ADR-0014)
 
-Status: Proposed (2026-11-26)
+Status: Accepted (2026-11-26)
 
 ## Context
 

@@ -1,6 +1,6 @@
 # 19. Constraint analysis in the thrust-loading / wing-loading plane (amends ADR-0009)
 
-Status: Proposed (2026-11-26)
+Status: Accepted (2026-11-26)
 
 ## Context
 

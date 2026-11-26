@@ -1,6 +1,6 @@
 # 13. Notebook sequence and handoffs
 
-Status: Accepted (2026-11-26); to be superseded by ADR-0021 (proposed)
+Status: Superseded by ADR-0021 (accepted 2026-11-26, superseded the same day)
 
 ## Context
 

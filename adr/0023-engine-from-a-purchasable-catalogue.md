@@ -1,6 +1,6 @@
 # 23. The engine is chosen from a purchasable catalogue (amends ADR-0010, ADR-0012, ADR-0015)
 
-Status: Proposed (2026-11-26)
+Status: Accepted (2026-11-26)
 
 ## Context
 

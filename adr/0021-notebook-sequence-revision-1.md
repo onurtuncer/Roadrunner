@@ -1,6 +1,6 @@
 # 21. Notebook sequence, revision 1 (supersedes ADR-0013)
 
-Status: Proposed (2026-11-26)
+Status: Accepted (2026-11-26)
 
 ## Context
 

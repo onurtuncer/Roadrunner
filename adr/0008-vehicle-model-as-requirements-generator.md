@@ -1,6 +1,6 @@
 # 8. The vehicle model is a requirements generator, no more
 
-Status: Accepted (2026-11-26); amended by ADR-0016 and ADR-0018 (proposed)
+Status: Accepted (2026-11-26); amended by ADR-0016 and ADR-0018
 
 ## Context
 

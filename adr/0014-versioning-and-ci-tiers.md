@@ -1,6 +1,6 @@
 # 14. Tag-driven versioning and tiered CI
 
-Status: Accepted (2026-11-26); amended by ADR-0022 (proposed)
+Status: Accepted (2026-11-26); amended by ADR-0022
 
 ## Context
 

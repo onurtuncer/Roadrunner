@@ -1,6 +1,6 @@
 # 18. A sample mission profile is an input; mission analysis checks the weights (amends ADR-0008, ADR-0009)
 
-Status: Proposed (2026-11-26)
+Status: Accepted (2026-11-26)
 
 ## Context
 

@@ -1,6 +1,6 @@
 # 17. One standard atmosphere model for everything
 
-Status: Proposed (2026-11-26)
+Status: Accepted (2026-11-26)
 
 ## Context
 

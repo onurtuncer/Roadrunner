@@ -1,6 +1,6 @@
 # 15. pyCycle is the cycle engine (amends ADR-0010)
 
-Status: Proposed (2026-11-26)
+Status: Accepted (2026-11-26); amended by ADR-0023
 
 ## Context
 
