@@ -1,8 +1,6 @@
 name: CI
 
-# Tier-1 CI (ADR-0014). The lint and test jobs switch themselves on when
-# the Python package lands (pyproject.toml); until then CI checks that
-# the ADR index and the ADR files agree.
+# Tier-1 CI (ADR-0014): ADR index consistency, lint, unit tests.
 
 on:
   push:
@@ -40,28 +38,24 @@ jobs:
       - uses: actions/checkout@v7
       - uses: astral-sh/ruff-action@v3
         with:
-          args: check scripts
+          args: check src tests scripts
 
   test:
-    name: Tests
+    name: Tests (Python ${{ matrix.python-version }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.12", "3.13"]
     steps:
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0   # setuptools-scm needs tags for the version
-      - id: pkg
-        run: echo "present=$([ -f pyproject.toml ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
       - uses: actions/setup-python@v7
-        if: steps.pkg.outputs.present == 'true'
         with:
-          python-version: "3.12"
+          python-version: ${{ matrix.python-version }}
           cache: pip
       - name: Install package
-        if: steps.pkg.outputs.present == 'true'
         run: pip install -e ".[dev]"
       - name: Run tests
-        if: steps.pkg.outputs.present == 'true'
         run: pytest -v
-      - name: No package yet
-        if: steps.pkg.outputs.present != 'true'
-        run: echo "pyproject.toml not present yet; tests start with the repo skeleton."

@@ -221,3 +221,11 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# setuptools-scm generated version file
+src/roadrunner_re/_version.py
+
+# Docs site and executed notebooks (built in CI)
+/site/
+/executed/
+/rendered/

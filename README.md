@@ -19,8 +19,9 @@ uncertain each one is, and which missing fact matters most.
 
 ## Status
 
-Planning stage. The architecture decision records are written; code,
-configuration and notebooks follow. See [`adr/`](adr/README.md).
+Early stage. The architecture decision records are written and the
+package skeleton exists (config loaders, standard atmosphere, tests).
+No results yet. See [`adr/`](adr/README.md).
 
 ## Method
 
@@ -39,11 +40,11 @@ configuration and notebooks follow. See [`adr/`](adr/README.md).
 
 ```
 adr/         architecture decision records (start here)
-config/      inputs, evidence ledger, mission profiles     (planned)
-src/         all physics, as the roadrunner_re package     (planned)
+config/      inputs, evidence ledger, mission, engine catalogue
+src/         all physics, as the roadrunner_re package
+tests/       unit tests and regression pins
 notebooks/   thin Jupyter notebooks, run in a fixed order  (planned)
 out/         handoff files written by the notebooks        (planned)
-tests/       unit tests and regression pins                (planned)
 ```
 
 ## Scope
