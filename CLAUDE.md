@@ -39,18 +39,26 @@ repo does.
   Solving for compressor efficiency from fuel flow instead was tried
   and rejected: it gave efficiencies of 0.54 to 0.73 and Tt4 up to
   1540 K, which are not credible for these engines.
-- Validation result: blind from diameter alone, thrust is inside the
-  predicted interval for 8 of 8 engines (nominal error -9 to +13 %),
-  SFC for 6 of 6 (-11 to +18 %), air flow for 5 of 8. Standing
-  findings: model Tt5 differs from published EGT by -121 to +134 K;
-  anchored Tt4 (1088 to 1301 K) depends on the assumed efficiencies.
-- Off-design (maps, part throttle, altitude lapse at fixed geometry) is
-  NOT built yet; that is the `engine_deck` stage.
+- Validation result (leave-one-out, specific terms): specific thrust is
+  inside the predicted interval for 5 of 8 engines (nominal error -6 to
+  +3 % for the mainstream engines, +20 % for the one low outlier core);
+  SFC for 6 of 6 (-11 to +18 %). The three failures are the catalogue's
+  two extremes. Standing findings: model Tt5 differs from published EGT
+  by -121 to +134 K; anchored Tt4 (1088 to 1301 K) depends on the
+  assumed efficiencies.
+- Off-design is NOT built yet; that is the `engine_deck` stage. A
+  prototype (not committed) showed pyCycle off-design converging at
+  fixed shaft speed over hot day, altitude and Mach with the FAR balance
+  on shaft power and the W balance on nozzle throat area; below about
+  80 % speed the generic axial maps give non-physical results (turbine
+  inlet temperature rising as speed falls), so part-throttle needs care.
+  The deck is to be expressed in specific thrust, SFC and relative air
+  flow (ADR-0024).
 - `technology.py` is datasheet arithmetic only (figures of merit,
   catalogue bounds, mass power law, implied fuel density). Result so
-  far: thrust per frontal area is 20.7 to 29.2 kN/m2 across all twelve
-  engines, the tightest figure of merit and the link from a measured
-  nacelle diameter to a thrust.
+  far: specific thrust is 590 to 635 N s/kg for seven of the eight
+  engines that publish an air flow (one core sits at 506); SFC is 0.116
+  to 0.158 kg/(N h), improving with size.
 - **Geometry is blocked on measurement.** `config/evidence/imagery.yaml`
   lists five public image sources but holds NO pixel measurements, so
   notebook 2 (`geometry_from_imagery`) is not written and nothing
@@ -70,9 +78,9 @@ repo does.
   two come from one uncorroborated secondary source.
 - Dependencies are optional extras in `pyproject.toml`: `cycle`
   (in use), `aero` and `uq` (not yet imported anywhere).
-- **ADR-0001 to 0023 are all Accepted** (0003 to 0023 on 2026-11-26).
-  0013 is superseded by 0021; 0006, 0008, 0009, 0010, 0012, 0014 and
-  0015 carry amendments (see `adr/README.md`). Read an amended ADR
+- **ADR-0001 to 0024 are all Accepted** (0003 to 0024 on 2026-11-26).
+  0013 is superseded by 0021; 0006, 0007, 0008, 0009, 0010, 0012, 0014
+  and 0015 carry amendments (see `adr/README.md`). Read an amended ADR
   together with the ADRs that amend it.
 - A change of direction needs a new ADR that amends or supersedes, not
   an edit of an accepted one.
@@ -183,6 +191,12 @@ deck), `engine_selection.py`, `installation.py`, `inverse.py` (sampling and reje
 - **Sampling is seeded.** Seed and sample count are config values.
 - **Images of the vehicle are not committed**; record URL, access date
   and pixel measurements instead (ADR-0007).
+- **Specific thrust and SFC, never frontal-area scaling** (ADR-0024).
+  Characterise an engine by specific thrust (N s/kg) and SFC; size
+  enters only through air mass flow. Do not compute, report or use
+  thrust per frontal area or air flow per frontal area. Diameter and
+  length are a fit check only. The owner rejected area scaling
+  explicitly; lead reports with specific thrust and SFC.
 - **The engine is selected, not designed** (ADR-0023): two identical
   engines from `config/reference_engines.yaml`, requirements derived,
   lowest closed take-off mass wins, deterministically. "No catalogue

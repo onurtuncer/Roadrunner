@@ -69,21 +69,18 @@ def catalogue_table(engines: dict[str, Engine]) -> str:
 
 def metrics_table(metrics: dict[str, EngineMetrics]) -> str:
     """Derived figures of merit at maximum thrust."""
-    rows = [f"{'engine':18s}{'T/W':>6s}{'kN/m2':>8s}{'N s/kg':>8s}{'SFC kg/N/h':>12s}{'idle %':>8s}  SFC from",
-            "-" * _WIDTH]
+    rows = [f"{'engine':18s}{'Fs N s/kg':>11s}{'SFC kg/N/h':>12s}{'T/W':>7s}{'idle %':>8s}  SFC from", "-" * _WIDTH]
     for m in metrics.values():
         sfc = None if m.sfc_kg_N_s is None else m.sfc_kg_N_s * SECONDS_PER_HOUR
         idle = None if m.idle_thrust_fraction is None else 100.0 * m.idle_thrust_fraction
-        rows.append(f"{m.id:18s}{_fmt(m.thrust_to_weight, '.1f', 6)}{m.thrust_per_frontal_area_N_m2 / 1e3:8.1f}"
-                    f"{_fmt(m.specific_thrust_N_s_kg, '.0f', 8)}{_fmt(sfc, '.3f', 12)}{_fmt(idle, '.1f', 8)}"
-                    f"  {m.sfc_basis or '-'}")
+        rows.append(f"{m.id:18s}{_fmt(m.specific_thrust_N_s_kg, '.0f', 11)}{_fmt(sfc, '.3f', 12)}"
+                    f"{_fmt(m.thrust_to_weight, '.1f', 7)}{_fmt(idle, '.1f', 8)}  {m.sfc_basis or '-'}")
     return "\n".join(rows)
 
 
 def bounds_table(bounds: dict[str, dict]) -> str:
     """Catalogue-wide technology bounds."""
-    scale = {"sfc_kg_N_s": (SECONDS_PER_HOUR, "SFC [kg/(N h)]"), "specific_thrust_N_s_kg": (1.0, "specific thrust [N s/kg]"),
-             "thrust_per_frontal_area_N_m2": (1e-3, "thrust per frontal area [kN/m2]"),
+    scale = {"specific_thrust_N_s_kg": (1.0, "specific thrust [N s/kg]"), "sfc_kg_N_s": (SECONDS_PER_HOUR, "SFC [kg/(N h)]"),
              "thrust_to_weight": (1.0, "thrust-to-weight [-]"), "idle_thrust_fraction": (100.0, "idle thrust [% of max]"),
              "pressure_ratio": (1.0, "compressor pressure ratio [-]")}
     rows = [f"{'figure of merit':34s}{'low':>9s}{'median':>9s}{'high':>9s}{'n':>4s}", "-" * 65]
@@ -114,13 +111,15 @@ def missing_fields_table(engines: dict[str, Engine]) -> str:
 
 def anchor_table(anchors: dict) -> str:
     """Cycle model matched to each datasheet. An asterisk marks an assumed pressure ratio."""
-    rows = [f"{'engine':18s}{'PR':>6s}{'Tt4 K':>8s}{'Tt5 K':>8s}{'EGT K':>8s}{'Tt5-EGT':>9s}{'comb. eff':>11s}"
-            f"{'kg/s/m2':>9s}", "-" * _WIDTH]
+    rows = [f"{'engine':18s}{'PR':>6s}{'Fs':>7s}{'Tt4 K':>7s}{'Tt5 K':>7s}{'EGT K':>7s}{'Tt5-EGT':>9s}"
+            f"{'SFC ideal':>11s}{'SFC publ.':>11s}{'comb. eff':>11s}", "-" * 94]
     for a in anchors.values():
         pr = f"{a.pressure_ratio:.1f}{' ' if a.pressure_ratio_published else '*'}"
-        rows.append(f"{a.engine_id:18s}{pr:>6s}{a.Tt4_K:8.0f}{a.Tt5_K:8.0f}{_fmt(a.egt_published_K, '.0f', 8)}"
-                    f"{_fmt(a.egt_residual_K, '+.0f', 9)}{_fmt(a.combustion_efficiency, '.2f', 11)}"
-                    f"{a.mass_flow_per_frontal_area_kg_s_m2:9.1f}")
+        published = None if a.published_sfc_kg_N_s is None else a.published_sfc_kg_N_s * SECONDS_PER_HOUR
+        rows.append(f"{a.engine_id:18s}{pr:>6s}{a.specific_thrust_N_s_kg:7.0f}{a.Tt4_K:7.0f}{a.Tt5_K:7.0f}"
+                    f"{_fmt(a.egt_published_K, '.0f', 7)}{_fmt(a.egt_residual_K, '+.0f', 9)}"
+                    f"{a.ideal_sfc_kg_N_s * SECONDS_PER_HOUR:11.3f}{_fmt(published, '.3f', 11)}"
+                    f"{_fmt(a.combustion_efficiency, '.2f', 11)}")
     return "\n".join(rows)
 
 

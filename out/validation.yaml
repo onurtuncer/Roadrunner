@@ -7,8 +7,10 @@ anchors:
     Tt5_K: 1123.0
     egt_published_K: null
     egt_residual_K: null
+    specific_thrust_N_s_kg: 627.2
+    ideal_sfc_kg_N_s: 3.3625e-05
+    published_sfc_kg_N_s: 3.9328e-05
     combustion_efficiency: 0.85497
-    mass_flow_per_frontal_area_kg_s_m2: 39.394
   amt_titan:
     pressure_ratio: 3.8
     pressure_ratio_published: true
@@ -16,8 +18,10 @@ anchors:
     Tt5_K: 1085.1
     egt_published_K: null
     egt_residual_K: null
+    specific_thrust_N_s_kg: 593.94
+    ideal_sfc_kg_N_s: 3.3682e-05
+    published_sfc_kg_N_s: null
     combustion_efficiency: null
-    mass_flow_per_frontal_area_kg_s_m2: 38.888
   jetcat_p1000_pro:
     pressure_ratio: 4.0
     pressure_ratio_published: true
@@ -25,8 +29,10 @@ anchors:
     Tt5_K: 1095.3
     egt_published_K: 993.15
     egt_residual_K: 102.12
+    specific_thrust_N_s_kg: 611.11
+    ideal_sfc_kg_N_s: 3.3209e-05
+    published_sfc_kg_N_s: 3.5278e-05
     combustion_efficiency: 0.94135
-    mass_flow_per_frontal_area_kg_s_m2: 41.855
   jetcat_p400_pro:
     pressure_ratio: 3.8
     pressure_ratio_published: true
@@ -34,8 +40,10 @@ anchors:
     Tt5_K: 1157.1
     egt_published_K: 1023.1
     egt_residual_K: 133.94
+    specific_thrust_N_s_kg: 634.33
+    ideal_sfc_kg_N_s: 3.4811e-05
+    published_sfc_kg_N_s: 4.3889e-05
     combustion_efficiency: 0.79317
-    mass_flow_per_frontal_area_kg_s_m2: 38.736
   jetcat_p550_pro:
     pressure_ratio: 3.9
     pressure_ratio_published: false
@@ -43,8 +51,10 @@ anchors:
     Tt5_K: 1071.1
     egt_published_K: 1023.1
     egt_residual_K: 47.942
+    specific_thrust_N_s_kg: 591.4
+    ideal_sfc_kg_N_s: 3.3151e-05
+    published_sfc_kg_N_s: 4.0e-05
     combustion_efficiency: 0.82879
-    mass_flow_per_frontal_area_kg_s_m2: 38.665
   pbs_tj40_g1:
     pressure_ratio: 3.9
     pressure_ratio_published: false
@@ -52,8 +62,10 @@ anchors:
     Tt5_K: 932.45
     egt_published_K: 1053.2
     egt_residual_K: -120.7
+    specific_thrust_N_s_kg: 506.41
+    ideal_sfc_kg_N_s: 3.1106e-05
+    published_sfc_kg_N_s: 4.1519e-05
     combustion_efficiency: 0.74921
-    mass_flow_per_frontal_area_kg_s_m2: 45.959
   pbs_tj40_g2:
     pressure_ratio: 3.9
     pressure_ratio_published: false
@@ -61,8 +73,10 @@ anchors:
     Tt5_K: 932.45
     egt_published_K: null
     egt_residual_K: null
+    specific_thrust_N_s_kg: 506.41
+    ideal_sfc_kg_N_s: 3.1106e-05
+    published_sfc_kg_N_s: null
     combustion_efficiency: null
-    mass_flow_per_frontal_area_kg_s_m2: 45.959
   pbs_tj80_90:
     pressure_ratio: 3.9
     pressure_ratio_published: false
@@ -70,8 +84,10 @@ anchors:
     Tt5_K: 1107.5
     egt_published_K: null
     egt_residual_K: null
+    specific_thrust_N_s_kg: 612.24
+    ideal_sfc_kg_N_s: 3.372e-05
+    published_sfc_kg_N_s: 3.4167e-05
     combustion_efficiency: 0.98692
-    mass_flow_per_frontal_area_kg_s_m2: 33.892
 anchored_technology:
   Tt4_K:
     low: 1088.0
@@ -83,10 +99,10 @@ anchored_technology:
     median: 0.84188
     high: 0.98692
     n: 6
-  mass_flow_per_frontal_area_kg_s_m2:
-    low: 33.892
-    median: 39.141
-    high: 45.959
+  specific_thrust_N_s_kg:
+    low: 506.41
+    median: 602.53
+    high: 634.33
     n: 8
   egt_residual_K:
     low: -120.7
@@ -95,18 +111,11 @@ anchored_technology:
     n: 4
 leave_one_out:
   amt_nike:
-    thrust_N:
-      published: 784.0
-      value: 736.73
-      low: 542.53
-      high: 937.36
-      inside: true
-      narrow_enough: true
-    air_mass_flow_kg_s:
-      published: 1.25
-      value: 1.234
-      low: 1.0754
-      high: 1.4583
+    specific_thrust_N_s_kg:
+      published: 627.2
+      value: 597.04
+      low: 504.49
+      high: 642.77
       inside: true
       narrow_enough: true
     sfc_kg_N_s:
@@ -117,18 +126,11 @@ leave_one_out:
       inside: true
       narrow_enough: true
   amt_titan:
-    thrust_N:
-      published: 392.0
-      value: 405.74
-      low: 290.18
-      high: 501.36
-      inside: true
-      narrow_enough: true
-    air_mass_flow_kg_s:
-      published: 0.66
-      value: 0.66858
-      low: 0.5752
-      high: 0.78
+    specific_thrust_N_s_kg:
+      published: 593.94
+      value: 606.86
+      low: 504.49
+      high: 642.77
       inside: true
       narrow_enough: true
     sfc_kg_N_s:
@@ -139,18 +141,11 @@ leave_one_out:
       inside: null
       narrow_enough: true
   jetcat_p1000_pro:
-    thrust_N:
-      published: 1100.0
-      value: 998.5
-      low: 735.3
-      high: 1270.4
-      inside: true
-      narrow_enough: true
-    air_mass_flow_kg_s:
-      published: 1.8
-      value: 1.6724
-      low: 1.4575
-      high: 1.9765
+    specific_thrust_N_s_kg:
+      published: 611.11
+      value: 597.04
+      low: 504.49
+      high: 642.77
       inside: true
       narrow_enough: true
     sfc_kg_N_s:
@@ -161,19 +156,12 @@ leave_one_out:
       inside: true
       narrow_enough: true
   jetcat_p400_pro:
-    thrust_N:
-      published: 425.0
-      value: 406.81
-      low: 295.73
-      high: 498.58
-      inside: true
-      narrow_enough: true
-    air_mass_flow_kg_s:
-      published: 0.67
-      value: 0.68137
-      low: 0.5862
-      high: 0.79493
-      inside: true
+    specific_thrust_N_s_kg:
+      published: 634.33
+      value: 597.04
+      low: 504.49
+      high: 627.2
+      inside: false
       narrow_enough: true
     sfc_kg_N_s:
       published: 4.3889e-05
@@ -183,18 +171,11 @@ leave_one_out:
       inside: true
       narrow_enough: true
   jetcat_p550_pro:
-    thrust_N:
-      published: 550.0
-      value: 575.02
-      low: 411.25
-      high: 710.54
-      inside: true
-      narrow_enough: true
-    air_mass_flow_kg_s:
-      published: 0.93
-      value: 0.94753
-      low: 0.81519
-      high: 1.1054
+    specific_thrust_N_s_kg:
+      published: 591.4
+      value: 606.86
+      low: 504.49
+      high: 642.77
       inside: true
       narrow_enough: true
     sfc_kg_N_s:
@@ -205,18 +186,11 @@ leave_one_out:
       inside: true
       narrow_enough: true
   pbs_tj40_g1:
-    thrust_N:
-      published: 395.0
-      value: 401.52
-      low: 338.39
-      high: 456.59
-      inside: true
-      narrow_enough: true
-    air_mass_flow_kg_s:
-      published: 0.78
-      value: 0.65871
-      low: 0.5752
-      high: 0.71036
+    specific_thrust_N_s_kg:
+      published: 506.41
+      value: 609.55
+      low: 588.31
+      high: 642.77
       inside: false
       narrow_enough: true
     sfc_kg_N_s:
@@ -227,18 +201,11 @@ leave_one_out:
       inside: true
       narrow_enough: true
   pbs_tj40_g2:
-    thrust_N:
-      published: 395.0
-      value: 401.52
-      low: 338.39
-      high: 456.59
-      inside: true
-      narrow_enough: true
-    air_mass_flow_kg_s:
-      published: 0.78
-      value: 0.65871
-      low: 0.5752
-      high: 0.71036
+    specific_thrust_N_s_kg:
+      published: 506.41
+      value: 609.55
+      low: 588.31
+      high: 642.77
       inside: false
       narrow_enough: true
     sfc_kg_N_s:
@@ -249,19 +216,12 @@ leave_one_out:
       inside: null
       narrow_enough: true
   pbs_tj80_90:
-    thrust_N:
-      published: 900.0
-      value: 1020.1
-      low: 846.05
-      high: 1281.3
+    specific_thrust_N_s_kg:
+      published: 612.24
+      value: 597.04
+      low: 504.49
+      high: 642.77
       inside: true
-      narrow_enough: true
-    air_mass_flow_kg_s:
-      published: 1.47
-      value: 1.7087
-      low: 1.677
-      high: 1.9934
-      inside: false
       narrow_enough: true
     sfc_kg_N_s:
       published: 3.4167e-05
@@ -271,10 +231,7 @@ leave_one_out:
       inside: true
       narrow_enough: true
 pass_counts:
-  thrust_N:
-    passed: 8
-    of: 8
-  air_mass_flow_kg_s:
+  specific_thrust_N_s_kg:
     passed: 5
     of: 8
   sfc_kg_N_s:

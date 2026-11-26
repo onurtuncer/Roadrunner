@@ -7,13 +7,14 @@ Needs the ``cycle`` extra. Two steps:
    from its published fuel flow the lumped combustion efficiency. The
    model's turbine exit temperature is compared with the published
    exhaust gas temperature, which was not used.
-2. *Leave one out*: predict each engine from its outer diameter alone,
-   with technology levels (mass flow per frontal area, turbine inlet
-   temperature, combustion efficiency) taken from the other engines.
+2. *Leave one out*: predict each engine's specific thrust and specific
+   fuel consumption with technology levels (turbine inlet temperature,
+   combustion efficiency) taken from the other engines. Both are
+   intensive: engine size, which enters only as air mass flow, is not
+   predicted, and nothing is scaled with frontal area (ADR-0024).
 """
 from __future__ import annotations
 
-import math
 import statistics
 from dataclasses import asdict, dataclass
 from pathlib import Path
@@ -26,7 +27,7 @@ from roadrunner_re.engine_catalogue import Engine
 from roadrunner_re.technology import EngineMetrics
 from roadrunner_re.uncertain import Uncertain
 
-PREDICTED = ("thrust_N", "air_mass_flow_kg_s", "sfc_kg_N_s")
+PREDICTED = ("specific_thrust_N_s_kg", "sfc_kg_N_s")
 
 
 @dataclass(frozen=True)
@@ -39,9 +40,10 @@ class Anchor:
     Tt4_K: float
     Tt5_K: float
     egt_published_K: float | None        # not used in the match
-    ideal_sfc_kg_N_s: float
-    combustion_efficiency: float | None  # ideal / published fuel flow; None if no fuel data
-    mass_flow_per_frontal_area_kg_s_m2: float
+    specific_thrust_N_s_kg: float        # published thrust over published air flow; the model reproduces it
+    ideal_sfc_kg_N_s: float              # model, complete combustion
+    published_sfc_kg_N_s: float | None
+    combustion_efficiency: float | None  # ideal / published SFC; None if no fuel data
     result: CycleResult
 
     @property
@@ -61,9 +63,8 @@ def anchor_engine(engine: Engine, metrics: EngineMetrics, settings: CycleSetting
     return Anchor(
         engine_id=engine.id, pressure_ratio=pressure_ratio, pressure_ratio_published=published,
         Tt4_K=result.Tt4_K, Tt5_K=result.Tt5_K, egt_published_K=engine.egt_max_K,
-        ideal_sfc_kg_N_s=result.sfc_kg_N_s, combustion_efficiency=efficiency,
-        mass_flow_per_frontal_area_kg_s_m2=engine.air_mass_flow_kg_s / (math.pi / 4.0 * engine.diameter_m**2),
-        result=result,
+        specific_thrust_N_s_kg=result.specific_thrust_N_s_kg, ideal_sfc_kg_N_s=result.sfc_kg_N_s,
+        published_sfc_kg_N_s=metrics.sfc_kg_N_s, combustion_efficiency=efficiency, result=result,
     )
 
 
@@ -98,11 +99,9 @@ class Prediction:
 
 def predict_blind(engine: Engine, metrics: EngineMetrics, others: dict[str, Anchor], settings: CycleSettings,
                   max_relative_width: dict[str, float]) -> Prediction:
-    """Predict an engine from its diameter and the technology levels of ``others``."""
+    """Predict an engine's specific thrust and SFC from the technology levels of ``others``."""
     if engine.id in others:
         raise ConfigError(f"{engine.id}: the engine being predicted must be left out of the technology levels")
-    area = math.pi / 4.0 * engine.diameter_m**2
-    flow_per_area = _range([a.mass_flow_per_frontal_area_kg_s_m2 for a in others.values()], "mass flow per area")
     Tt4 = _range([a.Tt4_K for a in others.values()], "turbine inlet temperature")
     efficiency = _range([a.combustion_efficiency for a in others.values() if a.combustion_efficiency is not None],
                         "combustion efficiency")
@@ -112,21 +111,16 @@ def predict_blind(engine: Engine, metrics: EngineMetrics, others: dict[str, Anch
         return run_design_point(settings, air_mass_flow_kg_s=1.0, pressure_ratio=pr, Tt4_K=tt4)
 
     nominal = specific(Tt4.value, pressure_ratio.value)
-    corners = [specific(t, p) for t in (Tt4.low, Tt4.high) for p in (pressure_ratio.low, pressure_ratio.high)]
-    fs = Uncertain(nominal.specific_thrust_N_s_kg, min(c.specific_thrust_N_s_kg for c in corners),
-                   max(c.specific_thrust_N_s_kg for c in corners))
-    ideal_sfc = Uncertain(nominal.sfc_kg_N_s, min(c.sfc_kg_N_s for c in corners + [nominal]),
-                          max(c.sfc_kg_N_s for c in corners + [nominal]))
-
+    runs = [nominal] + [specific(t, p) for t in (Tt4.low, Tt4.high) for p in (pressure_ratio.low, pressure_ratio.high)]
+    ideal_sfc_low, ideal_sfc_high = min(c.sfc_kg_N_s for c in runs), max(c.sfc_kg_N_s for c in runs)
     predicted = {
-        "air_mass_flow_kg_s": Uncertain(flow_per_area.value * area, flow_per_area.low * area, flow_per_area.high * area),
-        "thrust_N": Uncertain(fs.value * flow_per_area.value * area, fs.low * flow_per_area.low * area,
-                              fs.high * flow_per_area.high * area),
-        "sfc_kg_N_s": Uncertain(ideal_sfc.value / efficiency.value, ideal_sfc.low / efficiency.high,
-                                ideal_sfc.high / efficiency.low),
+        "specific_thrust_N_s_kg": Uncertain(nominal.specific_thrust_N_s_kg,
+                                            min(c.specific_thrust_N_s_kg for c in runs),
+                                            max(c.specific_thrust_N_s_kg for c in runs)),
+        "sfc_kg_N_s": Uncertain(nominal.sfc_kg_N_s / efficiency.value, ideal_sfc_low / efficiency.high,
+                                ideal_sfc_high / efficiency.low),
     }
-    published = {"thrust_N": engine.thrust_max_N, "air_mass_flow_kg_s": engine.air_mass_flow_kg_s,
-                 "sfc_kg_N_s": metrics.sfc_kg_N_s}
+    published = {"specific_thrust_N_s_kg": metrics.specific_thrust_N_s_kg, "sfc_kg_N_s": metrics.sfc_kg_N_s}
     inside = {q: None if published[q] is None else predicted[q].low <= published[q] <= predicted[q].high
               for q in PREDICTED}
     width = {q: (predicted[q].high - predicted[q].low) / predicted[q].value for q in PREDICTED}
@@ -179,13 +173,14 @@ def validation_handoff(anchors: dict[str, Anchor], predictions: dict[str, Predic
         "anchors": {
             eid: {"pressure_ratio": a.pressure_ratio, "pressure_ratio_published": a.pressure_ratio_published,
                   "Tt4_K": r(a.Tt4_K), "Tt5_K": r(a.Tt5_K), "egt_published_K": r(a.egt_published_K),
-                  "egt_residual_K": r(a.egt_residual_K), "combustion_efficiency": r(a.combustion_efficiency),
-                  "mass_flow_per_frontal_area_kg_s_m2": r(a.mass_flow_per_frontal_area_kg_s_m2)}
+                  "egt_residual_K": r(a.egt_residual_K), "specific_thrust_N_s_kg": r(a.specific_thrust_N_s_kg),
+                  "ideal_sfc_kg_N_s": r(a.ideal_sfc_kg_N_s), "published_sfc_kg_N_s": r(a.published_sfc_kg_N_s),
+                  "combustion_efficiency": r(a.combustion_efficiency)}
             for eid, a in sorted(anchors.items())},
         "anchored_technology": {
             "Tt4_K": spread(a.Tt4_K for a in anchors.values()),
             "combustion_efficiency": spread(a.combustion_efficiency for a in anchors.values()),
-            "mass_flow_per_frontal_area_kg_s_m2": spread(a.mass_flow_per_frontal_area_kg_s_m2 for a in anchors.values()),
+            "specific_thrust_N_s_kg": spread(a.specific_thrust_N_s_kg for a in anchors.values()),
             "egt_residual_K": spread(a.egt_residual_K for a in anchors.values()),
         },
         "leave_one_out": {

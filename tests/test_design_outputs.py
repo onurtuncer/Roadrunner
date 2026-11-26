@@ -31,8 +31,9 @@ def test_technology_pins():
     t = yaml.safe_load((OUT / "technology.yaml").read_text(encoding="utf-8"))
     assert t["engines"] == 12 and len(t["vendors"]) == 3
     b = t["bounds"]
-    assert (b["thrust_per_frontal_area_N_m2"]["low"], b["thrust_per_frontal_area_N_m2"]["high"]) == \
-        pytest.approx((20749.9, 29236.3), rel=1e-5)
+    assert "thrust_per_frontal_area_N_m2" not in b  # ADR-0024
+    assert (b["specific_thrust_N_s_kg"]["low"], b["specific_thrust_N_s_kg"]["high"], b["specific_thrust_N_s_kg"]["n"]) == \
+        pytest.approx((506.41, 634.328, 8), rel=1e-5)
     assert (b["thrust_to_weight"]["low"], b["thrust_to_weight"]["high"]) == pytest.approx((6.23756, 11.8467), rel=1e-5)
     assert (b["sfc_kg_N_s"]["low"], b["sfc_kg_N_s"]["high"]) == pytest.approx((3.22222e-05, 4.38889e-05), rel=1e-5)
     assert (b["idle_thrust_fraction"]["low"], b["idle_thrust_fraction"]["high"]) == \
@@ -52,13 +53,14 @@ def test_datasheets_imply_the_configured_fuel_density_within_one_percent():
 def test_validation_pins():
     """Anchored cycle model and leave-one-out blind test (notebook 5). Solver results: pinned to 0.1 %."""
     v = yaml.safe_load((OUT / "validation.yaml").read_text(encoding="utf-8"))
-    assert v["pass_counts"] == {"thrust_N": {"passed": 8, "of": 8}, "air_mass_flow_kg_s": {"passed": 5, "of": 8},
-                                "sfc_kg_N_s": {"passed": 6, "of": 6}}
+    assert v["pass_counts"] == {"specific_thrust_N_s_kg": {"passed": 5, "of": 8}, "sfc_kg_N_s": {"passed": 6, "of": 6}}
     t = v["anchored_technology"]
     assert (t["Tt4_K"]["low"], t["Tt4_K"]["high"], t["Tt4_K"]["n"]) == pytest.approx((1088.3, 1301.3, 8), rel=1e-3)
     assert (t["combustion_efficiency"]["low"], t["combustion_efficiency"]["high"]) == \
         pytest.approx((0.74911, 0.98707), rel=1e-3)
     assert (t["egt_residual_K"]["low"], t["egt_residual_K"]["high"], t["egt_residual_K"]["n"]) == \
         pytest.approx((-121.4, 134.0, 4), abs=1.0)
-    p1000 = v["leave_one_out"]["jetcat_p1000_pro"]["thrust_N"]
-    assert (p1000["published"], p1000["value"]) == pytest.approx((1100.0, 998.5), rel=1e-3)
+    assert (t["specific_thrust_N_s_kg"]["low"], t["specific_thrust_N_s_kg"]["high"]) == \
+        pytest.approx((506.41, 634.33), rel=1e-3)
+    p1000 = v["leave_one_out"]["jetcat_p1000_pro"]["specific_thrust_N_s_kg"]
+    assert (p1000["published"], p1000["value"], p1000["inside"]) == pytest.approx((611.11, 597.2, True), rel=2e-3)

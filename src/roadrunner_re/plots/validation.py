@@ -9,11 +9,11 @@ from roadrunner_re.technology import SECONDS_PER_HOUR
 
 
 def blind_predictions(predictions: dict, save_path: str | Path | None = None):
-    """Predicted interval against the published value, per engine, for thrust, air flow and SFC."""
-    panels = (("thrust_N", 1.0, "Thrust [N]"), ("air_mass_flow_kg_s", 1.0, "Air mass flow [kg/s]"),
+    """Predicted interval against the published value, per engine, for specific thrust and SFC."""
+    panels = (("specific_thrust_N_s_kg", 1.0, "Specific thrust [N s/kg]"),
               ("sfc_kg_N_s", SECONDS_PER_HOUR, "SFC [kg/(N h)]"))
     names = list(predictions)
-    fig, axes = plt.subplots(1, 3, figsize=(15, 4.6), sharey=True)
+    fig, axes = plt.subplots(1, 2, figsize=(11, 4.6), sharey=True)
     for ax, (quantity, scale, label) in zip(axes, panels):
         for row, name in enumerate(names):
             p = predictions[name]

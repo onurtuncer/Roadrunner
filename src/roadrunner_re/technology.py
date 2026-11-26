@@ -1,8 +1,11 @@
 """Technology levels of the purchasable-engine catalogue (ADR-0010, ADR-0023).
 
 Datasheet arithmetic only: no cycle model. For each catalogue engine it
-derives the comparable figures of merit, then summarises the catalogue as
-bounds and a mass correlation. Every function takes the engines it should
+derives the comparable figures of merit, led by the two intensive ones,
+specific thrust (thrust per unit air mass flow) and specific fuel
+consumption, then summarises the catalogue as bounds and a mass
+correlation. Engine size enters only through air mass flow: nothing is
+scaled with frontal area (ADR-0024). Every function takes the engines it should
 use, so a caller can leave one out (leave-one-out validation, ADR-0023).
 """
 from __future__ import annotations
@@ -24,8 +27,7 @@ SECONDS_PER_MINUTE = 60.0
 M3_PER_ML = 1.0e-6
 KG_PER_G = 1.0e-3
 
-METRICS = ("sfc_kg_N_s", "specific_thrust_N_s_kg", "thrust_per_frontal_area_N_m2",
-           "thrust_to_weight", "idle_thrust_fraction", "pressure_ratio")
+METRICS = ("specific_thrust_N_s_kg", "sfc_kg_N_s", "thrust_to_weight", "idle_thrust_fraction", "pressure_ratio")
 
 
 @dataclass(frozen=True)
@@ -37,7 +39,6 @@ class EngineMetrics:
     sfc_kg_N_s: float | None
     sfc_basis: str | None               # "published", "mass_flow" or "volume_flow"
     specific_thrust_N_s_kg: float | None
-    thrust_per_frontal_area_N_m2: float
     thrust_to_weight: float | None
     idle_thrust_fraction: float | None
     pressure_ratio: float | None
@@ -88,7 +89,6 @@ def engine_metrics(engine: Engine, fuel_density_kg_m3: float, gravity_m_s2: floa
     return EngineMetrics(
         id=engine.id, thrust_N=thrust, mass_kg=mass, mass_basis=mass_basis, sfc_kg_N_s=sfc, sfc_basis=sfc_basis,
         specific_thrust_N_s_kg=None if engine.air_mass_flow_kg_s is None else thrust / engine.air_mass_flow_kg_s,
-        thrust_per_frontal_area_N_m2=thrust / (math.pi / 4.0 * engine.diameter_m**2),
         thrust_to_weight=None if mass is None else thrust / (mass * gravity_m_s2),
         idle_thrust_fraction=None if engine.thrust_idle_N is None else engine.thrust_idle_N / thrust,
         pressure_ratio=engine.pressure_ratio,
