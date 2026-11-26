@@ -8,13 +8,13 @@
 **Documentation:** <https://onurtuncer.github.io/Roadrunner/>
 
 A course project in aircraft propulsion: estimate, from public
-information only, what the propulsion system of the Anduril Roadrunner
-(a small twin-turbojet, thrust-vectored, vertical take-off and landing
-air vehicle) must look like.
+information only, what the propulsion system of a small twin-turbojet,
+thrust-vectored, vertical take-off and landing air vehicle must look
+like.
 
-The manufacturer has published almost no figures. The study therefore
-does not produce "the answer". It produces the range of engine and
-vehicle parameters that are consistent with the public evidence, how
+Almost no figures are published for this class of vehicle. The study
+therefore does not produce "the answer". It produces the range of engine
+and vehicle parameters that are consistent with the public evidence, how
 uncertain each one is, and which missing fact matters most.
 
 ## Status
@@ -31,7 +31,7 @@ runs. No engineering results yet. See [`adr/`](adr/README.md).
 4. Define a sample mission; run constraint analysis and mission analysis
    on a standard atmosphere.
 5. Choose the engine pair from a catalogue of purchasable turbojets
-   (PBS, JetCat, AMT), with [pyCycle](https://github.com/OpenMDAO/pyCycle)
+   (PBS, AMT), with [pyCycle](https://github.com/OpenMDAO/pyCycle)
    models anchored to each vendor datasheet for hot-day, altitude and
    part-throttle performance.
 6. Propagate the input uncertainty and rank the inputs by sensitivity.

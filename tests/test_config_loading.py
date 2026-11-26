@@ -101,8 +101,8 @@ def test_uncertain_value_must_lie_within_its_bounds():
 
 def test_catalogue_loads_with_sources():
     engines = load_engine_catalogue()
-    assert len(engines) >= 10
-    assert {e.vendor for e in engines.values()} >= {"PBS Velka Bites", "JetCat", "AMT Netherlands"}
+    assert len(engines) >= 9
+    assert {e.vendor for e in engines.values()} >= {"PBS Velka Bites", "AMT Netherlands"}
     for engine in engines.values():
         assert engine.source.startswith("https://")
         assert engine.thrust_max_low_N <= engine.thrust_max_N
@@ -112,7 +112,7 @@ def test_thrust_range_and_missing_fields_are_kept_honest():
     engines = load_engine_catalogue()
     assert engines["pbs_tj100"].thrust_max_low_N < engines["pbs_tj100"].thrust_max_N
     assert "mass_engine_kg" in engines["pbs_tj100"].missing_fields
-    assert engines["jetcat_p1000_pro"].thrust_idle_N == 45
+    assert engines["amt_titan"].thrust_idle_N == 13
 
 
 def test_catalogue_entry_with_a_non_positive_number_is_rejected(tmp_path):

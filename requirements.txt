@@ -1,0 +1,10 @@
+# Everything needed to run the study end to end: the package, pyCycle, the
+# notebooks and the tests. The single source of truth for versions is
+# pyproject.toml (including the pyCycle git pin, ADR-0015); this file only
+# installs it, so the two cannot drift apart.
+#
+#   pip install -r requirements.txt
+#
+# Not installed here, because nothing imports them yet: the `aero`
+# (AeroSandbox) and `uq` (SALib) extras.
+-e .[cycle,notebooks,dev]

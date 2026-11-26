@@ -86,6 +86,6 @@ def test_repo_catalogue_is_internally_consistent():
     density = load_fuel_density()
     metrics = catalogue_metrics(load_engine_catalogue(), density.value, load_gravity())
     implied = implied_fuel_densities(metrics)
-    assert len(implied) >= 3
+    assert len(implied) >= 2
     assert all(density.low <= rho <= density.high for rho in implied.values())
     assert all(isinstance(m, EngineMetrics) for m in metrics.values())

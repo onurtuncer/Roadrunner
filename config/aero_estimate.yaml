@@ -1,0 +1,85 @@
+# Hand aerodynamic estimate of the baseline vehicle (ADR-0016, first of two methods).
+#
+# SUPPLIED BY THE OWNER on 2026-11-26 as a hand estimate built on
+# photo-scaled assumptions. It is NOT a measurement and NOT a result of
+# this repository: no pixel measurements exist yet (config/evidence/
+# imagery.yaml), so geometry_from_imagery is still blocked and nothing
+# here replaces it. The numbers are tier C (inferred) and the owner asks
+# that they be treated as +/-30 %; every low/high below is the nominal
+# value -/+ 30 % (counts are exact). Where the owner gave a tighter range
+# (cd0 0.18 to 0.25) the +/-30 % bounds are wider and are used.
+#
+# The length here (1.7 m, +/-30 %) is the owner's photo assumption and is wider
+# than the ledger's length anchor (length_overall: 1.4 to 1.8 m), which stays the
+# single length anchor for geometry (ADR-0007). The coefficients below are not
+# independent of each other or of s_ref; the +/-30 % is per number, not joint.
+#
+# Reference area is the missile convention S_ref = pi d^2 / 4, NOT wing
+# area. Coefficients are normal-force (C_N), referenced to S_ref.
+# Reference condition is ISA sea level (dT = 0), not the hot day of the
+# sample mission. C_m_alpha and static margin are not estimated: they need
+# the centre of gravity, which is unknown.
+
+name: owner_hand_estimate
+tier: C
+accessed: 2026-11-26
+basis:
+  assumption: "Owner's hand estimate from photos, to be treated as +/-30 %. Not independently reproduced here."
+
+public_data:
+  - statement: No official dimensions, speed or payload figures exist for Roadrunner-M.
+    source: https://breakingdefense.com/2023/12/anduril-unveils-vtol-roadrunner-munition-for-aerial-defense-one-us-customer-buying-in
+  - statement: One unofficial report puts it at 85 kg, 1.8 m tall and roughly 700 km/h on twin jets.
+    source: https://www.strategypage.com/htmw/htada/2025010804622.aspx
+  - statement: Another directory lists a length of about 1.5 m with two thrust-vectoring turbojets.
+    source: https://designation-systems.net/dusrm/app4/roadrunner.html
+
+method:
+  wing_cn_alpha: "Helmbold (2.6 /rad) x wing-body interference (1.77) x area ratio (2.55) = 11.7 /rad"
+  body_cn_alpha: "slender-body theory"
+  tail_cn_alpha: "after downwash"
+  cd0: "wetted area x skin friction (0.0026 body, 0.0035 fins) plus 30 % for base, interference and gaps"
+  induced_drag_factor_k: "close to 1/C_N_alpha: thin low-aspect-ratio fins get little leading-edge suction"
+  layout: "four wings in an X layout; four small tail fins"
+
+geometry:
+  length_m: {value: 1.7, low: 1.19, high: 2.21}
+  body_diameter_m: {value: 0.3, low: 0.21, high: 0.39}
+  s_ref_m2: {value: 0.071, low: 0.0497, high: 0.0923}
+  wing_panel_count: 4
+  wing_exposed_semi_span_m: {value: 0.3, low: 0.21, high: 0.39}
+  wing_panel_area_m2: {value: 0.09, low: 0.063, high: 0.117}
+  wing_pair_aspect_ratio: {value: 2, low: 1.4, high: 2.6}
+  tail_fin_count: 4
+  tail_fin_area_m2: {value: 0.03, low: 0.021, high: 0.039}
+  wetted_area_m2: {value: 2.8, low: 1.96, high: 3.64}
+
+reference_condition:   # a chosen condition, not an uncertain estimate: no bounds
+  mach: 0.6
+  dynamic_pressure_Pa: 25500.0
+  reynolds_length: 24000000.0
+
+estimates:
+  cn_alpha_per_rad: {value: 15, low: 10.5, high: 19.5}
+  cn_alpha_wing_per_rad: {value: 11.7, low: 8.19, high: 15.21}
+  cn_alpha_body_per_rad: {value: 2, low: 1.4, high: 2.6}
+  cn_alpha_tail_per_rad: {value: 1.6, low: 1.12, high: 2.08}
+  cd0: {value: 0.2, low: 0.14, high: 0.26}
+  drag_area_m2: {value: 0.0135, low: 0.00945, high: 0.01755}
+  induced_drag_factor_k: {value: 0.06, low: 0.042, high: 0.078}
+  l_over_d_max: {value: 4.5, low: 3.15, high: 5.85}
+  cn_at_l_over_d_max: {value: 1.8, low: 1.26, high: 2.34}
+  alpha_at_l_over_d_max_deg: {value: 7, low: 4.9, high: 9.1}
+
+# The owner's own consistency checks, kept so the numbers can be re-derived.
+sanity_checks:
+  cruise_1g_mach_0_6:
+    weight_N: 834              # 85 kg, the ledger's reported mass
+    cn: 0.46
+    alpha_deg: 1.8
+    drag_N: 385
+    l_over_d: 2.2
+  g_limit_at_alpha_20_deg:
+    cn: 6.0
+    g_at_mach_0_6: 13.0
+    g_at_mach_0_85: 25.0

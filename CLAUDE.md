@@ -14,12 +14,15 @@ repo does.
   handoff), `mission_profile.py` (mission loader with the provenance
   check), `engine_catalogue.py` (catalogue loader), `technology.py`, `atmosphere.py` (ISA, tested against published tables),
   `geometry.py` (pixel measurements to length intervals, engine
-  envelope), `cycle/`, `validation.py`, `notebook.py`, `reports.py`,
+  envelope), `lapse.py`, `analysis_inputs.py`, `constraints.py`, `mission.py`,
+  `design_point.py` (first-iteration coupled analysis, ADR-0029), `cycle/`, `validation.py`, `notebook.py`, `reports.py`,
   `plots/`. Everything else in the layout
   below is still to be written.
-- Notebooks 1 (`evidence_ledger`), 4 (`reference_engines`) and 5
-  (`method_validation`) exist, write `out/evidence.yaml`,
-  `out/technology.yaml` and `out/validation.yaml`, and are the entries
+- Notebooks 1 (`evidence_ledger`), 4 (`reference_engines`), 5
+  (`method_validation`), 7 (`constraint_analysis`), 8 (`mission_analysis`)
+  and 14 (`mission_profile`, ADR-0026) exist, write
+  `out/evidence.yaml`, `out/technology.yaml`, `out/validation.yaml`,
+  `out/constraints.yaml`, `out/mission.yaml` and `out/mission_profile.yaml`, and are the entries
   of `NOTEBOOK_ORDER` in `design-pipeline.yml`.
   `tests/test_design_outputs.py` pins the handoffs and runs in the
   pipeline, not in `ci.yml`.
@@ -39,13 +42,14 @@ repo does.
   Solving for compressor efficiency from fuel flow instead was tried
   and rejected: it gave efficiencies of 0.54 to 0.73 and Tt4 up to
   1540 K, which are not credible for these engines.
-- Validation result (leave-one-out, specific terms): specific thrust is
-  inside the predicted interval for 5 of 8 engines (nominal error -6 to
-  +3 % for the mainstream engines, +20 % for the one low outlier core);
-  SFC for 6 of 6 (-11 to +18 %). The three failures are the catalogue's
-  two extremes. Standing findings: model Tt5 differs from published EGT
-  by -121 to +134 K; anchored Tt4 (1088 to 1301 K) depends on the
-  assumed efficiencies.
+- Validation result (leave-one-out, specific terms; JetCat dropped,
+  ADR-0025): specific thrust is inside the predicted interval for 2 of 5
+  engines (nominal error -12 to +21 %); SFC for 1 of 3 (-12 to +17 %).
+  With nine engines the catalogue is thin and the blind test is weak
+  evidence either way. Standing findings: only one engine publishes an
+  EGT (model Tt5 is 121 K below it); anchored Tt4 (1088 to 1275 K)
+  depends on the assumed efficiencies; the datasheet fuel-density
+  cross-check rests on two engines.
 - Off-design is NOT built yet; that is the `engine_deck` stage. A
   prototype (not committed) showed pyCycle off-design converging at
   fixed shaft speed over hot day, altitude and Mach with the FAR balance
@@ -56,9 +60,9 @@ repo does.
   flow (ADR-0024).
 - `technology.py` is datasheet arithmetic only (figures of merit,
   catalogue bounds, mass power law, implied fuel density). Result so
-  far: specific thrust is 590 to 635 N s/kg for seven of the eight
-  engines that publish an air flow (one core sits at 506); SFC is 0.116
-  to 0.158 kg/(N h), improving with size.
+  far: specific thrust is 594 to 627 N s/kg for three of the five
+  engines that publish an air flow (the two TJ40 cores sit at 506); SFC is 0.116
+  to 0.150 kg/(N h), improving with size.
 - **Geometry is blocked on measurement.** `config/evidence/imagery.yaml`
   lists five public image sources but holds NO pixel measurements, so
   notebook 2 (`geometry_from_imagery`) is not written and nothing
@@ -68,25 +72,39 @@ repo does.
   pixel coordinates or dimensions.
 - `config/` holds `atmosphere.yaml`, `geometry.yaml`,
   `evidence/claims.yaml`, `evidence/vehicle.yaml`,
-  `evidence/imagery.yaml`, `missions/sample.yaml`, `fuel.yaml`,
+  `evidence/imagery.yaml`, `missions/sample.yaml`, `constraints.yaml` (the performance
+  requirements as an input, ADR-0027: launch margin, landing floor, dash,
+  climb, manoeuvre, loiter ceiling; conditions taken from the mission), `fuel.yaml`,
   `cycle.yaml`, `validation.yaml` and
-  `reference_engines.yaml` (twelve purchasable turbojets from PBS,
-  JetCat and AMT, all from vendor material; some fields still `null`,
+  `reference_engines.yaml` (nine purchasable turbojets from PBS
+  and AMT, all from vendor material; some fields still `null`,
   and PBS datasheet revisions disagree in places, as noted per entry).
+- `config/aero_estimate.yaml` is the owner's hand aerodynamic estimate
+  (tier C, +/-30 %, photo-scaled assumptions; ADR-0026): S_ref 0.071 m2
+  (missile convention), C_N_alpha about 15 /rad, C_D0 about 0.20, K about
+  0.06, (L/D)max about 4.5. It is an input, not a measurement; it does not
+  unblock geometry, and its numbers are correlated.
 - The only quantified evidence is overall length (1.5 m, 1.4 to 1.8),
   a reported mass (85 kg) and a reported top speed (700 km/h); the last
   two come from one uncorroborated secondary source.
 - Dependencies are optional extras in `pyproject.toml`: `cycle`
   (in use), `aero` and `uq` (not yet imported anywhere).
-- **ADR-0001 to 0024 are all Accepted** (0003 to 0024 on 2026-11-26).
-  0013 is superseded by 0021; 0006, 0007, 0008, 0009, 0010, 0012, 0014
-  and 0015 carry amendments (see `adr/README.md`). Read an amended ADR
+- **ADR-0001 to 0029 are all Accepted** (0003 to 0029 on 2026-11-26).
+  0013 is superseded by 0021; 0006, 0007, 0008, 0009, 0010, 0012, 0014,
+  0015, 0016, 0018, 0019, 0021, 0015, 0019, 0022, 0023 and 0026 carry amendments (see `adr/README.md`). Read an amended ADR
   together with the ADRs that amend it.
 - A change of direction needs a new ADR that amends or supersedes, not
   an edit of an accepted one.
+- **First-iteration coupled analysis exists (ADR-0029)** and is rough by
+  intent: algebraic turbojet lapse plus constant catalogue-median TSFC,
+  hand-estimate polar on `S_ref`, `config/analysis.yaml`. Nominal point
+  (85 kg): vertical launch binds, T_SL/W_TO 1.47, 614 N per engine, fuel
+  14.1 kg with reserve. The cycle analysis and engine deck replace the
+  lapse; take-off mass is swept, not solved (no ADR-0008 build-up).
 - Next step is the pixel measurements, then `geometry_from_imagery`,
   then the remaining notebooks in ADR-0021 order. `engine_deck`
-  (notebook 6) does not depend on geometry and can go ahead.
+  (notebook 6) does not depend on geometry and can go ahead; it is what
+  closes the lapse and TSFC of ADR-0029.
 - Everything below the next heading describes the *intended* structure
   per the ADRs.
 
@@ -132,6 +150,9 @@ to `out/` and reads only earlier handoffs:
 11. `off_design` -> `out/off_design.yaml`
 12. `uncertainty_and_sensitivity` -> `out/uq.yaml`
 13. `design_summary` (pure reader, writes nothing)
+14. `mission_profile` -> `out/mission_profile.yaml` (quotes and plots the
+    sample mission and its requirements; reads only config, ADR-0026,
+    ADR-0027)
 
 The constraint/mission/mass/engine coupling is resolved inside
 `roadrunner_re.design_point.solve_design_point()`, the **single call
@@ -214,7 +235,10 @@ deck), `engine_selection.py`, `installation.py`, `inverse.py` (sampling and reje
   rewritten; amend or supersede with a new ADR and update
   `adr/README.md` (CI fails if the index and the files disagree).
 - **Docs** are the README, the ADRs and the rendered notebooks,
-  published to <https://onurtuncer.github.io/Roadrunner/>. Do not write
+  published to <https://onurtuncer.github.io/Roadrunner/> as a design
+  report in the tailsitter format (ADR-0028): index generated from
+  `NOTEBOOK_ORDER`, notebooks at the site root, figures and handoffs
+  alongside. Every notebook's results are published. Do not write
   site-only content.
 - **Changelog**: when a version is tagged, write a `CHANGELOG.md` entry.
 

@@ -1,0 +1,68 @@
+# First-iteration coupled constraint and mission analysis (ADR-0029).
+#
+# ROUGH BY INTENT. The engine is an algebraic turbojet thrust lapse and a
+# constant thrust specific fuel consumption; the cycle analysis (pyCycle,
+# ADR-0015) closes the numbers at the end and supersedes both. Everything
+# below is an assumption or a convention with its source, and the
+# uncertain ones are inputs to the uncertainty analysis (ADR-0020).
+
+lapse:
+  model: turbojet_max_power
+  # Installed thrust lapse of a turbojet at maximum power, as a function of
+  # the total-to-standard ratios theta_0 and delta_0:
+  #   theta_0 <= TR:  alpha = delta_0 {1 - c_theta (theta_0 - 1) - c_mach sqrt(M0)}
+  #   theta_0 >  TR:  the same minus c_break (theta_0 - TR) / theta_0, times delta_0
+  coefficients:
+    c_theta: 0.3
+    c_mach: 0.1
+    c_break: 1.5
+  source: "UCK 474E Lecture 2 notes, table of installed thrust lapse models (turbojet, max); after Mattingly, Heiser and Pratt, Aircraft Engine Design, 2nd ed."
+  # TR is the throttle ratio, T_t4,max / T_t4,SLS. The cycle study sets it;
+  # 1.00 means no throttling at sea-level static.
+  throttle_ratio: {value: 1.00, low: 1.00, high: 1.08}
+  basis: {assumption: "Throttle ratio is a cycle choice not yet made; 1.00 is the simplest engine and the upper bound is the lecture's AAF-like value."}
+
+# The drag polar is the owner's hand estimate (config/aero_estimate.yaml,
+# tier C, +/-30 %), nominal values, referred to its body-cross-section
+# S_ref. Wing loading below is therefore W_TO / S_ref, not wing loading in
+# the usual sense. The polar is held constant with Mach number: no
+# transonic drag rise. K2 and C_DR are zero (preliminary convention).
+polar:
+  source: aero_estimate
+  k2: 0.0
+  cdr: 0.0
+
+# Thrust specific fuel consumption: one constant value from the catalogue
+# (median of the published or derived figures), at every condition and
+# power setting. No part-throttle penalty, which understates loiter fuel.
+tsfc:
+  source: catalogue_median
+
+# Idle thrust fraction, for the landing thrust floor: catalogue median.
+idle:
+  source: catalogue_median
+
+propulsion:
+  engine_count: 2
+  basis: {assumption: "Two identical engines (ADR-0023). Thrust is split equally; no installation loss is applied yet (ADR-0011), so installed and datasheet thrust are taken equal."}
+
+# Descent is not flown: the weight fraction over the descent is assumed.
+descent:
+  weight_fraction: {value: 0.995, low: 0.990, high: 1.000}
+  basis: {assumption: "Idle descent burns little fuel; its duration is not set by the mission. A placeholder, small and bounded."}
+
+# Numerical settings.
+integration:
+  climb_steps: 60
+  level_steps: 60
+coupling:
+  tolerance: 1.0e-9
+  max_iterations: 100
+
+# Constraint diagram and take-off mass sweep (presentation of the same model).
+diagram:
+  wing_loading_min_Pa: 3000.0
+  wing_loading_max_Pa: 25000.0
+  points: 200
+sweep:
+  takeoff_mass_points: 12

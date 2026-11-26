@@ -1,0 +1,81 @@
+# Performance requirements the engine must meet (ADR-0019, ADR-0027). An INPUT.
+#
+# Each entry is one constraint on the thrust loading T_SL/W_TO. The
+# constraint analysis turns them into curves; this file only says what is
+# required, where, and why.
+#
+# The flight condition of a constraint is NOT repeated here: where a
+# requirement belongs to a mission segment it points at it with
+# `from_segment`, so the mission (config/missions/<mission>.yaml) stays the
+# single place for Mach, altitude and the day. Change the mission and the
+# constraints follow. `weight_at` names the segment at whose START the
+# weight fraction beta is taken (found by the mission analysis).
+#
+# `sense`: lower_bound means T_SL/W_TO must be at least the value the
+# constraint gives; upper_bound means it must not exceed it (the landing
+# thrust floor, ADR-0019).
+#
+# Numbers: NOT published by anyone. Every value below is an assumption
+# with wide bounds, and every one is an uncertain input to the uncertainty
+# and sensitivity analysis (ADR-0020), uniform between low and high.
+# Evidence is cited by ledger id where a claim gives the shape. The set of
+# requirement types follows UCK 474E Lecture 2: cruise/dash (case I),
+# climb (II), sustained turn (III) and service ceiling (VIII), with the
+# ground-roll cases (V, VI, VII, IX) replaced by vertical launch and
+# landing. Horizontal acceleration (case IV) is not included.
+
+mission: sample
+
+constraints:
+
+  - id: vertical_launch
+    type: vertical_launch
+    sense: lower_bound
+    weight_at: launch
+    altitude_m: 0.0                  # sea-level static; the day is the mission's
+    thrust_to_weight_margin: {value: 1.30, low: 1.15, high: 1.60}
+    basis: {evidence: vtol_launch_and_landing, assumption: "Installed thrust over weight at launch, covering vertical acceleration and thrust-vector control reserve (ADR-0009, OP1). The claim gives vertical launch, not a margin. Expected to dominate the engine size."}
+
+  - id: landing_floor
+    type: vertical_landing_floor
+    sense: upper_bound
+    weight_at: landing
+    altitude_m: 0.0
+    max_floor_to_landing_weight: {value: 0.90, low: 0.70, high: 1.00}
+    basis: {evidence: vtol_launch_and_landing, assumption: "The minimum stable thrust of the engine pair must not exceed this fraction of landing weight, or the vehicle cannot hover down. No number published. Checks the published idle thrust (ADR-0009, OP2)."}
+
+  - id: dash
+    type: level_flight
+    sense: lower_bound
+    weight_at: dash_out
+    mach: {from_segment: dash_out}
+    altitude_m: {from_segment: dash_out}
+    load_factor: 1.0
+    basis: {evidence: speed_high_subsonic, assumption: "Thrust equals drag at the dash condition of the sample mission (ADR-0009, OP3). No new number: the condition comes from the mission."}
+
+  - id: initial_climb
+    type: climb
+    sense: lower_bound
+    weight_at: climb_out
+    mach: {from_segment: climb_out}
+    altitude_m: 0.0                  # start of the climb, after the transition
+    rate_of_climb_m_s: {value: 20.0, low: 10.0, high: 30.0}
+    basis: {evidence: altitude_significant, assumption: "A rate of climb at the climb Mach number and sea level, hot day. 'Significant altitude' in a short time is claimed; no rate is. Placeholder, expected not to bind."}
+
+  - id: manoeuvre
+    type: sustained_load_factor
+    sense: lower_bound
+    weight_at: dash_out
+    mach: {from_segment: cruise_back}
+    altitude_m: {from_segment: climb_out}
+    load_factor: {value: 3.0, low: 2.0, high: 5.0}
+    basis: {assumption: "A generic sustained-turn requirement (ADR-0019, item 5); nothing in the ledger gives one. Mach number is the economical transit speed, altitude is the mission's. Expected not to bind; a high n would."}
+
+  - id: loiter_ceiling
+    type: ceiling
+    sense: lower_bound
+    weight_at: loiter
+    mach: {from_segment: loiter}
+    altitude_m: {from_segment: loiter}
+    rate_of_climb_m_s: {value: 0.5, low: 0.25, high: 2.5}
+    basis: {evidence: loiter_and_return, assumption: "A small residual climb rate at the loiter condition, so the loiter altitude is not the vehicle's ceiling (UCK 474E Lecture 2, case VIII, gives 0.5 m/s as an example service-ceiling rate). A placeholder, not a claim about the vehicle."}
