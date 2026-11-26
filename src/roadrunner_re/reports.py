@@ -50,7 +50,7 @@ def cautions(claims: dict[str, Claim]) -> str:
 
 
 def _fmt(value, spec: str, width: int) -> str:
-    return f"{'-':>{width}s}" if value is None else f"{value:{width}{spec}}"
+    return f"{'-':>{width}s}" if value is None else f"{format(value, spec):>{width}s}"
 
 
 def catalogue_table(engines: dict[str, Engine]) -> str:
@@ -110,3 +110,29 @@ def missing_fields_table(engines: dict[str, Engine]) -> str:
         if e.missing_fields:
             rows += textwrap.wrap(f"{e.id}: {', '.join(e.missing_fields)}", _WIDTH, subsequent_indent="    ")
     return "\n".join(rows) or "every datasheet field is filled"
+
+
+def anchor_table(anchors: dict) -> str:
+    """Cycle model matched to each datasheet. An asterisk marks an assumed pressure ratio."""
+    rows = [f"{'engine':18s}{'PR':>6s}{'Tt4 K':>8s}{'Tt5 K':>8s}{'EGT K':>8s}{'Tt5-EGT':>9s}{'comb. eff':>11s}"
+            f"{'kg/s/m2':>9s}", "-" * _WIDTH]
+    for a in anchors.values():
+        pr = f"{a.pressure_ratio:.1f}{' ' if a.pressure_ratio_published else '*'}"
+        rows.append(f"{a.engine_id:18s}{pr:>6s}{a.Tt4_K:8.0f}{a.Tt5_K:8.0f}{_fmt(a.egt_published_K, '.0f', 8)}"
+                    f"{_fmt(a.egt_residual_K, '+.0f', 9)}{_fmt(a.combustion_efficiency, '.2f', 11)}"
+                    f"{a.mass_flow_per_frontal_area_kg_s_m2:9.1f}")
+    return "\n".join(rows)
+
+
+def blind_prediction_table(predictions: dict, quantity: str, scale: float = 1.0, unit: str = "") -> str:
+    """Leave-one-out predictions of one quantity against the datasheets."""
+    rows = [f"{quantity} {unit}".strip(),
+            f"{'engine':18s}{'published':>11s}{'predicted':>11s}{'low':>9s}{'high':>9s}{'error':>8s}  verdict", "-" * _WIDTH]
+    for p in predictions.values():
+        u, pub = p.predicted[quantity], p.published[quantity]
+        error = None if pub is None else u.value / pub - 1.0
+        verdict = {None: "no published value", True: "pass"}.get(
+            p.passed[quantity], "outside interval" if p.inside[quantity] is False else "interval too wide")
+        rows.append(f"{p.engine_id:18s}{_fmt(pub and pub * scale, '.3g', 11)}{u.value * scale:11.3g}"
+                    f"{u.low * scale:9.3g}{u.high * scale:9.3g}{_fmt(error, '+.0%', 8)}  {verdict}")
+    return "\n".join(rows)

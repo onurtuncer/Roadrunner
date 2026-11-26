@@ -16,8 +16,14 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-# Pinned per ADR-0015; installed by the stages that need it.
-cycle = ["om-pycycle==4.4.0", "openmdao>=3.10"]
+# pyCycle pinned per ADR-0015. Pinned to an upstream commit, not the 4.4.0
+# release on PyPI: 4.4.0's tabular thermodynamics fails under NumPy 2
+# ("setting an array element with a sequence"); this commit carries the
+# upstream fix. Move back to a PyPI release once one includes it.
+cycle = [
+    "om-pycycle @ git+https://github.com/OpenMDAO/pyCycle@ee7e16126a7a54b5fe35292c53b7eb4e9572620b",
+    "openmdao>=3.30",
+]
 aero = ["aerosandbox>=4.2"]
 uq = ["SALib>=1.5"]
 notebooks = ["jupyter>=1.0", "matplotlib>=3.7.5"]

@@ -1,0 +1,39 @@
+# pyCycle turbojet model settings (ADR-0015, ADR-0023).
+#
+# The model is a single-spool turbojet: inlet, compressor, combustor,
+# turbine, convergent nozzle. When it is anchored to a datasheet, the
+# published thrust, air flow and pressure ratio fix the turbine inlet
+# temperature, and the published fuel flow then fixes a lumped
+# combustion efficiency. Everything below is what has to be ASSUMED to
+# do that, because no vendor publishes it. Each value has bounds and is
+# an uncertain input (ADR-0020).
+
+losses:
+  inlet_recovery_static: {value: 0.99, low: 0.97, high: 1.00}
+  compressor_efficiency: {value: 0.74, low: 0.68, high: 0.80}    # isentropic, total-to-total
+  burner_pressure_loss: {value: 0.05, low: 0.03, high: 0.08}     # dPt/Pt across the combustor
+  turbine_efficiency: {value: 0.82, low: 0.76, high: 0.88}       # isentropic
+  nozzle_velocity_coefficient: {value: 0.98, low: 0.96, high: 0.99}
+  basis:
+    assumption: >-
+      Typical values for small centrifugal-compressor turbojets with a
+      single-stage axial turbine and a plain convergent nozzle. No
+      catalogue datasheet states any of them. Combustion is complete in
+      the model; the gap between its fuel flow and the published one is
+      reported as a lumped combustion efficiency (it also absorbs oil
+      burnt with the fuel and any error in the assumed efficiencies).
+
+# Pressure ratio to assume when a datasheet does not publish one: the
+# range of the engines that do (out/technology.yaml, four engines).
+pressure_ratio_when_unpublished: {value: 3.9, low: 3.8, high: 4.0}
+pressure_ratio_basis:
+  assumption: Range of the four catalogue engines that publish a pressure ratio; all are single-stage centrifugal machines.
+
+# Mach numbers at which pyCycle evaluates static conditions inside the
+# engine. They size internal flow areas only and do not change thrust or
+# fuel consumption at the design point.
+station_mach:
+  inlet_exit: 0.30
+  compressor_exit: 0.20
+  burner_exit: 0.10
+  turbine_exit: 0.40

@@ -47,3 +47,18 @@ def test_datasheets_imply_the_configured_fuel_density_within_one_percent():
     implied = t["fuel_density_kg_m3"]["implied_by_datasheets"]
     assert len(implied) == 5
     assert all(abs(rho / used - 1.0) < 0.01 for rho in implied.values())
+
+
+def test_validation_pins():
+    """Anchored cycle model and leave-one-out blind test (notebook 5). Solver results: pinned to 0.1 %."""
+    v = yaml.safe_load((OUT / "validation.yaml").read_text(encoding="utf-8"))
+    assert v["pass_counts"] == {"thrust_N": {"passed": 8, "of": 8}, "air_mass_flow_kg_s": {"passed": 5, "of": 8},
+                                "sfc_kg_N_s": {"passed": 6, "of": 6}}
+    t = v["anchored_technology"]
+    assert (t["Tt4_K"]["low"], t["Tt4_K"]["high"], t["Tt4_K"]["n"]) == pytest.approx((1088.3, 1301.3, 8), rel=1e-3)
+    assert (t["combustion_efficiency"]["low"], t["combustion_efficiency"]["high"]) == \
+        pytest.approx((0.74911, 0.98707), rel=1e-3)
+    assert (t["egt_residual_K"]["low"], t["egt_residual_K"]["high"], t["egt_residual_K"]["n"]) == \
+        pytest.approx((-121.4, 134.0, 4), abs=1.0)
+    p1000 = v["leave_one_out"]["jetcat_p1000_pro"]["thrust_N"]
+    assert (p1000["published"], p1000["value"]) == pytest.approx((1100.0, 998.5), rel=1e-3)

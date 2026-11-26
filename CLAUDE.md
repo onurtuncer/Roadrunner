@@ -14,13 +14,38 @@ repo does.
   handoff), `mission_profile.py` (mission loader with the provenance
   check), `engine_catalogue.py` (catalogue loader), `technology.py`, `atmosphere.py` (ISA, tested against published tables),
   `geometry.py` (pixel measurements to length intervals, engine
-  envelope), `notebook.py`, `reports.py`, `plots/engines.py`. Everything else in the layout
+  envelope), `cycle/`, `validation.py`, `notebook.py`, `reports.py`,
+  `plots/`. Everything else in the layout
   below is still to be written.
-- Notebooks 1 (`evidence_ledger` -> `out/evidence.yaml`) and 4
-  (`reference_engines` -> `out/technology.yaml`) exist and are the
-  entries of `NOTEBOOK_ORDER` in `design-pipeline.yml`.
+- Notebooks 1 (`evidence_ledger`), 4 (`reference_engines`) and 5
+  (`method_validation`) exist, write `out/evidence.yaml`,
+  `out/technology.yaml` and `out/validation.yaml`, and are the entries
+  of `NOTEBOOK_ORDER` in `design-pipeline.yml`.
   `tests/test_design_outputs.py` pins the handoffs and runs in the
   pipeline, not in `ci.yml`.
+- **pyCycle is in use** (`cycle/turbojet.py`, design point only):
+  `run_design_point` (given Tt4) and `match_thrust` (given thrust).
+  `validation.py` anchors the model to each datasheet and runs the
+  leave-one-out blind test. `tests/test_cycle.py` needs pyCycle, is
+  skipped where it is not installed and runs in the pipeline.
+- **pyCycle is pinned to an upstream git commit**, not PyPI 4.4.0, whose
+  tabular thermo fails under NumPy 2 (see the comment in
+  `pyproject.toml`). Do not "tidy" the pin back to the PyPI release
+  without checking that release runs.
+- **Anchoring method** (decided while building, consistent with
+  ADR-0023): compressor and turbine efficiencies are ASSUMED
+  (`config/cycle.yaml`); thrust + air flow + pressure ratio give Tt4;
+  published fuel flow then gives a lumped combustion efficiency.
+  Solving for compressor efficiency from fuel flow instead was tried
+  and rejected: it gave efficiencies of 0.54 to 0.73 and Tt4 up to
+  1540 K, which are not credible for these engines.
+- Validation result: blind from diameter alone, thrust is inside the
+  predicted interval for 8 of 8 engines (nominal error -9 to +13 %),
+  SFC for 6 of 6 (-11 to +18 %), air flow for 5 of 8. Standing
+  findings: model Tt5 differs from published EGT by -121 to +134 K;
+  anchored Tt4 (1088 to 1301 K) depends on the assumed efficiencies.
+- Off-design (maps, part throttle, altitude lapse at fixed geometry) is
+  NOT built yet; that is the `engine_deck` stage.
 - `technology.py` is datasheet arithmetic only (figures of merit,
   catalogue bounds, mass power law, implied fuel density). Result so
   far: thrust per frontal area is 20.7 to 29.2 kN/m2 across all twelve
@@ -35,16 +60,16 @@ repo does.
   pixel coordinates or dimensions.
 - `config/` holds `atmosphere.yaml`, `geometry.yaml`,
   `evidence/claims.yaml`, `evidence/vehicle.yaml`,
-  `evidence/imagery.yaml`, `missions/sample.yaml`, `fuel.yaml` and
+  `evidence/imagery.yaml`, `missions/sample.yaml`, `fuel.yaml`,
+  `cycle.yaml`, `validation.yaml` and
   `reference_engines.yaml` (twelve purchasable turbojets from PBS,
   JetCat and AMT, all from vendor material; some fields still `null`,
   and PBS datasheet revisions disagree in places, as noted per entry).
 - The only quantified evidence is overall length (1.5 m, 1.4 to 1.8),
   a reported mass (85 kg) and a reported top speed (700 km/h); the last
   two come from one uncorroborated secondary source.
-- Dependencies for later stages are optional extras in `pyproject.toml`
-  (`cycle`, `aero`, `uq`); pyCycle is pinned there and is not yet
-  imported anywhere.
+- Dependencies are optional extras in `pyproject.toml`: `cycle`
+  (in use), `aero` and `uq` (not yet imported anywhere).
 - **ADR-0001 to 0023 are all Accepted** (0003 to 0023 on 2026-11-26).
   0013 is superseded by 0021; 0006, 0008, 0009, 0010, 0012, 0014 and
   0015 carry amendments (see `adr/README.md`). Read an amended ADR
@@ -52,9 +77,8 @@ repo does.
 - A change of direction needs a new ADR that amends or supersedes, not
   an edit of an accepted one.
 - Next step is the pixel measurements, then `geometry_from_imagery`,
-  then the remaining notebooks in ADR-0021 order. The pyCycle stages
-  (`method_validation`, `engine_deck`) do not depend on geometry and
-  can go ahead.
+  then the remaining notebooks in ADR-0021 order. `engine_deck`
+  (notebook 6) does not depend on geometry and can go ahead.
 - Everything below the next heading describes the *intended* structure
   per the ADRs.
 
