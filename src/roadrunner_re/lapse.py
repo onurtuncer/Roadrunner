@@ -13,7 +13,9 @@ from roadrunner_re.atmosphere import IsaAtmosphere
 
 
 @dataclass(frozen=True)
-class TurbojetLapse:
+class PreliminaryLapseEstimate:
+    """Maximum-power thrust lapse from the algebraic formulas; the cycle's off-design lapse replaces it (ADR-0033)."""
+
     c_theta: float
     c_mach: float
     c_break: float

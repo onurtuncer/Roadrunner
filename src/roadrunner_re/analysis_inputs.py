@@ -12,7 +12,7 @@ from roadrunner_re.constraint_inputs import ConstraintSet, load_constraints
 from roadrunner_re.engine_catalogue import load_engine_catalogue
 from roadrunner_re.evidence import load_claims, quantified
 from roadrunner_re.engine_model import AlgebraicEngine
-from roadrunner_re.lapse import TurbojetLapse
+from roadrunner_re.lapse import PreliminaryLapseEstimate
 from roadrunner_re.technology import (MassCorrelation, catalogue_metrics, fit_mass_correlation, load_fuel_density,
                                       load_gravity)
 from roadrunner_re.uncertain import Uncertain, parse_uncertain
@@ -38,7 +38,7 @@ class AnalysisInputs:
     requirements: ConstraintSet
     aero: AeroEstimate
     polar: Polar
-    lapse: TurbojetLapse
+    lapse: PreliminaryLapseEstimate
     throttle_ratio: Uncertain
     tsfc_kg_N_s: float
     idle_thrust_fraction: float
@@ -81,7 +81,7 @@ def load_analysis_inputs(path: str | Path = "analysis.yaml") -> AnalysisInputs:
 
     throttle_ratio = parse_uncertain(raw["lapse"]["throttle_ratio"], f"{path}:lapse.throttle_ratio")
     coefficients = raw["lapse"]["coefficients"]
-    lapse = TurbojetLapse(float(coefficients["c_theta"]), float(coefficients["c_mach"]),
+    lapse = PreliminaryLapseEstimate(float(coefficients["c_theta"]), float(coefficients["c_mach"]),
                           float(coefficients["c_break"]), throttle_ratio.value)
     est, geom = aero["estimates"], aero["geometry"]
     polar = Polar(geom["s_ref_m2"].value, est["induced_drag_factor_k"].value, float(raw["polar"]["k2"]),
