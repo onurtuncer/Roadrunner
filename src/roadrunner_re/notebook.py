@@ -16,8 +16,8 @@ class NotebookPaths:
 
 
 def nb_setup() -> NotebookPaths:
-    """Repo paths for a notebook; creates ``out/`` and the figure directory."""
-    paths = NotebookPaths(REPO_ROOT, CONFIG_DIR, REPO_ROOT / "out", REPO_ROOT / "notebooks" / "figures")
+    """Repo paths for a notebook; creates ``out/`` and ``out/figures/`` (ADR-0035)."""
+    paths = NotebookPaths(REPO_ROOT, CONFIG_DIR, REPO_ROOT / "out", REPO_ROOT / "out" / "figures")
     paths.out.mkdir(exist_ok=True)
     paths.figures.mkdir(parents=True, exist_ok=True)
     return paths

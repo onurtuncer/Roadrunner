@@ -97,10 +97,10 @@ repo does.
   two come from one uncorroborated secondary source.
 - Dependencies are optional extras in `pyproject.toml`: `cycle`
   (in use), `aero` and `uq` (not yet imported anywhere).
-- **ADR-0001 to 0034 are all Accepted** (0003 to 0033 on 2026-11-26, 0034 on
-  2026-11-27).
+- **ADR-0001 to 0035 are all Accepted** (0003 to 0033 on 2026-11-26, 0034 and
+  0035 on 2026-11-27).
   0013 is superseded by 0021; 0006, 0007, 0008, 0009, 0010, 0012, 0014,
-  0015, 0016, 0018, 0019, 0021, 0022, 0023, 0026, 0029, 0030 and 0031 carry
+  0015, 0016, 0018, 0019, 0021, 0022, 0023, 0026, 0028, 0029, 0030 and 0031 carry
   amendments (see `adr/README.md`). Read an amended ADR together with the
   ADRs that amend it.
 - A change of direction needs a new ADR that amends or supersedes, not
@@ -269,7 +269,7 @@ deck), `engine_selection.py`, `installation.py`, `inverse.py` (sampling and reje
 - **Docs** are the README, the ADRs and the rendered notebooks,
   published to <https://onurtuncer.github.io/Roadrunner/> as a design
   report in the tailsitter format (ADR-0028): index generated from
-  `NOTEBOOK_ORDER`, notebooks at the site root, figures and handoffs
+  `NOTEBOOK_ORDER`, notebooks at the site root, figures (written to `out/figures/`, ADR-0035) and handoffs
   alongside. Every notebook's results are published. Do not write
   site-only content.
 - **Changelog**: when a version is tagged, write a `CHANGELOG.md` entry.

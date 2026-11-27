@@ -35,6 +35,6 @@ def test_index_carries_handoffs_and_figures(tmp_path):
     assert (site / "out" / "evidence.yaml").exists()
     index = (site / "index.html").read_text(encoding="utf-8")
     assert 'href="out/evidence.yaml"' in index
-    if list((REPO / "notebooks" / "figures").glob("*.png")):
+    if list((REPO / "out" / "figures").glob("*.png")):
         assert "<h2>Figures</h2>" in index
 
