@@ -12,7 +12,7 @@
 # pipeline.
 #
 # Energy accounting only (ADR-0004): the payload stays on board for the
-# whole mission; there is no engagement segment.
+# whole mission.
 #
 # Flight condition convention (ADR-0017): geopotential altitude in
 # metres, Mach number, ISA temperature offset in kelvin.

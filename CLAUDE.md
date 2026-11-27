@@ -142,9 +142,9 @@ the public evidence, within these bounds".
 - In: the propulsion system, and only as much vehicle (mass, drag,
   mission fuel) as is needed to generate propulsion requirements.
 - Subject is the baseline vehicle. Payload is a mass and a volume.
-- Out, permanently: warhead, fuzing, seeker, guidance, engagement
-  kinematics, signature, countermeasures, command-and-control. Do not
-  add these even if asked in passing; raise it with the owner instead.
+- Nothing is modelled beyond the propulsion system and the payload mass
+  and volume. Do not add other subsystems even if asked in passing;
+  raise it with the owner instead.
 - Public sources only. No export-controlled or proprietary material.
 
 ## Architecture: the pipeline
