@@ -50,8 +50,8 @@ out/         handoff files written by the notebooks
 ## Scope
 
 Propulsion of the baseline vehicle only, for teaching. Payload is
-treated as a mass and a volume. Weapon, seeker and guidance topics are
-out of scope. All results are estimates, not specifications.
+treated as a mass and a volume. All results are estimates, not
+specifications.
 
 ## License
 

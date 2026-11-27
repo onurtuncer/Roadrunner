@@ -51,7 +51,7 @@ def _write(tmp_path, raw):
     lambda r: r["constraints"][0].update(weight_at="nonexistent"),
     lambda r: r["constraints"][2]["mach"].update(from_segment="nonexistent"),
     lambda r: r["constraints"][0].update(sense="sideways"),
-    lambda r: r["constraints"][0].update(type="warhead"),
+    lambda r: r["constraints"][0].update(type="unsupported"),
     lambda r: r["constraints"].append(copy.deepcopy(r["constraints"][0])),
 ])
 def test_loader_rejects_bad_requirements(tmp_path, edit):

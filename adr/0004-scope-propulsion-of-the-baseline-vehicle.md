@@ -5,9 +5,8 @@ Status: Accepted (2026-11-26)
 ## Context
 
 The subject is the Anduril Roadrunner: a ~1.5 m, twin-turbojet,
-thrust-vectored, reusable VTOL air vehicle. It has a baseline
-modular-payload version and a munition variant (Roadrunner-M). This is a
-propulsion course project. Without a written boundary the study will
+thrust-vectored, reusable VTOL air vehicle with a modular payload. This
+is a propulsion course project. Without a written boundary the study will
 drift into areas that are neither propulsion nor appropriate for an open
 university repository.
 
@@ -19,9 +18,8 @@ university repository.
   and thrust-vectoring losses, off-design behaviour.
 - **Subject is the baseline Roadrunner.** Payload is a mass and a volume
   (`config/payload.yaml`), nothing else.
-- **Out of scope, permanently:** warhead, fuzing, seeker, guidance and
-  engagement kinematics, signature, countermeasures, command-and-control.
-  The mission is an energy-accounting profile
+- **Out of scope:** everything except the propulsion system and the
+  payload mass and volume. The mission is an energy-accounting profile
   (launch, climb, dash, loiter, return, vertical landing), not a tactical one.
 - **Public sources only**: manufacturer releases, press reporting,
   published imagery and video, open literature, COTS engine datasheets.
