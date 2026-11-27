@@ -3,7 +3,7 @@
 Two interchangeable models answer the same three questions: installed thrust
 over the standard-day sea-level static thrust (``alpha``), real SFC at a
 flight condition and throttle (``sfc_kg_N_s``), and a description for the
-handoff. ``AlgebraicEngine`` is the preliminary model (lecture lapse, one
+handoff. ``PreliminaryEngineEstimate`` is the preliminary model (lecture lapse, one
 constant TSFC); ``CycleEngine`` interpolates the tables of ``out/off_design.yaml``
 (pyCycle, ADR-0032). Size enters only through the air flow, so both are
 used in specific, relative terms (ADR-0024).
@@ -22,7 +22,7 @@ class OutsideEngineModel(ValueError):
     """A condition or throttle outside what the off-design tables cover (never extrapolated)."""
 
 
-class AlgebraicEngine:
+class PreliminaryEngineEstimate:
     """Lecture turbojet lapse and one constant TSFC at every condition and throttle."""
 
     def __init__(self, lapse: PreliminaryLapseEstimate, tsfc_kg_N_s: float):
