@@ -10,17 +10,20 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import yaml
 
 from roadrunner_re.analysis_inputs import AnalysisInputs
 from roadrunner_re.config import ConfigError, load_yaml
-from roadrunner_re.cycle.design import DesignInputs
-from roadrunner_re.cycle.offdesign import OffDesignRequest, OffDesignResult, run_off_design
-from roadrunner_re.cycle.turbojet import CycleResult, CycleSettings, FlightCondition
 from roadrunner_re.design_point import DesignPoint
 from roadrunner_re.mission import drag_N
 from roadrunner_re.notebook import handoff_header
+
+if TYPE_CHECKING:  # pyCycle is the optional ``cycle`` extra; the config loader must work without it
+    from roadrunner_re.cycle.design import DesignInputs
+    from roadrunner_re.cycle.offdesign import OffDesignResult
+    from roadrunner_re.cycle.turbojet import CycleResult, CycleSettings
 
 SIMPLIFICATIONS = (
     "generic pyCycle maps (an axial compressor map for a centrifugal machine); shaft speed is a result, not a limit",
@@ -95,7 +98,10 @@ def _mission_conditions(analysis: AnalysisInputs, config: OffDesignConfig) -> li
 def run_study(analysis: AnalysisInputs, settings: CycleSettings, config: OffDesignConfig, design_inputs: DesignInputs,
               design: CycleResult, design_point: DesignPoint, combustion_efficiency: float) -> OffDesignStudy:
     """Maximum-power lapse grid, part-throttle SFC at the mission's conditions, and the landing thrust floor."""
-    hot = analysis.mission.dT_isa_K.value
+    from roadrunner_re.cycle.offdesign import OffDesignRequest, run_off_design
+    from roadrunner_re.cycle.turbojet import FlightCondition
+
+    hot =analysis.mission.dT_isa_K.value
     days = sorted({0.0, hot, *config.extra_dT_isa_K})
     Tt4 = design_inputs.Tt4_K
     max_requests = [OffDesignRequest(FlightCondition(h, m, dT), Tt4)
