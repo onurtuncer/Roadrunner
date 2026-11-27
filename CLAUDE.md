@@ -97,7 +97,8 @@ repo does.
   two come from one uncorroborated secondary source.
 - Dependencies are optional extras in `pyproject.toml`: `cycle`
   (in use), `aero` and `uq` (not yet imported anywhere).
-- **ADR-0001 to 0033 are all Accepted** (0003 to 0033 on 2026-11-26).
+- **ADR-0001 to 0034 are all Accepted** (0003 to 0033 on 2026-11-26, 0034 on
+  2026-11-27).
   0013 is superseded by 0021; 0006, 0007, 0008, 0009, 0010, 0012, 0014,
   0015, 0016, 0018, 0019, 0021, 0022, 0023, 0026, 0029, 0030 and 0031 carry
   amendments (see `adr/README.md`). Read an amended ADR together with the
@@ -183,8 +184,11 @@ sequence:
 15. `design_summary` (P; pure reader, writes nothing)
 
 There is no `engine_deck` notebook (ADR-0030): any deck for the sampler is
-a by-product of `off_design`. File names carry no number; titles carry
-"notebook N of 15".
+a by-product of `off_design`. Files are `notebooks/NN_<name>.ipynb` (two-digit
+position, ADR-0034) and titles carry "notebook N of 15"; handoffs, `out/` file
+names and code use the unnumbered logical name (`off_design`), resolved to a file
+by `notebook.notebook_file()`. `tests/test_notebook_names.py` keeps prefixes,
+titles and `NOTEBOOK_ORDER` in step.
 
 The constraint/mission/mass/engine coupling is resolved inside
 `roadrunner_re.design_point.solve_design_point()`, the **single call
@@ -326,5 +330,6 @@ visible in notebooks and summaries.
 - Report margins and standing findings honestly (a constraint that
   barely closes, a crude model such as the scalar re-ingestion term);
   collect them programmatically in `design_summary`.
-- Run tests with `pip install -e ".[dev]"` then `pytest`; lint with
+- Install everything with `pip install -r requirements.txt` (in a venv; no git
+  needed: pyCycle comes as the archive of the pinned commit), then `pytest`; lint with
   `ruff check src tests scripts`.

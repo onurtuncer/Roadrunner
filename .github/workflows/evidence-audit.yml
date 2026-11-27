@@ -32,7 +32,7 @@ jobs:
           for seed in 1 2; do
             rm -f out/evidence.yaml
             PYTHONHASHSEED=$seed python -m jupyter nbconvert --execute --to notebook \
-              --ExecutePreprocessor.kernel_name=python3 --output-dir=evidence-audit notebooks/evidence_ledger.ipynb
+              --ExecutePreprocessor.kernel_name=python3 --output-dir=evidence-audit notebooks/01_evidence_ledger.ipynb
             cp out/evidence.yaml "evidence-audit/evidence-$seed.yaml"
           done
           diff -u evidence-audit/evidence-{1,2}.yaml

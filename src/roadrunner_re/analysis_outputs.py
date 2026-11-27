@@ -9,6 +9,7 @@ from roadrunner_re.analysis_inputs import AnalysisInputs
 from roadrunner_re.design_point import DesignPoint, solve_design_point
 from roadrunner_re.engine_model import OutsideEngineModel
 from roadrunner_re.mission import InfeasibleMission
+from roadrunner_re.notebook import handoff_header
 
 CYCLE_SIMPLIFICATIONS = (
     "thrust lapse and SFC are interpolated from the pyCycle off-design tables; outside their grid the analysis refuses to run",
@@ -124,6 +125,6 @@ def mission_out(inputs: AnalysisInputs, dp: DesignPoint, sweep: list[dict], *,
 def write_handoff(handoff: dict, path: str | Path) -> Path:
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    header = f"# Handoff of notebooks/{handoff['notebook']}.ipynb. Generated; do not edit (ADR-0001).\n"
+    header = handoff_header(handoff['notebook'])
     path.write_text(header + yaml.safe_dump(handoff, sort_keys=False), encoding="utf-8")
     return path

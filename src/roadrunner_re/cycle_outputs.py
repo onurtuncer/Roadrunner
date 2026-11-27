@@ -9,6 +9,7 @@ import yaml
 from roadrunner_re.cycle.design import DesignInputs
 from roadrunner_re.cycle.turbojet import CycleResult
 from roadrunner_re.uncertain import Uncertain
+from roadrunner_re.notebook import handoff_header
 
 NOTES = (
     "required engine at OP1 on the mission's hot day, not a catalogue engine (ADR-0023)",
@@ -59,6 +60,6 @@ def cycle_handoff(inputs: DesignInputs, result: CycleResult, *, engine_count: in
 def write_cycle_handoff(handoff: dict, path: str | Path) -> Path:
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    header = "# Handoff of notebooks/cycle_design_point.ipynb. Generated; do not edit (ADR-0001).\n"
+    header = handoff_header("cycle_design_point")
     path.write_text(header + yaml.safe_dump(handoff, sort_keys=False), encoding="utf-8")
     return path

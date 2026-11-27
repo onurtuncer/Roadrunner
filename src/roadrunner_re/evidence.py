@@ -8,6 +8,7 @@ import yaml
 
 from roadrunner_re.config import CONFIG_DIR, ConfigError, load_yaml
 from roadrunner_re.uncertain import Uncertain, parse_uncertain
+from roadrunner_re.notebook import handoff_header
 
 TIERS = ("A", "B", "C", "X")
 #: Tier X is a marketing comparative with no stated baseline: never an input.
@@ -114,6 +115,6 @@ def evidence_handoff(claims: dict[str, Claim]) -> dict:
 def write_evidence_handoff(claims: dict[str, Claim], path: str | Path) -> Path:
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    header = "# Handoff of notebooks/evidence_ledger.ipynb. Generated; do not edit (ADR-0001).\n"
+    header = handoff_header("evidence_ledger")
     path.write_text(header + yaml.safe_dump(evidence_handoff(claims), sort_keys=False), encoding="utf-8")
     return path

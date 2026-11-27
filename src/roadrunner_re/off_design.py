@@ -20,6 +20,7 @@ from roadrunner_re.cycle.offdesign import OffDesignRequest, OffDesignResult, run
 from roadrunner_re.cycle.turbojet import CycleResult, CycleSettings, FlightCondition
 from roadrunner_re.design_point import DesignPoint
 from roadrunner_re.mission import drag_N
+from roadrunner_re.notebook import handoff_header
 
 SIMPLIFICATIONS = (
     "generic pyCycle maps (an axial compressor map for a centrifugal machine); shaft speed is a result, not a limit",
@@ -195,6 +196,6 @@ def off_design_handoff(study: OffDesignStudy, analysis: AnalysisInputs, design_p
 def write_off_design_handoff(handoff: dict, path: str | Path) -> Path:
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    header = "# Handoff of notebooks/off_design.ipynb. Generated; do not edit (ADR-0001).\n"
+    header = handoff_header("off_design")
     path.write_text(header + yaml.safe_dump(handoff, sort_keys=False), encoding="utf-8")
     return path

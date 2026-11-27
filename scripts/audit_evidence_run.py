@@ -44,7 +44,7 @@ def main():
             record.update(quantity=claim.quantity, unit=unit)
         records[claim.id] = record
 
-    inputs = [Path("notebooks/evidence_ledger.ipynb"), *sorted(Path("config/evidence").glob("*.yaml"))]
+    inputs = [Path("notebooks/01_evidence_ledger.ipynb"), *sorted(Path("config/evidence").glob("*.yaml"))]
     manifest = {
         "commit": subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip(),
         "python": platform.python_version(),
