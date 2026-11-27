@@ -5,7 +5,7 @@ import pytest
 import yaml
 
 from roadrunner_re.analysis_inputs import load_analysis_inputs
-from roadrunner_re.engine_model import AlgebraicEngine, CycleEngine, OutsideEngineModel
+from roadrunner_re.engine_model import PreliminaryEngineEstimate, CycleEngine, OutsideEngineModel
 
 OUT = Path(__file__).resolve().parents[1] / "out"
 
@@ -17,7 +17,7 @@ def handoff():
 
 def test_algebraic_engine_is_the_lapse():
     a = load_analysis_inputs()
-    assert isinstance(a.engine, AlgebraicEngine)
+    assert isinstance(a.engine, PreliminaryEngineEstimate)
     for h, m in ((0.0, 0.0), (3000.0, 0.6)):
         assert a.engine.alpha(a.atmosphere, h, m, 20.0) == a.lapse.alpha(a.atmosphere, h, m, 20.0)
     assert a.engine.sfc_kg_N_s(0.0, 0.0, 20.0, 0.3, "flight") == a.tsfc_kg_N_s

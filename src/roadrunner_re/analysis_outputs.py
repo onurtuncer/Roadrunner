@@ -16,15 +16,16 @@ CYCLE_SIMPLIFICATIONS = (
     "part-throttle SFC curve is the mean of the three flight conditions (hover: sea-level static); combustion efficiency is constant, so part-throttle fuel is probably understated",
     "thrust is uninstalled and equals installed thrust (ADR-0011); no structural mass build-up (ADR-0008): implied empty mass is reported, not closed",
     "drag polar is the hand estimate, constant with Mach number, referred to the body cross-section",
-    "launch and landing are hover at T = W; transition acceleration is not flown; descent burns an assumed weight fraction",
+    "launch, landing transition and landing are hover at T = W; the launch-side transition is not flown; "
+    "the idle glide burns an assumed weight fraction (ADR-0038)",
 )
 
 SIMPLIFICATIONS = (
     "thrust lapse is the algebraic turbojet model, not an engine deck; the cycle analysis replaces it",
     "TSFC is one catalogue median at every condition: no part-throttle penalty, loiter fuel is understated",
     "drag polar is the hand estimate, constant with Mach number, referred to the body cross-section",
-    "launch and landing are hover at T = W; transition acceleration to the climb Mach number is not flown",
-    "descent burns an assumed weight fraction; climb at maximum power by the energy-height method",
+    "launch, landing transition and landing are hover at T = W; the launch-side transition to the climb Mach number is not flown",
+    "the idle glide burns an assumed weight fraction (ADR-0038); climb at maximum power by the energy-height method",
     "installation losses are not applied (ADR-0011); engine mass is the catalogue power law at datasheet thrust",
     "no structural mass build-up (ADR-0008): implied empty mass is reported, not closed",
 )
@@ -93,6 +94,7 @@ def mission_comparison(prelim: DesignPoint, cycle: DesignPoint) -> dict:
                                 "ratio": _r(cm.mission_fuel_kg / pm.mission_fuel_kg, 4)},
             "total_fuel_kg": {"preliminary": _r(pm.total_fuel_kg), "cycle": _r(cm.total_fuel_kg)},
             "implied_empty_kg": {"preliminary": _r(pm.implied_empty_mass_kg), "cycle": _r(cm.implied_empty_mass_kg)},
+            "total_impulse_N_s": {"preliminary": _r(pm.total_impulse_N_s, 1), "cycle": _r(cm.total_impulse_N_s, 1)},
             "thrust_per_engine_N": {"preliminary": _r(prelim.thrust_per_engine_N, 3), "cycle": _r(cycle.thrust_per_engine_N, 3)}}
 
 
@@ -113,8 +115,12 @@ def mission_out(inputs: AnalysisInputs, dp: DesignPoint, sweep: list[dict], *,
     return {**_common(inputs, notebook), **extra, "design_point": _design_block(dp, inputs),
             "segments": [{"id": s.id, "type": s.type, "mass_start_kg": _r(s.mass_start_kg), "mass_end_kg": _r(s.mass_end_kg),
                           "fuel_kg": _r(s.fuel_kg), "weight_fraction": _r(s.weight_fraction, 8),
-                          "duration_s": _r(s.duration_s, 3), "distance_m": _r(s.distance_m, 1)} for s in m.segments],
+                          "duration_s": _r(s.duration_s, 3), "distance_m": _r(s.distance_m, 1),
+                          "impulse_N_s": _r(s.impulse_N_s, 1)} for s in m.segments],
             "fuel": {"mission_kg": _r(m.mission_fuel_kg), "reserve_kg": _r(m.reserve_fuel_kg), "total_kg": _r(m.total_fuel_kg)},
+            "impulse": {"total_N_s": _r(m.total_impulse_N_s, 1),
+                        "basis": "engine pair, uninstalled thrust, mission segments only (reserve excluded); "
+                                 "glide at idle thrust, transition and hover at T = W (ADR-0038)"},
             "masses": {"takeoff_kg": _r(m.takeoff_mass_kg), "payload_kg": _r(m.payload_mass_kg),
                        "implied_empty_kg": _r(m.implied_empty_mass_kg), "engine_each_kg": _r(dp.engine_mass_kg),
                        "propulsion_kg": _r(dp.propulsion_mass_kg),

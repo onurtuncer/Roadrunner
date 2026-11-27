@@ -63,9 +63,17 @@ segments:
     basis: {evidence: loiter_and_return, assumption: "Return at an economical speed rather than at dash speed."}
 
   - id: descent
-    type: descent          # includes the transition back to thrust-borne flight
+    type: descent          # idle glide to the ground; the transition to thrust-borne flight follows (ADR-0038)
     to_altitude_m: 0.0
-    basis: {assumption: "Idle descent; fuel burn small but accounted."}
+    mach: {from_segment: cruise_back}
+    sink_rate_m_s: {value: 10.0, low: 5.0, high: 20.0}
+    basis: {assumption: "Idle glide at the return Mach number. The sink rate is not published; a moderate rate with wide bounds is assumed. Fuel is the weight fraction of config/analysis.yaml."}
+
+  - id: transition
+    type: transition       # thrust-borne deceleration from wing-borne flight to hover (ADR-0038)
+    altitude_m: 0.0
+    duration_s: {value: 10.0, low: 5.0, high: 20.0}
+    basis: {evidence: vtol_launch_and_landing, assumption: "Slowing onto the engines before the landing hover. Flown at thrust equal to weight, which overstates thrust while the wing still carries load. No source gives the duration."}
 
   - id: landing
     type: vertical_landing

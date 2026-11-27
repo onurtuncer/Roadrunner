@@ -13,8 +13,7 @@ repo does.
   with bounds and distribution), `evidence.py` (ledger loader and
   handoff), `mission_profile.py` (mission loader with the provenance
   check), `engine_catalogue.py` (catalogue loader), `technology.py`, `atmosphere.py` (ISA, tested against published tables),
-  `geometry.py` (pixel measurements to length intervals, engine
-  envelope), `lapse.py`, `analysis_inputs.py`, `constraints.py`, `mission.py`,
+  `lapse.py`, `analysis_inputs.py`, `constraints.py`, `mission.py`,
   `design_point.py` (first-iteration coupled analysis, ADR-0029), `engine_model.py` (algebraic and cycle engine models, ADR-0033), `cycle/`
   (incl. `design.py`, ADR-0030, and `offdesign.py`, ADR-0032), `off_design.py`, `validation.py`, `notebook.py`, `reports.py`,
   `plots/`. Everything else in the layout
@@ -71,18 +70,13 @@ repo does.
   far: specific thrust is 594 to 627 N s/kg for three of the five
   engines that publish an air flow (the two TJ40 cores sit at 506); SFC is 0.116
   to 0.150 kg/(N h), improving with size.
-- **Geometry is blocked on measurement.** `config/evidence/imagery.yaml`
-  lists five public image sources but holds NO pixel measurements, so
-  the pipeline has no imagery notebook and nothing
-  downstream of it (a measured aerodynamic build-up, engine fit) can run on
-  real numbers. The pipeline has no geometry or aerodynamics notebook
-  (ADR-0036); the hand estimate is the study's aerodynamics.
-  The measurements must be taken by someone who can view the images
-  (in a browser, or from images the owner attaches). Do not invent
-  pixel coordinates or dimensions.
-- `config/` holds `atmosphere.yaml`, `geometry.yaml`,
+- **No geometry is measured** (ADR-0037 withdraws ADR-0007). The pipeline
+  has no geometry or aerodynamics notebook (ADR-0036); the owner's hand
+  estimate is the study's aerodynamics and its dimensions are assumptions.
+  Do not invent pixel coordinates or dimensions.
+- `config/` holds `atmosphere.yaml`,
   `evidence/claims.yaml`, `evidence/vehicle.yaml`,
-  `evidence/imagery.yaml`, `missions/sample.yaml`, `constraints.yaml` (the performance
+  `missions/sample.yaml`, `constraints.yaml` (the performance
   requirements as an input, ADR-0027: launch margin, landing floor, dash,
   climb, manoeuvre, loiter ceiling; conditions taken from the mission), `fuel.yaml`,
   `cycle.yaml`, `validation.yaml` and
@@ -92,17 +86,17 @@ repo does.
 - `config/aero_estimate.yaml` is the owner's hand aerodynamic estimate
   (tier C, +/-30 %, photo-scaled assumptions; ADR-0026): S_ref 0.071 m2
   (missile convention), C_N_alpha about 15 /rad, C_D0 about 0.20, K about
-  0.06, (L/D)max about 4.5. It is an input, not a measurement; it does not
-  unblock geometry, and its numbers are correlated.
+  0.06, (L/D)max about 4.5. It is an input, not a measurement, and its numbers
+  are correlated.
 - The only quantified evidence is overall length (1.5 m, 1.4 to 1.8),
   a reported mass (85 kg) and a reported top speed (700 km/h); the last
   two come from one uncorroborated secondary source.
 - Dependencies are optional extras in `pyproject.toml`: `cycle`
   (in use), `aero` and `uq` (not yet imported anywhere).
-- **ADR-0001 to 0036 are all Accepted** (0003 to 0033 on 2026-11-26, 0034 to
-  0036 on 2026-11-27).
-  0013 is superseded by 0021; 0006, 0007, 0008, 0009, 0010, 0012, 0014,
-  0015, 0016, 0018, 0019, 0021, 0022, 0023, 0026, 0028, 0029, 0030 and 0031 carry
+- **ADR-0001 to 0038 are all Accepted** (0003 to 0033 on 2026-11-26, 0034 to
+  0038 on 2026-11-27).
+  0013 is superseded by 0021; 0007 is withdrawn by 0037; 0006, 0008, 0009, 0010, 0012, 0014,
+  0015, 0016, 0018, 0019, 0021, 0022, 0023, 0026, 0028, 0029, 0030, 0031 and 0036 carry
   amendments (see `adr/README.md`). Read an amended ADR together with the
   ADRs that amend it.
 - A change of direction needs a new ADR that amends or supersedes, not
@@ -112,7 +106,7 @@ repo does.
   hand-estimate polar on `S_ref`, `config/analysis.yaml`; now the
   *preliminary* pair (notebooks 5, 6, ADR-0031). Nominal point
   (85 kg): vertical launch binds, T_SL/W_TO 1.47, 614 N per engine, fuel
-  14.1 kg with reserve. The cycle analysis and engine deck replace the
+  14.4 kg with reserve. The cycle analysis and engine deck replace the
   lapse; take-off mass is swept, not solved (no ADR-0008 build-up).
 - **On-design cycle point exists (ADR-0030)**: pyCycle at OP1 (hot-day SLS) for
   the launch thrust, 542 N per engine -> 0.95 kg/s air, specific thrust 568
@@ -123,11 +117,22 @@ repo does.
   `out/off_design.yaml`, `OutsideEngineModel` outside the grid, no
   extrapolation). Nominal point (85 kg): vertical launch still binds, T_SL/W_TO
   1.469, 612 N per engine; flight requirements need 6 to 9 % more thrust loading
-  (cycle lapse is lower); mission fuel 19.9 kg against 12.8 kg preliminary
-  (+55 %, loiter 1.71 times: it runs at about 28 % throttle), 21.9 kg with
-  reserve, implied empty mass 53.1 kg. Part-throttle fuel is probably still
+  (cycle lapse is lower); mission fuel 20.1 kg against 13.1 kg preliminary
+  (+54 %, loiter 1.71 times: it runs at about 28 % throttle), 22.2 kg with
+  reserve, implied empty mass 52.8 kg. Part-throttle fuel is probably still
   understated (constant combustion efficiency). The handoffs carry the
   preliminary values beside the cycle ones.
+- **Total impulse** of the engine pair over the mission is integrated in
+  `mission.py` with the fuel (thrust = maximum power in climb and
+  acceleration, drag in level flight, weight in hover and the landing
+  transition, idle in the glide; reserve excluded) and carried in both
+  mission handoffs: 358 kN s on the cycle engine, 365 kN s preliminary.
+  The design summary reports it.
+- **The return to the ground is an idle glide and a powered transition**
+  (ADR-0038): the glide is timed by an assumed sink rate (10 m/s, 5 to 20)
+  and burns the assumed weight fraction of `config/analysis.yaml` (idle is
+  below the tables' throttle range); the transition (10 s, 5 to 20) is flown
+  at thrust equal to weight, an upper estimate.
 - Everything below the next heading describes the *intended* structure
   per the ADRs.
 
@@ -195,7 +200,7 @@ back-edges: a downstream discovery is fed back by changing
 `config/`/`src/` and re-running, never by editing an `out/` file.
 
 Intended `src/roadrunner_re/` layout: `notebook.py` (`nb_setup()`),
-`design_point.py`, `evidence.py`, `geometry.py`, `atmosphere.py`,
+`design_point.py`, `evidence.py`, `atmosphere.py`,
 `aero/`, `vehicle/` (mass build-up), `mission.py`, `constraints.py`,
 `cycle/` (pyCycle model, datasheet calibration, unit boundary, engine
 deck), `engine_selection.py`, `installation.py`, `inverse.py` (sampling and rejection), `uq.py`
@@ -244,8 +249,8 @@ deck), `engine_selection.py`, `installation.py`, `inverse.py` (sampling and reje
 - **SI at the pyCycle boundary**: native pyCycle units never leave the
   `cycle/` wrapper.
 - **Sampling is seeded.** Seed and sample count are config values.
-- **Images of the vehicle are not committed**; record URL, access date
-  and pixel measurements instead (ADR-0007).
+- **Images of the vehicle are not committed** (copyright), and no geometry
+  is measured from them (ADR-0037).
 - **Specific thrust and SFC, never frontal-area scaling** (ADR-0024).
   Characterise an engine by specific thrust (N s/kg) and SFC; size
   enters only through air mass flow. Do not compute, report or use

@@ -70,9 +70,10 @@ def test_mission_profile_pins():
     """Mission profile laid out in time (mission_profile). Inputs in, so these move only with config/missions."""
     m = yaml.safe_load((OUT / "mission_profile.yaml").read_text(encoding="utf-8"))
     ids = [s["id"] for s in m["segments"]]
-    assert ids == ["launch", "climb_out", "dash_out", "loiter", "cruise_back", "descent", "landing"]
+    assert ids == ["launch", "climb_out", "dash_out", "loiter", "cruise_back", "descent", "transition", "landing"]
     seg = {s["id"]: s for s in m["segments"]}
-    assert m["duration_not_fixed_by_profile"] == ["climb_out", "descent"]
+    assert m["duration_not_fixed_by_profile"] == ["climb_out"]
+    assert seg["descent"]["duration_s"] == {"value": 300.0, "low": 50.0, "high": 1200.0}  # glide, ADR-0038
     assert seg["loiter"]["duration_s"] == {"value": 900.0, "low": 300.0, "high": 1800.0}
     dash = seg["dash_out"]
     assert (dash["true_airspeed_m_s"]["value"], dash["duration_s"]["value"]) == pytest.approx((272.0, 110.0), rel=0.01)
@@ -103,9 +104,11 @@ def test_constraint_analysis_pins():
 def test_mission_analysis_pins():
     """Fuel and weight fractions of the sample mission (mission_analysis_preliminary, ADR-0029)."""
     m = yaml.safe_load((OUT / "mission_preliminary.yaml").read_text(encoding="utf-8"))
-    assert [s["id"] for s in m["segments"]] == ["launch", "climb_out", "dash_out", "loiter", "cruise_back", "descent", "landing"]
-    assert (m["fuel"]["mission_kg"], m["fuel"]["total_kg"]) == pytest.approx((12.8402, 14.1242), rel=1e-4)
-    assert m["masses"]["implied_empty_kg"] == pytest.approx(60.8758, rel=1e-4)
+    assert [s["id"] for s in m["segments"]] == ["launch", "climb_out", "dash_out", "loiter", "cruise_back", "descent", "transition", "landing"]
+    assert (m["fuel"]["mission_kg"], m["fuel"]["total_kg"]) == pytest.approx((13.0953, 14.4048), rel=1e-4)
+    assert m["masses"]["implied_empty_kg"] == pytest.approx(60.5952, rel=1e-4)
+    assert m["impulse"]["total_N_s"] == pytest.approx(364725.0, rel=1e-4)
+    assert m["impulse"]["total_N_s"] == pytest.approx(sum(s["impulse_N_s"] for s in m["segments"]), abs=1.0)
     assert len(m["simplifications"]) == 7
 
 
@@ -150,8 +153,9 @@ def test_cycle_based_constraint_pins():
 def test_cycle_based_mission_pins():
     """Mission on the cycle engine (mission_analysis, ADR-0033): fuel to 1e-3, ratio to the preliminary mission."""
     m = yaml.safe_load((OUT / "mission.yaml").read_text(encoding="utf-8"))
-    assert (m["fuel"]["mission_kg"], m["fuel"]["total_kg"]) == pytest.approx((19.890, 21.879), rel=1e-3)
-    assert m["masses"]["implied_empty_kg"] == pytest.approx(53.121, rel=1e-3)
+    assert (m["fuel"]["mission_kg"], m["fuel"]["total_kg"]) == pytest.approx((20.147, 22.162), rel=1e-3)
+    assert m["masses"]["implied_empty_kg"] == pytest.approx(52.838, rel=1e-3)
+    assert m["impulse"]["total_N_s"] == pytest.approx(358078.9, rel=1e-3)
     cmp = m["comparison_with_preliminary"]
-    assert cmp["mission_fuel_kg"]["ratio"] == pytest.approx(1.549, rel=1e-2)
+    assert cmp["mission_fuel_kg"]["ratio"] == pytest.approx(1.5385, rel=1e-2)
     assert {s["id"]: s["ratio"] for s in cmp["segments"]}["loiter"] == pytest.approx(1.71, rel=1e-2)

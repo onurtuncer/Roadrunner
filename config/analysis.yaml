@@ -46,10 +46,12 @@ propulsion:
   engine_count: 2
   basis: {assumption: "Two identical engines (ADR-0023). Thrust is split equally; no installation loss is applied yet (ADR-0011), so installed and datasheet thrust are taken equal."}
 
-# Descent is not flown: the weight fraction over the descent is assumed.
+# Descent is an idle glide (ADR-0038): its duration comes from the mission's sink rate and its
+# impulse from the idle thrust, but its fuel is this assumed weight fraction, because idle lies
+# below the throttle range the off-design tables cover.
 descent:
   weight_fraction: {value: 0.995, low: 0.990, high: 1.000}
-  basis: {assumption: "Idle descent burns little fuel; its duration is not set by the mission. A placeholder, small and bounded."}
+  basis: {assumption: "Idle glide burns little fuel, and idle SFC is not modelled. A placeholder, small and bounded."}
 
 # Numerical settings.
 integration:

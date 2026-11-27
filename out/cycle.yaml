@@ -1,4 +1,4 @@
-# Handoff of notebooks/cycle_design_point.ipynb. Generated; do not edit (ADR-0001).
+# Handoff of notebooks/07_cycle_design_point.ipynb. Generated; do not edit (ADR-0001).
 notebook: cycle_design_point
 status: on-design point at OP1, first iteration (ADR-0030)
 notes:
@@ -112,10 +112,10 @@ one_at_a_time:
   bound: low
   value: 0.68
   air_mass_flow_kg_s: 1.023957403
-  specific_thrust_N_s_kg: 529.140578572
+  specific_thrust_N_s_kg: 529.140577822
   sfc_kg_N_s: 3.5325e-05
   Tt3_K: 521.016011446
-  Tt5_K: 1055.411237312
+  Tt5_K: 1055.411237681
 - input: burner_pressure_loss
   bound: low
   value: 0.03
@@ -151,8 +151,8 @@ one_at_a_time:
 - input: pressure_ratio
   bound: high
   value: 4.0
-  air_mass_flow_kg_s: 0.947699584
-  specific_thrust_N_s_kg: 571.718529582
+  air_mass_flow_kg_s: 0.947699585
+  specific_thrust_N_s_kg: 571.718528904
   sfc_kg_N_s: 3.3242e-05
   Tt3_K: 508.194093742
   Tt5_K: 1066.482745128

@@ -1,6 +1,6 @@
 # 7. Geometry from scaled public imagery, as measured intervals
 
-Status: Accepted (2026-11-26); amended by ADR-0024
+Status: Superseded by ADR-0037, which withdraws it (accepted 2026-11-26; amended by ADR-0024; withdrawn 2026-11-27)
 
 ## Context
 

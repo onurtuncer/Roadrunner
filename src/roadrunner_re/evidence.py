@@ -13,9 +13,6 @@ from roadrunner_re.notebook import handoff_header
 TIERS = ("A", "B", "C", "X")
 #: Tier X is a marketing comparative with no stated baseline: never an input.
 NON_INPUT_TIERS = ("X",)
-#: Files in config/evidence/ that are not claim lists.
-NOT_CLAIM_FILES = ("imagery.yaml",)
-
 _REQUIRED = ("id", "statement", "tier", "source", "accessed")
 
 
@@ -75,12 +72,12 @@ def load_claims(path: str | Path = "evidence") -> dict[str, Claim]:
     """Load and validate the ledger, keyed by claim id.
 
     ``path`` is one YAML file or a directory; a directory is read in file-name
-    order, skipping files that are not claim lists (imagery).
+    order.
     """
     path = Path(path)
     if not path.is_absolute():
         path = CONFIG_DIR / path
-    files = sorted(f for f in path.glob("*.yaml") if f.name not in NOT_CLAIM_FILES) if path.is_dir() else [path]
+    files = sorted(path.glob("*.yaml")) if path.is_dir() else [path]
     claims: dict[str, Claim] = {}
     for file in files:
         _load_file(file, claims)
