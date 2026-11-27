@@ -27,7 +27,7 @@ def notebook_file(name: str) -> str:
     """Repo-relative path of the notebook whose logical name is ``name``.
 
     Notebook files carry their position in the sequence as a two-digit
-    prefix (``09_off_design.ipynb``, ADR-0034); handoffs, titles and code
+    prefix (``08_off_design.ipynb``, ADR-0034); handoffs, titles and code
     use the logical name (``off_design``) only, so a renumbering touches
     the file names and ``NOTEBOOK_ORDER`` and nothing else.
     """

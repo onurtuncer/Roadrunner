@@ -2,8 +2,8 @@
 
 ``config/aero_estimate.yaml`` is a tier-C (inferred) input supplied by the
 owner. This module only loads and validates it; nothing here estimates
-aerodynamics. It does not replace the geometry stage or the aerodynamics
-notebook, which need pixel measurements that do not exist yet.
+aerodynamics. The pipeline has no geometry or aerodynamics notebook
+(ADR-0036), so this estimate is the study's aerodynamics.
 """
 from __future__ import annotations
 
