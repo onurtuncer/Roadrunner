@@ -20,6 +20,7 @@ import yaml
 from roadrunner_re.config import ConfigError, load_yaml
 from roadrunner_re.engine_catalogue import Engine
 from roadrunner_re.uncertain import Uncertain, parse_uncertain
+from roadrunner_re.notebook import handoff_header
 
 # Unit conversions (not physical parameters).
 SECONDS_PER_HOUR = 3600.0
@@ -173,6 +174,6 @@ def technology_handoff(engines: dict[str, Engine], metrics: dict[str, EngineMetr
 def write_technology_handoff(handoff: dict, path: str | Path) -> Path:
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    header = "# Handoff of notebooks/reference_engines.ipynb. Generated; do not edit (ADR-0001).\n"
+    header = handoff_header("reference_engines")
     path.write_text(header + yaml.safe_dump(handoff, sort_keys=False), encoding="utf-8")
     return path

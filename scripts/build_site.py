@@ -115,7 +115,7 @@ def build_index(site: Path, notebooks: list[str]) -> None:
         items = "\n".join(f'  <li><a href="{n}.html">{html.escape(notebook_title(n))}</a></li>' for n in notebooks)
         parts.append(f"<h2>Design notebooks (run order)</h2>\n<ol>\n{items}\n</ol>")
 
-    figures = sorted((REPO / "notebooks" / "figures").glob("*.png"))
+    figures = sorted((REPO / "out" / "figures").glob("*.png"))
     if figures:
         (site / "img").mkdir(parents=True, exist_ok=True)
         shots = []

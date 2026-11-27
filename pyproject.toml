@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=68", "setuptools-scm>=8"]
+requires = ["setuptools>=77", "setuptools-scm>=8"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -7,7 +7,8 @@ name = "roadrunner-re"
 dynamic = ["version"]
 description = "Propulsion reverse-engineering study of a small twin-turbojet VTOL air vehicle (course project)"
 readme = "README.md"
-license = { file = "LICENSE" }
+license = "Unlicense"
+license-files = ["LICENSE"]
 authors = [{ name = "Onur Tuncer", email = "onur.tuncer@itu.edu.tr" }]
 requires-python = ">=3.10"
 dependencies = [
@@ -20,8 +21,10 @@ dependencies = [
 # release on PyPI: 4.4.0's tabular thermodynamics fails under NumPy 2
 # ("setting an array element with a sequence"); this commit carries the
 # upstream fix. Move back to a PyPI release once one includes it.
+# Fetched as the GitHub archive of that commit, not with git+https: the
+# same pin, but pip needs neither git on PATH nor a clone.
 cycle = [
-    "om-pycycle @ git+https://github.com/OpenMDAO/pyCycle@ee7e16126a7a54b5fe35292c53b7eb4e9572620b",
+    "om-pycycle @ https://github.com/OpenMDAO/pyCycle/archive/ee7e16126a7a54b5fe35292c53b7eb4e9572620b.zip",
     "openmdao>=3.30",
 ]
 aero = ["aerosandbox>=4.2"]
@@ -35,6 +38,9 @@ where = ["src"]
 [tool.setuptools_scm]
 # Version comes from git tags (v0.1.0, ...); never edited by hand (ADR-0014).
 version_file = "src/roadrunner_re/_version.py"
+# Used only where git has no tags to read (a zip download, a shallow clone),
+# so a local install never fails on the version.
+fallback_version = "0.0.0+unknown"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

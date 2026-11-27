@@ -26,15 +26,39 @@ runs. No engineering results yet. See [`adr/`](adr/README.md).
 ## Method
 
 1. Collect public evidence in a ledger, each item with a source and bounds.
-2. Measure geometry from scaled public imagery.
-3. Estimate aerodynamics from that geometry.
-4. Define a sample mission; run constraint analysis and mission analysis
+2. Take the aerodynamics from the owner's hand estimate (no measured
+   geometry exists, so there is no imagery or aerodynamics stage).
+3. Define a sample mission; run constraint analysis and mission analysis
    on a standard atmosphere.
-5. Choose the engine pair from a catalogue of purchasable turbojets
+4. Choose the engine pair from a catalogue of purchasable turbojets
    (PBS, AMT), with [pyCycle](https://github.com/OpenMDAO/pyCycle)
    models anchored to each vendor datasheet for hot-day, altitude and
    part-throttle performance.
-6. Propagate the input uncertainty and rank the inputs by sensitivity.
+5. Propagate the input uncertainty and rank the inputs by sensitivity.
+
+## Running it locally
+
+Python 3.12 (what CI uses; 3.10 or later should work). From the repository root:
+
+```
+python -m venv .venv
+.venv\Scripts\activate          # Windows
+source .venv/bin/activate       # Linux, macOS
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+That installs the package (editable), pyCycle, Jupyter and the test
+tools; git is not needed. Then:
+
+```
+pytest                          # unit tests, cycle tests and regression pins
+jupyter lab notebooks           # run 01_ ... 13_ in order
+```
+
+Each notebook reads only the `out/` handoffs of the notebooks before it,
+so run them in prefix order after a change. `08_off_design` takes about
+two minutes (pyCycle).
 
 ## Repository layout
 
@@ -43,7 +67,7 @@ adr/         architecture decision records (start here)
 config/      inputs, evidence ledger, mission, engine catalogue
 src/         all physics, as the roadrunner_re package
 tests/       unit tests and regression pins
-notebooks/   thin Jupyter notebooks, run in a fixed order
+notebooks/   thin Jupyter notebooks, run in prefix order (01_ to 13_)
 out/         handoff files written by the notebooks
 ```
 

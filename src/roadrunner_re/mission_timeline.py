@@ -23,6 +23,7 @@ import yaml
 from roadrunner_re.atmosphere import IsaAtmosphere
 from roadrunner_re.mission_profile import MissionProfile, Segment
 from roadrunner_re.uncertain import Uncertain
+from roadrunner_re.notebook import handoff_header
 
 
 @dataclass(frozen=True)
@@ -130,6 +131,6 @@ def mission_profile_handoff(mission: MissionProfile, views: list[SegmentView]) -
 def write_mission_profile_handoff(handoff: dict, path: str | Path) -> Path:
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    header = "# Handoff of notebooks/mission_profile.ipynb. Generated; do not edit (ADR-0001).\n"
+    header = handoff_header("mission_profile")
     path.write_text(header + yaml.safe_dump(handoff, sort_keys=False), encoding="utf-8")
     return path

@@ -10,16 +10,20 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import yaml
 
 from roadrunner_re.analysis_inputs import AnalysisInputs
 from roadrunner_re.config import ConfigError, load_yaml
-from roadrunner_re.cycle.design import DesignInputs
-from roadrunner_re.cycle.offdesign import OffDesignRequest, OffDesignResult, run_off_design
-from roadrunner_re.cycle.turbojet import CycleResult, CycleSettings, FlightCondition
 from roadrunner_re.design_point import DesignPoint
 from roadrunner_re.mission import drag_N
+from roadrunner_re.notebook import handoff_header
+
+if TYPE_CHECKING:  # pyCycle is the optional ``cycle`` extra; the config loader must work without it
+    from roadrunner_re.cycle.design import DesignInputs
+    from roadrunner_re.cycle.offdesign import OffDesignResult
+    from roadrunner_re.cycle.turbojet import CycleResult, CycleSettings
 
 SIMPLIFICATIONS = (
     "generic pyCycle maps (an axial compressor map for a centrifugal machine); shaft speed is a result, not a limit",
@@ -94,7 +98,10 @@ def _mission_conditions(analysis: AnalysisInputs, config: OffDesignConfig) -> li
 def run_study(analysis: AnalysisInputs, settings: CycleSettings, config: OffDesignConfig, design_inputs: DesignInputs,
               design: CycleResult, design_point: DesignPoint, combustion_efficiency: float) -> OffDesignStudy:
     """Maximum-power lapse grid, part-throttle SFC at the mission's conditions, and the landing thrust floor."""
-    hot = analysis.mission.dT_isa_K.value
+    from roadrunner_re.cycle.offdesign import OffDesignRequest, run_off_design
+    from roadrunner_re.cycle.turbojet import FlightCondition
+
+    hot =analysis.mission.dT_isa_K.value
     days = sorted({0.0, hot, *config.extra_dT_isa_K})
     Tt4 = design_inputs.Tt4_K
     max_requests = [OffDesignRequest(FlightCondition(h, m, dT), Tt4)
@@ -195,6 +202,6 @@ def off_design_handoff(study: OffDesignStudy, analysis: AnalysisInputs, design_p
 def write_off_design_handoff(handoff: dict, path: str | Path) -> Path:
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    header = "# Handoff of notebooks/off_design.ipynb. Generated; do not edit (ADR-0001).\n"
+    header = handoff_header("off_design")
     path.write_text(header + yaml.safe_dump(handoff, sort_keys=False), encoding="utf-8")
     return path

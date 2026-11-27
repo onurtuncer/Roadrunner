@@ -16,12 +16,13 @@ permissions:
 env:
   # Single source of truth for the pipeline order (ADR-0021). Adding a
   # notebook here is the only edit needed for it to run and be published.
+  # File names carry their position as a two-digit prefix (ADR-0034).
   NOTEBOOK_ORDER: >-
-    evidence_ledger mission_profile aerodynamics
-    reference_engines method_validation constraint_analysis_preliminary
-    mission_analysis_preliminary cycle_design_point off_design
-    constraint_analysis mission_analysis engine_selection
-    uncertainty_and_sensitivity design_summary
+    01_evidence_ledger 02_mission_profile 03_reference_engines
+    04_method_validation 05_constraint_analysis_preliminary
+    06_mission_analysis_preliminary 07_cycle_design_point 08_off_design
+    09_constraint_analysis 10_mission_analysis 11_engine_selection
+    12_uncertainty_and_sensitivity 13_design_summary
   MPLBACKEND: Agg
 
 concurrency:

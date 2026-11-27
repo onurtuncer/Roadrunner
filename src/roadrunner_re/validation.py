@@ -26,6 +26,7 @@ from roadrunner_re.cycle import CycleResult, CycleSettings, match_thrust, run_de
 from roadrunner_re.engine_catalogue import Engine
 from roadrunner_re.technology import EngineMetrics
 from roadrunner_re.uncertain import Uncertain
+from roadrunner_re.notebook import handoff_header
 
 PREDICTED = ("specific_thrust_N_s_kg", "sfc_kg_N_s")
 
@@ -194,6 +195,6 @@ def validation_handoff(anchors: dict[str, Anchor], predictions: dict[str, Predic
 def write_validation_handoff(handoff: dict, path: str | Path) -> Path:
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    header = "# Handoff of notebooks/method_validation.ipynb. Generated; do not edit (ADR-0001).\n"
+    header = handoff_header("method_validation")
     path.write_text(header + yaml.safe_dump(handoff, sort_keys=False), encoding="utf-8")
     return path

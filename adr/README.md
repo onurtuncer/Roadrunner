@@ -26,7 +26,7 @@ Format: one file per decision, `NNNN-kebab-title.md`, each with
 | [0013](0013-notebook-sequence-and-handoffs.md) | Notebook sequence and handoffs | Superseded by 0021 |
 | [0014](0014-versioning-and-ci-tiers.md) | Tag-driven versioning and tiered CI | Accepted; amended by 0022 |
 | [0015](0015-pycycle-is-the-cycle-engine.md) | pyCycle is the cycle engine | Accepted; amended by 0023, 0029, 0030 |
-| [0016](0016-aerodynamics-from-open-source-evidence.md) | Aerodynamics estimated from open-source evidence | Accepted; amended by 0026 |
+| [0016](0016-aerodynamics-from-open-source-evidence.md) | Aerodynamics estimated from open-source evidence | Accepted; amended by 0026, 0036 |
 | [0017](0017-standard-atmosphere.md) | One standard atmosphere model for everything | Accepted |
 | [0018](0018-sample-mission-profile-and-mission-analysis.md) | A sample mission profile is an input; mission analysis checks the weights | Accepted; amended by 0026 |
 | [0019](0019-constraint-analysis.md) | Constraint analysis in the thrust-loading / wing-loading plane | Accepted; amended by 0027, 0029 |
@@ -38,9 +38,12 @@ Format: one file per decision, `NNNN-kebab-title.md`, each with
 | [0025](0025-drop-jetcat-from-the-catalogue.md) | JetCat engines are dropped from the catalogue | Accepted |
 | [0026](0026-mission-profile-notebook-and-hand-aero-estimate.md) | A mission-profile notebook, and the owner's hand aerodynamic estimate | Accepted; amended by 0027 |
 | [0027](0027-performance-requirements-as-an-input.md) | Performance requirements are an input beside the mission | Accepted |
-| [0028](0028-pages-site-in-the-design-report-format.md) | The Pages site is a design report in the tailsitter format | Accepted |
+| [0028](0028-pages-site-in-the-design-report-format.md) | The Pages site is a design report in the tailsitter format | Accepted; amended by 0035 |
 | [0029](0029-first-iteration-constraint-and-mission-analysis.md) | First-iteration coupled constraint and mission analysis | Accepted; amended by 0031, 0033 |
 | [0030](0030-cycle-design-point-and-off-design-before-engine-deck.md) | On-design cycle point and off-design performance come before a stand-alone engine deck | Accepted; amended by 0031, 0032 |
-| [0031](0031-linear-notebook-sequence-and-second-analysis-pair.md) | Linear notebook sequence, preliminary analysis pair and a cycle-based pair | Accepted; amended by 0033 |
+| [0031](0031-linear-notebook-sequence-and-second-analysis-pair.md) | Linear notebook sequence, preliminary analysis pair and a cycle-based pair | Accepted; amended by 0033, 0034, 0036 |
 | [0032](0032-off-design-model-conventions.md) | Off-design model conventions | Accepted |
 | [0033](0033-cycle-based-analysis-pair-and-engine-model.md) | Cycle-based analysis pair and the engine model | Accepted |
+| [0034](0034-numbered-notebook-file-names.md) | Notebook file names carry their position | Accepted |
+| [0035](0035-figures-written-to-out.md) | Figures are written to `out/figures/` beside the handoffs | Accepted |
+| [0036](0036-geometry-and-aerodynamics-notebooks-dropped.md) | The geometry and aerodynamics notebooks are dropped | Accepted |

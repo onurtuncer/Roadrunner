@@ -1,4 +1,4 @@
-# Handoff of notebooks/mission_profile.ipynb. Generated; do not edit (ADR-0001).
+# Handoff of notebooks/02_mission_profile.ipynb. Generated; do not edit (ADR-0001).
 name: sample
 day_dT_isa_K:
   value: 20.0
