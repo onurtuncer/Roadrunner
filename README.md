@@ -53,11 +53,11 @@ tools; git is not needed. Then:
 
 ```
 pytest                          # unit tests, cycle tests and regression pins
-jupyter lab notebooks           # run 01_ ... 15_ in order
+jupyter lab notebooks           # run 01_ ... 14_ in order
 ```
 
 Each notebook reads only the `out/` handoffs of the notebooks before it,
-so run them in prefix order after a change. `10_off_design` takes about
+so run them in prefix order after a change. `09_off_design` takes about
 two minutes (pyCycle).
 
 ## Repository layout
@@ -67,7 +67,7 @@ adr/         architecture decision records (start here)
 config/      inputs, evidence ledger, mission, engine catalogue
 src/         all physics, as the roadrunner_re package
 tests/       unit tests and regression pins
-notebooks/   thin Jupyter notebooks, run in prefix order (01_ to 15_)
+notebooks/   thin Jupyter notebooks, run in prefix order (01_ to 14_)
 out/         handoff files written by the notebooks
 ```
 

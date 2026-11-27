@@ -18,12 +18,12 @@ env:
   # notebook here is the only edit needed for it to run and be published.
   # File names carry their position as a two-digit prefix (ADR-0034).
   NOTEBOOK_ORDER: >-
-    01_evidence_ledger 02_mission_profile 03_geometry_from_imagery
-    04_aerodynamics 05_reference_engines 06_method_validation
-    07_constraint_analysis_preliminary 08_mission_analysis_preliminary
-    09_cycle_design_point 10_off_design 11_constraint_analysis
-    12_mission_analysis 13_engine_selection 14_uncertainty_and_sensitivity
-    15_design_summary
+    01_evidence_ledger 02_mission_profile 03_aerodynamics
+    04_reference_engines 05_method_validation
+    06_constraint_analysis_preliminary 07_mission_analysis_preliminary
+    08_cycle_design_point 09_off_design 10_constraint_analysis
+    11_mission_analysis 12_engine_selection 13_uncertainty_and_sensitivity
+    14_design_summary
   MPLBACKEND: Agg
 
 concurrency:

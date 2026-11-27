@@ -19,7 +19,7 @@ repo does.
   (incl. `design.py`, ADR-0030, and `offdesign.py`, ADR-0032), `off_design.py`, `validation.py`, `notebook.py`, `reports.py`,
   `plots/`. Everything else in the layout
   below is still to be written.
-- Notebooks 1, 2, 5, 6, 7, 8, 9, 10, 11 and 12 exist (see the list under "Architecture"),
+- Notebooks 1, 2, 4, 5, 6, 7, 8, 9, 10 and 11 exist (see the list under "Architecture"),
   write `out/evidence.yaml`, `out/mission_profile.yaml`, `out/technology.yaml`,
   `out/validation.yaml`, `out/constraints_preliminary.yaml`,
   `out/mission_preliminary.yaml`, `out/cycle.yaml`, `out/off_design.yaml`, `out/constraints.yaml` and `out/mission.yaml`,
@@ -51,7 +51,7 @@ repo does.
   EGT (model Tt5 is 121 K below it); anchored Tt4 (1088 to 1275 K)
   depends on the assumed efficiencies; the datasheet fuel-density
   cross-check rests on two engines.
-- **Off-design is built** (notebook 10, `cycle/offdesign.py`, `off_design.py`,
+- **Off-design is built** (notebook 9, `cycle/offdesign.py`, `off_design.py`,
   ADR-0032): the sized engine run in a pyCycle multi-point problem with
   scaled generic maps (shaft speed balances power, air flow balances the
   throat area; throttle by Tt4 or thrust). Points below 0.80 of design shaft
@@ -65,7 +65,7 @@ repo does.
   constant median combustion efficiency (0.855), so part-throttle fuel is
   probably understated. The deck is the handoff's grid and part-throttle
   tables (specific thrust, SFC and relative air flow, ADR-0024); a sampler
-  deck is built when notebook 14 needs it.
+  deck is built when notebook 13 needs it.
 - `technology.py` is datasheet arithmetic only (figures of merit,
   catalogue bounds, mass power law, implied fuel density). Result so
   far: specific thrust is 594 to 627 N s/kg for three of the five
@@ -73,7 +73,7 @@ repo does.
   to 0.150 kg/(N h), improving with size.
 - **Geometry is blocked on measurement.** `config/evidence/imagery.yaml`
   lists five public image sources but holds NO pixel measurements, so
-  notebook 2 (`geometry_from_imagery`) is not written and nothing
+  the pipeline has no imagery notebook and nothing
   downstream of it (aerodynamics, engine fit) can run on real numbers.
   The measurements must be taken by someone who can view the images
   (in a browser, or from images the owner attaches). Do not invent
@@ -108,14 +108,14 @@ repo does.
 - **First-iteration coupled analysis exists (ADR-0029)** and is rough by
   intent: algebraic turbojet lapse plus constant catalogue-median TSFC,
   hand-estimate polar on `S_ref`, `config/analysis.yaml`; now the
-  *preliminary* pair (notebooks 7, 8, ADR-0031). Nominal point
+  *preliminary* pair (notebooks 6, 7, ADR-0031). Nominal point
   (85 kg): vertical launch binds, T_SL/W_TO 1.47, 614 N per engine, fuel
   14.1 kg with reserve. The cycle analysis and engine deck replace the
   lapse; take-off mass is swept, not solved (no ADR-0008 build-up).
 - **On-design cycle point exists (ADR-0030)**: pyCycle at OP1 (hot-day SLS) for
   the launch thrust, 542 N per engine -> 0.95 kg/s air, specific thrust 568
   N s/kg, Tt4 anchored 1232 K; bounds one input at a time.
-- **Cycle-based analysis pair is built (notebooks 11, 12, ADR-0033)**: the same
+- **Cycle-based analysis pair is built (notebooks 10, 11, ADR-0033)**: the same
   `solve_design_point()` with `inputs.with_engine(CycleEngine(off_design))`
   (`engine_model.py`; lapse and part-throttle SFC interpolated from
   `out/off_design.yaml`, `OutsideEngineModel` outside the grid, no
@@ -126,9 +126,6 @@ repo does.
   reserve, implied empty mass 53.1 kg. Part-throttle fuel is probably still
   understated (constant combustion efficiency). The handoffs carry the
   preliminary values beside the cycle ones.
-- Next step is the pixel measurements, then `geometry_from_imagery`, then
-  `aerodynamics`, and `engine_selection` (13), which needs no geometry for a
-  first thrust and fuel screen, in the order of ADR-0031.
 - Everything below the next heading describes the *intended* structure
   per the ADRs.
 
@@ -158,7 +155,7 @@ config/*.yaml  ->  src/roadrunner_re/  ->  notebooks/  ->  out/
 (inputs+evidence)  (ALL physics)           (orchestrate)   (handoffs)
 ```
 
-Notebook order is load-bearing and linear, 15 notebooks numbered by
+Notebook order is load-bearing and linear, 14 notebooks numbered by
 position (ADR-0031, which supersedes the table of ADR-0021). Each writes
 one YAML handoff to `out/` and reads only earlier handoffs. Built (B) or
 planned (P); every planned notebook exists as a stub (narrative only, no code,
@@ -169,23 +166,22 @@ sequence:
 2. `mission_profile` -> `out/mission_profile.yaml` (B; quotes and plots the
    sample mission and its requirements; reads only config, ADR-0026,
    ADR-0027)
-3. `geometry_from_imagery` -> `out/geometry.yaml` (P, stub; blocked on measurement)
-4. `aerodynamics` -> `out/aero.yaml` (P)
-5. `reference_engines` -> `out/technology.yaml` (B)
-6. `method_validation` -> `out/validation.yaml` (B)
-7. `constraint_analysis_preliminary` -> `out/constraints_preliminary.yaml` (B)
-8. `mission_analysis_preliminary` -> `out/mission_preliminary.yaml` (B)
-9. `cycle_design_point` -> `out/cycle.yaml` (B)
-10. `off_design` -> `out/off_design.yaml` (B; ADR-0032)
-11. `constraint_analysis` -> `out/constraints.yaml` (B; lapse from 10, ADR-0033)
-12. `mission_analysis` -> `out/mission.yaml` (B; thrust and part-throttle SFC from 10, ADR-0033)
-13. `engine_selection` -> `out/engine_selection.yaml` (P)
-14. `uncertainty_and_sensitivity` -> `out/uq.yaml` (P)
-15. `design_summary` (P; pure reader, writes nothing)
+3. `aerodynamics` -> `out/aero.yaml` (P)
+4. `reference_engines` -> `out/technology.yaml` (B)
+5. `method_validation` -> `out/validation.yaml` (B)
+6. `constraint_analysis_preliminary` -> `out/constraints_preliminary.yaml` (B)
+7. `mission_analysis_preliminary` -> `out/mission_preliminary.yaml` (B)
+8. `cycle_design_point` -> `out/cycle.yaml` (B)
+9. `off_design` -> `out/off_design.yaml` (B; ADR-0032)
+10. `constraint_analysis` -> `out/constraints.yaml` (B; lapse from 9, ADR-0033)
+11. `mission_analysis` -> `out/mission.yaml` (B; thrust and part-throttle SFC from 9, ADR-0033)
+12. `engine_selection` -> `out/engine_selection.yaml` (P)
+13. `uncertainty_and_sensitivity` -> `out/uq.yaml` (P)
+14. `design_summary` (P; pure reader, writes nothing)
 
 There is no `engine_deck` notebook (ADR-0030): any deck for the sampler is
 a by-product of `off_design`. Files are `notebooks/NN_<name>.ipynb` (two-digit
-position, ADR-0034) and titles carry "notebook N of 15"; handoffs, `out/` file
+position, ADR-0034) and titles carry "notebook N of 14"; handoffs, `out/` file
 names and code use the unnumbered logical name (`off_design`), resolved to a file
 by `notebook.notebook_file()`. `tests/test_notebook_names.py` keeps prefixes,
 titles and `NOTEBOOK_ORDER` in step.

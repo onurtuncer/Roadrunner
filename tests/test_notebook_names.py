@@ -32,6 +32,6 @@ def test_title_states_the_same_position_as_the_prefix():
 
 
 def test_logical_name_resolves_to_the_numbered_file():
-    assert notebook_file("off_design") == "notebooks/10_off_design.ipynb"
-    assert notebook_file("constraint_analysis") == "notebooks/11_constraint_analysis.ipynb"
+    assert notebook_file("off_design") == "notebooks/09_off_design.ipynb"
+    assert notebook_file("constraint_analysis") == "notebooks/10_constraint_analysis.ipynb"
     assert "notebooks/01_evidence_ledger.ipynb" in handoff_header("evidence_ledger")

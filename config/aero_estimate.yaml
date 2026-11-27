@@ -3,7 +3,7 @@
 # SUPPLIED BY THE OWNER on 2026-11-26 as a hand estimate built on
 # photo-scaled assumptions. It is NOT a measurement and NOT a result of
 # this repository: no pixel measurements exist yet (config/evidence/
-# imagery.yaml), so geometry_from_imagery is still blocked and nothing
+# imagery.yaml), so measured geometry is unavailable and nothing
 # here replaces it. The numbers are tier C (inferred) and the owner asks
 # that they be treated as +/-30 %; every low/high below is the nominal
 # value -/+ 30 % (counts are exact). Where the owner gave a tighter range
