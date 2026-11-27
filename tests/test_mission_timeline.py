@@ -15,8 +15,14 @@ def test_dash_time_is_distance_over_true_airspeed(views):
     assert v.duration_s.low < v.duration_s.value < v.duration_s.high
 
 
-def test_climb_and_descent_durations_are_not_assumed(views):
-    assert views["climb_out"].duration_s is None and views["descent"].duration_s is None
+def test_climb_duration_is_not_assumed(views):
+    assert views["climb_out"].duration_s is None
+
+
+def test_glide_time_is_altitude_over_sink_rate(views):
+    """Nominal 3000 m at 10 m/s; bounds from 1000 m at 20 m/s to 6000 m at 5 m/s (ADR-0038)."""
+    d = views["descent"].duration_s
+    assert (d.value, d.low, d.high) == pytest.approx((300.0, 50.0, 1200.0))
 
 
 def test_level_segments_follow_the_climb_altitude(views):

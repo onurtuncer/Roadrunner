@@ -1,4 +1,4 @@
-# Handoff of notebooks/off_design.ipynb. Generated; do not edit (ADR-0001).
+# Handoff of notebooks/08_off_design.ipynb. Generated; do not edit (ADR-0001).
 notebook: off_design
 status: off-design performance of the required engine, generic maps (ADR-0030, ADR-0032)
 simplifications:
@@ -1161,17 +1161,17 @@ landing:
   throttle: thrust
   converged: true
   valid: true
-  thrust_N: 357.602
-  air_mass_flow_kg_s: 0.8281019
-  fuel_flow_kg_s: 0.01410907
-  sfc_kg_N_s: 3.945468e-05
-  speed_fraction: 0.9334129
-  Tt4_K: 1040.622
-  pressure_ratio: 3.11173
-  lapse: 0.584154
+  thrust_N: 356.3379
+  air_mass_flow_kg_s: 0.8269627
+  fuel_flow_kg_s: 0.01406449
+  sfc_kg_N_s: 3.946954e-05
+  speed_fraction: 0.9328732
+  Tt4_K: 1039.431
+  pressure_ratio: 3.105591
+  lapse: 0.582089
   algebraic_lapse: 0.8818223
-  required_thrust_per_engine_N: 357.602
-  fraction_of_max_thrust: 0.6600046
+  required_thrust_per_engine_N: 356.3379
+  fraction_of_max_thrust: 0.6576715
 loiter_against_preliminary:
   loiter_thrust_fraction: 0.2790576
   inside_valid_throttle_range: true

@@ -3,13 +3,17 @@
 Rough first iteration: constant TSFC, constant polar, maximum-power thrust
 from the algebraic lapse. Climb and acceleration use the energy-height
 method (fuel independent of the thrust margin), level flight and loiter
-integrate dm = C D dt, hover burns C W g dt. Transition is not modelled
-beyond starting the climb at its climb Mach number.
+integrate dm = C D dt, hover burns C W g dt. The launch-side transition is
+not modelled beyond starting the climb at its climb Mach number; the
+landing-side transition is a thrust-borne segment flown like hover, after
+an idle glide (ADR-0038).
 
 Each segment also records its impulse, the integral of the pair's thrust
 over time, with the thrust the fuel integration uses: maximum power in
-climb and acceleration, drag in level flight, weight in hover. Descent is a
-weight fraction with no thrust history and contributes no impulse.
+climb and acceleration, drag in level flight, weight in hover and
+transition. The glide's impulse is idle thrust times its duration; its fuel
+is an assumed weight fraction, so there fuel and impulse are not tied by
+an SFC.
 """
 from __future__ import annotations
 
@@ -171,9 +175,15 @@ def fly_mission(inputs: AnalysisInputs, takeoff_mass_kg: float, thrust_SL_N: flo
                 t, d, imp = t + dt_, d + dd, imp + di
             mach = tgt_mach
         elif seg.type == "descent":
+            # Idle glide (ADR-0038): timed by the sink rate, thrust at idle; fuel is the assumed weight
+            # fraction, because idle lies below the throttle range of the engine models.
+            glide_mach = val(seg.id, "mach")
+            t = h / val(seg.id, "sink_rate_m_s")
+            idle_N = inputs.idle_thrust_fraction * inputs.engine.alpha(inputs.atmosphere, 0.5 * h, glide_mach, dT) * thrust_SL_N
+            imp = idle_N * t
             m *= inputs.descent_weight_fraction.value
             h, mach = 0.0, 0.0
-        elif seg.type == "vertical_landing":
+        elif seg.type in ("transition", "vertical_landing"):   # thrust-borne at sea level, T = W
             t = val(seg.id, "duration_s")
             m, imp = _hover(inputs, m, thrust_SL_N, dT, t, steps["level_steps"])
         else:

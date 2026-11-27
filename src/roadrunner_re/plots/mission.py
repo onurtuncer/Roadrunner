@@ -10,16 +10,16 @@ from roadrunner_re.mission_timeline import SegmentView
 
 _SEGMENT_COLOURS = {
     "vertical_launch": "tab:red", "climb": "tab:orange", "dash": "tab:blue", "cruise": "tab:green",
-    "loiter": "tab:purple", "descent": "tab:orange", "vertical_landing": "tab:red",
+    "loiter": "tab:purple", "descent": "tab:orange", "transition": "tab:pink", "vertical_landing": "tab:red",
 }
 
 
 def mission_profile_figure(views: list[SegmentView], save_path: str | Path | None = None):
     """Altitude, Mach number and true airspeed along the mission.
 
-    Segment widths are to scale where the profile fixes a duration. Climb and
-    descent durations are set by the thrust margin, so they are drawn at the
-    mean width of the other segments and hatched: not to scale.
+    Segment widths are to scale where the profile fixes a duration. The climb
+    duration is set by the thrust margin, so it is drawn at the mean width of
+    the other segments and hatched: not to scale.
     """
     known = [v.duration_s.value for v in views if v.duration_s is not None]
     unscaled_width = float(np.mean(known))

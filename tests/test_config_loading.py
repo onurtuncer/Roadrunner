@@ -49,7 +49,7 @@ def test_claim_without_source_is_rejected(tmp_path):
 def test_sample_mission_shape(mission):
     assert mission.name == "sample"
     assert [s.type for s in mission.segments] == [
-        "vertical_launch", "climb", "dash", "loiter", "cruise", "descent", "vertical_landing"]
+        "vertical_launch", "climb", "dash", "loiter", "cruise", "descent", "transition", "vertical_landing"]
 
 
 def test_every_segment_states_where_its_numbers_come_from(mission, claims):

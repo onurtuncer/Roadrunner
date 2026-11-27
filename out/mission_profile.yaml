@@ -146,11 +146,36 @@ segments:
     value: 0.0
     low: 0.0
     high: 0.0
-  mach: null
+  mach:
+    value: 0.6
+    low: 0.5
+    high: 0.8
   true_airspeed_m_s: null
-  duration_s: null
+  duration_s:
+    value: 300.0
+    low: 50.0
+    high: 1200.0
   distance_m: null
   evidence: []
+- id: transition
+  type: transition
+  altitude_start_m:
+    value: 0.0
+    low: 0.0
+    high: 0.0
+  altitude_end_m:
+    value: 0.0
+    low: 0.0
+    high: 0.0
+  mach: null
+  true_airspeed_m_s: null
+  duration_s:
+    value: 10.0
+    low: 5.0
+    high: 20.0
+  distance_m: null
+  evidence:
+  - vtol_launch_and_landing
 - id: landing
   type: vertical_landing
   altitude_start_m:
@@ -182,15 +207,16 @@ uncertain_inputs:
 - dash_out.distance_m
 - dash_out.mach
 - day.dT_isa_K
+- descent.sink_rate_m_s
 - landing.duration_s
 - launch.duration_s
 - loiter.duration_s
 - loiter.mach
 - payload.mass_kg
 - reserve.fraction_of_mission_fuel
+- transition.duration_s
 duration_not_fixed_by_profile:
 - climb_out
-- descent
 constraints:
 - id: vertical_launch
   type: vertical_launch

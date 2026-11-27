@@ -93,8 +93,8 @@ repo does.
   two come from one uncorroborated secondary source.
 - Dependencies are optional extras in `pyproject.toml`: `cycle`
   (in use), `aero` and `uq` (not yet imported anywhere).
-- **ADR-0001 to 0037 are all Accepted** (0003 to 0033 on 2026-11-26, 0034 to
-  0037 on 2026-11-27).
+- **ADR-0001 to 0038 are all Accepted** (0003 to 0033 on 2026-11-26, 0034 to
+  0038 on 2026-11-27).
   0013 is superseded by 0021; 0007 is withdrawn by 0037; 0006, 0008, 0009, 0010, 0012, 0014,
   0015, 0016, 0018, 0019, 0021, 0022, 0023, 0026, 0028, 0029, 0030, 0031 and 0036 carry
   amendments (see `adr/README.md`). Read an amended ADR together with the
@@ -106,7 +106,7 @@ repo does.
   hand-estimate polar on `S_ref`, `config/analysis.yaml`; now the
   *preliminary* pair (notebooks 5, 6, ADR-0031). Nominal point
   (85 kg): vertical launch binds, T_SL/W_TO 1.47, 614 N per engine, fuel
-  14.1 kg with reserve. The cycle analysis and engine deck replace the
+  14.4 kg with reserve. The cycle analysis and engine deck replace the
   lapse; take-off mass is swept, not solved (no ADR-0008 build-up).
 - **On-design cycle point exists (ADR-0030)**: pyCycle at OP1 (hot-day SLS) for
   the launch thrust, 542 N per engine -> 0.95 kg/s air, specific thrust 568
@@ -117,16 +117,22 @@ repo does.
   `out/off_design.yaml`, `OutsideEngineModel` outside the grid, no
   extrapolation). Nominal point (85 kg): vertical launch still binds, T_SL/W_TO
   1.469, 612 N per engine; flight requirements need 6 to 9 % more thrust loading
-  (cycle lapse is lower); mission fuel 19.9 kg against 12.8 kg preliminary
-  (+55 %, loiter 1.71 times: it runs at about 28 % throttle), 21.9 kg with
-  reserve, implied empty mass 53.1 kg. Part-throttle fuel is probably still
+  (cycle lapse is lower); mission fuel 20.1 kg against 13.1 kg preliminary
+  (+54 %, loiter 1.71 times: it runs at about 28 % throttle), 22.2 kg with
+  reserve, implied empty mass 52.8 kg. Part-throttle fuel is probably still
   understated (constant combustion efficiency). The handoffs carry the
   preliminary values beside the cycle ones.
 - **Total impulse** of the engine pair over the mission is integrated in
   `mission.py` with the fuel (thrust = maximum power in climb and
-  acceleration, drag in level flight, weight in hover; descent none; reserve
-  excluded) and carried in both mission handoffs: 340 kN s on the cycle
-  engine, 345 kN s preliminary. The design summary reports it.
+  acceleration, drag in level flight, weight in hover and the landing
+  transition, idle in the glide; reserve excluded) and carried in both
+  mission handoffs: 358 kN s on the cycle engine, 365 kN s preliminary.
+  The design summary reports it.
+- **The return to the ground is an idle glide and a powered transition**
+  (ADR-0038): the glide is timed by an assumed sink rate (10 m/s, 5 to 20)
+  and burns the assumed weight fraction of `config/analysis.yaml` (idle is
+  below the tables' throttle range); the transition (10 s, 5 to 20) is flown
+  at thrust equal to weight, an upper estimate.
 - Everything below the next heading describes the *intended* structure
   per the ADRs.
 

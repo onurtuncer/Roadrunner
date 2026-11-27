@@ -8,10 +8,10 @@ simplifications:
   fuel is understated'
 - drag polar is the hand estimate, constant with Mach number, referred to the body
   cross-section
-- launch and landing are hover at T = W; transition acceleration to the climb Mach
-  number is not flown
-- descent burns an assumed weight fraction; climb at maximum power by the energy-height
-  method
+- launch, landing transition and landing are hover at T = W; the launch-side transition
+  to the climb Mach number is not flown
+- the idle glide burns an assumed weight fraction (ADR-0038); climb at maximum power
+  by the energy-height method
 - installation losses are not applied (ADR-0011); engine mass is the catalogue power
   law at datasheet thrust
 - 'no structural mass build-up (ADR-0008): implied empty mass is reported, not closed'
@@ -29,7 +29,7 @@ design_point:
   thrust_SL_N_installed_pair: 1228.858
   thrust_per_engine_N: 614.429
   binding_constraint: vertical_launch
-  landing_floor_window_margin: 12.4444
+  landing_floor_window_margin: 12.4004
   iterations: 2
 segments:
 - id: launch
@@ -83,33 +83,42 @@ segments:
   mass_end_kg: 72.930513
   fuel_kg: 0.366485
   weight_fraction: 0.995
-  duration_s: 0.0
+  duration_s: 300.0
   distance_m: 0.0
-  impulse_N_s: 0.0
+  impulse_N_s: 12234.0
+- id: transition
+  type: transition
+  mass_start_kg: 72.930513
+  mass_end_kg: 72.672702
+  fuel_kg: 0.257811
+  weight_fraction: 0.99646497
+  duration_s: 10.0
+  distance_m: 0.0
+  impulse_N_s: 7139.4
 - id: landing
   type: vertical_landing
-  mass_start_kg: 72.930513
-  mass_end_kg: 72.15981
-  fuel_kg: 0.770703
+  mass_start_kg: 72.672702
+  mass_end_kg: 71.904723
+  fuel_kg: 0.767979
   weight_fraction: 0.98943236
   duration_s: 30.0
   distance_m: 0.0
-  impulse_N_s: 21342.5
+  impulse_N_s: 21267.1
 fuel:
-  mission_kg: 12.84019
-  reserve_kg: 1.284019
-  total_kg: 14.124209
+  mission_kg: 13.095277
+  reserve_kg: 1.309528
+  total_kg: 14.404804
 impulse:
-  total_N_s: 345427.1
-  basis: engine pair, uninstalled thrust, mission segments only (reserve excluded;
-    descent has no thrust history)
+  total_N_s: 364725.0
+  basis: engine pair, uninstalled thrust, mission segments only (reserve excluded);
+    glide at idle thrust, transition and hover at T = W (ADR-0038)
 masses:
   takeoff_kg: 85.0
   payload_kg: 10.0
-  implied_empty_kg: 60.875791
+  implied_empty_kg: 60.595196
   engine_each_kg: 7.275164
   propulsion_kg: 14.550328
-  propulsion_fraction_of_empty: 0.239
+  propulsion_fraction_of_empty: 0.2401
 takeoff_mass_sweep:
 - takeoff_mass_kg: 40.0
   feasible: true
@@ -118,10 +127,10 @@ takeoff_mass_sweep:
   binding_constraint: dash
   thrust_SL_N: 610.335
   thrust_per_engine_N: 305.167
-  total_fuel_kg: 12.672409
-  implied_empty_mass_kg: 17.327591
+  total_fuel_kg: 12.783152
+  implied_empty_mass_kg: 17.216848
   propulsion_mass_kg: 6.184647
-  propulsion_fraction_of_empty: 0.356925
+  propulsion_fraction_of_empty: 0.359221
 - takeoff_mass_kg: 50.0
   feasible: true
   wing_loading_Pa: 6906.092
@@ -129,10 +138,10 @@ takeoff_mass_sweep:
   binding_constraint: vertical_launch
   thrust_SL_N: 722.858
   thrust_per_engine_N: 361.429
-  total_fuel_kg: 12.182194
-  implied_empty_mass_kg: 27.817806
+  total_fuel_kg: 12.333556
+  implied_empty_mass_kg: 27.666444
   propulsion_mass_kg: 7.605887
-  propulsion_fraction_of_empty: 0.273418
+  propulsion_fraction_of_empty: 0.274914
 - takeoff_mass_kg: 60.0
   feasible: true
   wing_loading_Pa: 8287.31
@@ -140,10 +149,10 @@ takeoff_mass_sweep:
   binding_constraint: vertical_launch
   thrust_SL_N: 867.429
   thrust_per_engine_N: 433.715
-  total_fuel_kg: 12.600808
-  implied_empty_mass_kg: 37.399192
+  total_fuel_kg: 12.789575
+  implied_empty_mass_kg: 37.210425
   propulsion_mass_kg: 9.504923
-  propulsion_fraction_of_empty: 0.254148
+  propulsion_fraction_of_empty: 0.255437
 - takeoff_mass_kg: 70.0
   feasible: true
   wing_loading_Pa: 9668.528
@@ -151,10 +160,10 @@ takeoff_mass_sweep:
   binding_constraint: vertical_launch
   thrust_SL_N: 1012.001
   thrust_per_engine_N: 506.001
-  total_fuel_kg: 13.153405
-  implied_empty_mass_kg: 46.846595
+  total_fuel_kg: 13.379105
+  implied_empty_mass_kg: 46.620895
   propulsion_mass_kg: 11.476008
-  propulsion_fraction_of_empty: 0.24497
+  propulsion_fraction_of_empty: 0.246156
 - takeoff_mass_kg: 80.0
   feasible: true
   wing_loading_Pa: 11049.746
@@ -162,10 +171,10 @@ takeoff_mass_sweep:
   binding_constraint: vertical_launch
   thrust_SL_N: 1156.573
   thrust_per_engine_N: 578.286
-  total_fuel_kg: 13.784396
-  implied_empty_mass_kg: 56.215604
+  total_fuel_kg: 14.046751
+  implied_empty_mass_kg: 55.953249
   propulsion_mass_kg: 13.510946
-  propulsion_fraction_of_empty: 0.240342
+  propulsion_fraction_of_empty: 0.241468
 - takeoff_mass_kg: 90.0
   feasible: true
   wing_loading_Pa: 12430.965
@@ -173,10 +182,10 @@ takeoff_mass_sweep:
   binding_constraint: vertical_launch
   thrust_SL_N: 1301.144
   thrust_per_engine_N: 650.572
-  total_fuel_kg: 14.478945
-  implied_empty_mass_kg: 65.521055
+  total_fuel_kg: 14.77773
+  implied_empty_mass_kg: 65.22227
   propulsion_mass_kg: 15.603411
-  propulsion_fraction_of_empty: 0.238143
+  propulsion_fraction_of_empty: 0.239234
 - takeoff_mass_kg: 100.0
   feasible: true
   wing_loading_Pa: 13812.183
@@ -184,10 +193,10 @@ takeoff_mass_sweep:
   binding_constraint: vertical_launch
   thrust_SL_N: 1445.716
   thrust_per_engine_N: 722.858
-  total_fuel_kg: 15.230987
-  implied_empty_mass_kg: 74.769013
+  total_fuel_kg: 15.565998
+  implied_empty_mass_kg: 74.434002
   propulsion_mass_kg: 17.748347
-  propulsion_fraction_of_empty: 0.237376
+  propulsion_fraction_of_empty: 0.238444
 - takeoff_mass_kg: 110.0
   feasible: true
   wing_loading_Pa: 15193.401
@@ -195,10 +204,10 @@ takeoff_mass_sweep:
   binding_constraint: vertical_launch
   thrust_SL_N: 1590.287
   thrust_per_engine_N: 795.144
-  total_fuel_kg: 16.037424
-  implied_empty_mass_kg: 83.962576
+  total_fuel_kg: 16.408469
+  implied_empty_mass_kg: 83.591531
   propulsion_mass_kg: 19.941614
-  propulsion_fraction_of_empty: 0.237506
+  propulsion_fraction_of_empty: 0.23856
 - takeoff_mass_kg: 120.0
   feasible: true
   wing_loading_Pa: 16574.62
@@ -206,10 +215,10 @@ takeoff_mass_sweep:
   binding_constraint: vertical_launch
   thrust_SL_N: 1734.859
   thrust_per_engine_N: 867.429
-  total_fuel_kg: 16.896412
-  implied_empty_mass_kg: 93.103588
+  total_fuel_kg: 17.303307
+  implied_empty_mass_kg: 92.696693
   propulsion_mass_kg: 22.179752
-  propulsion_fraction_of_empty: 0.238227
+  propulsion_fraction_of_empty: 0.239272
 - takeoff_mass_kg: 130.0
   feasible: true
   wing_loading_Pa: 17955.838
@@ -217,10 +226,10 @@ takeoff_mass_sweep:
   binding_constraint: vertical_launch
   thrust_SL_N: 1879.431
   thrust_per_engine_N: 939.715
-  total_fuel_kg: 17.806722
-  implied_empty_mass_kg: 102.193278
+  total_fuel_kg: 18.249283
+  implied_empty_mass_kg: 101.750717
   propulsion_mass_kg: 24.459818
-  propulsion_fraction_of_empty: 0.239349
+  propulsion_fraction_of_empty: 0.24039
 - takeoff_mass_kg: 140.0
   feasible: true
   wing_loading_Pa: 19337.056
@@ -228,10 +237,10 @@ takeoff_mass_sweep:
   binding_constraint: vertical_launch
   thrust_SL_N: 2024.002
   thrust_per_engine_N: 1012.001
-  total_fuel_kg: 18.767449
-  implied_empty_mass_kg: 111.232551
+  total_fuel_kg: 19.2455
+  implied_empty_mass_kg: 110.7545
   propulsion_mass_kg: 26.779279
-  propulsion_fraction_of_empty: 0.24075
+  propulsion_fraction_of_empty: 0.24179
 - takeoff_mass_kg: 150.0
   feasible: true
   wing_loading_Pa: 20718.275
@@ -239,7 +248,7 @@ takeoff_mass_sweep:
   binding_constraint: vertical_launch
   thrust_SL_N: 2168.574
   thrust_per_engine_N: 1084.287
-  total_fuel_kg: 19.777883
-  implied_empty_mass_kg: 120.222117
+  total_fuel_kg: 20.291247
+  implied_empty_mass_kg: 119.708753
   propulsion_mass_kg: 29.135925
-  propulsion_fraction_of_empty: 0.242351
+  propulsion_fraction_of_empty: 0.24339

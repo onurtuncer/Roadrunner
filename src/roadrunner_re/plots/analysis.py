@@ -85,7 +85,7 @@ def mission_weights_figure(dp: DesignPoint, save_path: str | Path | None = None)
         masses.append(s.mass_end_kg)
     fig, (a, b) = plt.subplots(1, 2, figsize=(10.5, 4.2), gridspec_kw={"width_ratios": [1.2, 1]})
     a.plot(np.array(times) / 60.0, masses, "o-")
-    a.set(xlabel="time [min] (descent not timed)", ylabel="mass [kg]", title="Mass along the mission")
+    a.set(xlabel="time [min]", ylabel="mass [kg]", title="Mass along the mission")
     b.barh([s.id for s in segs][::-1], [s.fuel_kg for s in segs][::-1], color="tab:orange")
     b.set(xlabel="fuel burned [kg]", title="Fuel per segment")
     for ax in (a, b):

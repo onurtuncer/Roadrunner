@@ -6,9 +6,10 @@ duration or the distance. A duration given as a distance (dash, cruise)
 is distance divided by true airspeed on the mission's hot day, with
 bounds from the corners of the input bounds.
 
-Climb and descent durations are NOT fixed by the profile: they follow
-from the thrust margin and are found in the mission analysis. They are
-reported as unknown (``None``), never assumed here.
+The descent (an idle glide, ADR-0038) lasts its altitude over its sink
+rate. Climb duration is NOT fixed by the profile: it follows from the
+thrust margin and is found in the mission analysis. It is reported as
+unknown (``None``), never assumed here.
 
 No weights, no fuel, no engine: this is a description of the input.
 """
@@ -82,6 +83,7 @@ def mission_timeline(mission: MissionProfile, atmosphere: IsaAtmosphere) -> list
         mach = _param(mission, seg, "mach")
         distance = _param(mission, seg, "distance_m")
         duration = _param(mission, seg, "duration_s")
+        sink = _param(mission, seg, "sink_rate_m_s")
 
         speed = None
         if mach is not None and level is not None:
@@ -92,6 +94,10 @@ def mission_timeline(mission: MissionProfile, atmosphere: IsaAtmosphere) -> list
             if speed is not None:
                 distance_i = _over_corners(lambda h, m, d, t: float(atmosphere.true_airspeed_m_s(h, m, d)) * t,
                                            [level, mach, dT, duration])
+        elif sink is not None:   # glide: altitude lost over sink rate, bounds from the corners
+            duration_i = _over_corners(lambda dh, s: dh / s, [Interval(start.value - end.value, start.low - end.low,
+                                                                         start.high - end.high), sink])
+            distance_i = None
         elif distance is not None and speed is not None:
             duration_i = _over_corners(lambda h, m, d, s: s / float(atmosphere.true_airspeed_m_s(h, m, d)),
                                        [level, mach, dT, distance])
