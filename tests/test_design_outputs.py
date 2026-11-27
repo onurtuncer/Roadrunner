@@ -106,6 +106,8 @@ def test_mission_analysis_pins():
     assert [s["id"] for s in m["segments"]] == ["launch", "climb_out", "dash_out", "loiter", "cruise_back", "descent", "landing"]
     assert (m["fuel"]["mission_kg"], m["fuel"]["total_kg"]) == pytest.approx((12.8402, 14.1242), rel=1e-4)
     assert m["masses"]["implied_empty_kg"] == pytest.approx(60.8758, rel=1e-4)
+    assert m["impulse"]["total_N_s"] == pytest.approx(345427.1, rel=1e-4)
+    assert m["impulse"]["total_N_s"] == pytest.approx(sum(s["impulse_N_s"] for s in m["segments"]), abs=1.0)
     assert len(m["simplifications"]) == 7
 
 
@@ -152,6 +154,7 @@ def test_cycle_based_mission_pins():
     m = yaml.safe_load((OUT / "mission.yaml").read_text(encoding="utf-8"))
     assert (m["fuel"]["mission_kg"], m["fuel"]["total_kg"]) == pytest.approx((19.890, 21.879), rel=1e-3)
     assert m["masses"]["implied_empty_kg"] == pytest.approx(53.121, rel=1e-3)
+    assert m["impulse"]["total_N_s"] == pytest.approx(340467.4, rel=1e-3)
     cmp = m["comparison_with_preliminary"]
     assert cmp["mission_fuel_kg"]["ratio"] == pytest.approx(1.549, rel=1e-2)
     assert {s["id"]: s["ratio"] for s in cmp["segments"]}["loiter"] == pytest.approx(1.71, rel=1e-2)

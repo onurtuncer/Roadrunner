@@ -1,4 +1,4 @@
-# Handoff of notebooks/mission_analysis.ipynb. Generated; do not edit (ADR-0001).
+# Handoff of notebooks/10_mission_analysis.ipynb. Generated; do not edit (ADR-0001).
 notebook: mission_analysis
 status: on the off-design cycle results (ADR-0032, ADR-0033)
 simplifications:
@@ -58,6 +58,9 @@ comparison_with_preliminary:
   implied_empty_kg:
     preliminary: 60.875791
     cycle: 53.121
+  total_impulse_N_s:
+    preliminary: 345427.1
+    cycle: 340467.4
   thrust_per_engine_N:
     preliminary: 614.429
     cycle: 612.171
@@ -80,6 +83,7 @@ segments:
   weight_fraction: 0.9961891
   duration_s: 10.0
   distance_m: 0.0
+  impulse_N_s: 8319.8
 - id: climb_out
   type: climb
   mass_start_kg: 84.676073
@@ -88,6 +92,7 @@ segments:
   weight_fraction: 0.98961655
   duration_s: 20.321
   distance_m: 4219.7
+  impulse_N_s: 18052.0
 - id: dash_out
   type: dash
   mass_start_kg: 83.796844
@@ -96,6 +101,7 @@ segments:
   weight_fraction: 0.96215914
   duration_s: 122.708
   distance_m: 33023.8
+  impulse_N_s: 61400.9
 - id: loiter
   type: loiter
   mass_start_kg: 80.625899
@@ -104,6 +110,7 @@ segments:
   weight_fraction: 0.85216376
   duration_s: 900.0
   distance_m: 153265.1
+  impulse_N_s: 190166.7
 - id: cruise_back
   type: cruise
   mass_start_kg: 68.706469
@@ -112,6 +119,7 @@ segments:
   weight_fraction: 0.96376782
   duration_s: 151.107
   distance_m: 30807.0
+  impulse_N_s: 43258.8
 - id: descent
   type: descent
   mass_start_kg: 66.217084
@@ -120,6 +128,7 @@ segments:
   weight_fraction: 0.995
   duration_s: 0.0
   distance_m: 0.0
+  impulse_N_s: 0.0
 - id: landing
   type: vertical_landing
   mass_start_kg: 65.885999
@@ -128,10 +137,15 @@ segments:
   weight_fraction: 0.9882221
   duration_s: 30.0
   distance_m: 0.0
+  impulse_N_s: 19269.3
 fuel:
   mission_kg: 19.89
   reserve_kg: 1.989
   total_kg: 21.879
+impulse:
+  total_N_s: 340467.4
+  basis: engine pair, uninstalled thrust, mission segments only (reserve excluded;
+    descent has no thrust history)
 masses:
   takeoff_kg: 85.0
   payload_kg: 10.0

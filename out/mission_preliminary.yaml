@@ -1,4 +1,4 @@
-# Handoff of notebooks/mission_analysis_preliminary.ipynb. Generated; do not edit (ADR-0001).
+# Handoff of notebooks/06_mission_analysis_preliminary.ipynb. Generated; do not edit (ADR-0001).
 notebook: mission_analysis_preliminary
 status: first iteration, rough by intent (ADR-0029)
 simplifications:
@@ -40,6 +40,7 @@ segments:
   weight_fraction: 0.99646497
   duration_s: 10.0
   distance_m: 0.0
+  impulse_N_s: 8320.9
 - id: climb_out
   type: climb
   mass_start_kg: 84.699523
@@ -48,6 +49,7 @@ segments:
   weight_fraction: 0.992637
   duration_s: 17.88
   distance_m: 3712.9
+  impulse_N_s: 17271.2
 - id: dash_out
   type: dash
   mass_start_kg: 84.07588
@@ -56,6 +58,7 @@ segments:
   weight_fraction: 0.97383575
   duration_s: 121.231
   distance_m: 32669.9
+  impulse_N_s: 60917.4
 - id: loiter
   type: loiter
   mass_start_kg: 81.876098
@@ -64,6 +67,7 @@ segments:
   weight_fraction: 0.91466402
   duration_s: 900.0
   distance_m: 153265.1
+  impulse_N_s: 193485.5
 - id: cruise_back
   type: cruise
   mass_start_kg: 74.889121
@@ -72,6 +76,7 @@ segments:
   weight_fraction: 0.97874027
   duration_s: 150.962
   distance_m: 30779.7
+  impulse_N_s: 44089.6
 - id: descent
   type: descent
   mass_start_kg: 73.296998
@@ -80,6 +85,7 @@ segments:
   weight_fraction: 0.995
   duration_s: 0.0
   distance_m: 0.0
+  impulse_N_s: 0.0
 - id: landing
   type: vertical_landing
   mass_start_kg: 72.930513
@@ -88,10 +94,15 @@ segments:
   weight_fraction: 0.98943236
   duration_s: 30.0
   distance_m: 0.0
+  impulse_N_s: 21342.5
 fuel:
   mission_kg: 12.84019
   reserve_kg: 1.284019
   total_kg: 14.124209
+impulse:
+  total_N_s: 345427.1
+  basis: engine pair, uninstalled thrust, mission segments only (reserve excluded;
+    descent has no thrust history)
 masses:
   takeoff_kg: 85.0
   payload_kg: 10.0

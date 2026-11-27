@@ -78,6 +78,22 @@ def test_hover_fuel_is_exponential_in_time(inputs, design):
     assert launch.fuel_kg == pytest.approx(expected, rel=1e-6)
 
 
+def test_impulse_is_fuel_over_tsfc_where_thrust_is_integrated_directly(inputs, design):
+    """Constant TSFC: hover and level flight burn C * T * dt, so impulse = fuel / C there.
+
+    An energy step burns m (1 - exp(-C T dt / m)) <= C T dt, so impulse >= fuel / C everywhere.
+    """
+    m, c = design.mission, inputs.tsfc_kg_N_s
+    for s in m.segments:
+        if s.type in ("vertical_launch", "vertical_landing"):
+            assert s.impulse_N_s == pytest.approx(s.fuel_kg / c, rel=1e-12)
+        elif s.type == "descent":
+            assert s.impulse_N_s == 0.0
+        else:
+            assert s.impulse_N_s >= s.fuel_kg / c * (1 - 1e-12) > 0.0
+    assert m.total_impulse_N_s == pytest.approx(sum(s.impulse_N_s for s in m.segments))
+
+
 def test_loiter_fuel_matches_the_integral_of_drag(inputs, design):
     """With the polar and weight known, fuel = C * mean drag * time, to the accuracy of the step count."""
     s = next(s for s in design.mission.segments if s.id == "loiter")

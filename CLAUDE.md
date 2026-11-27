@@ -122,6 +122,11 @@ repo does.
   reserve, implied empty mass 53.1 kg. Part-throttle fuel is probably still
   understated (constant combustion efficiency). The handoffs carry the
   preliminary values beside the cycle ones.
+- **Total impulse** of the engine pair over the mission is integrated in
+  `mission.py` with the fuel (thrust = maximum power in climb and
+  acceleration, drag in level flight, weight in hover; descent none; reserve
+  excluded) and carried in both mission handoffs: 340 kN s on the cycle
+  engine, 345 kN s preliminary. The design summary reports it.
 - Everything below the next heading describes the *intended* structure
   per the ADRs.
 
