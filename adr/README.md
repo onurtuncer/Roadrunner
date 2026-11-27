@@ -17,7 +17,7 @@ Format: one file per decision, `NNNN-kebab-title.md`, each with
 | [0004](0004-scope-propulsion-of-the-baseline-vehicle.md) | Scope: propulsion of the baseline vehicle, public sources only | Accepted |
 | [0005](0005-evidence-ledger-with-provenance.md) | Evidence ledger: provenance and a tier on every external number | Accepted |
 | [0006](0006-inverse-problem-feasible-family.md) | Reverse engineering is an inverse problem: report a feasible family | Accepted; amended by 0020 |
-| [0007](0007-geometry-from-scaled-imagery.md) | Geometry from scaled public imagery, as measured intervals | Accepted; amended by 0024 |
+| [0007](0007-geometry-from-scaled-imagery.md) | Geometry from scaled public imagery, as measured intervals | Superseded by 0037 (withdrawn) |
 | [0008](0008-vehicle-model-as-requirements-generator.md) | The vehicle model is a requirements generator, no more | Accepted; amended by 0016, 0018 |
 | [0009](0009-operating-points-and-cycle-design-point.md) | Four operating points; the cycle design point is static launch | Accepted; amended by 0015, 0018, 0019 |
 | [0010](0010-in-house-cycle-model-and-technology-levels.md) | In-house SI cycle model; technology levels from a reference-engine database | Accepted; amended by 0015, 0023, 0024 |
@@ -46,4 +46,5 @@ Format: one file per decision, `NNNN-kebab-title.md`, each with
 | [0033](0033-cycle-based-analysis-pair-and-engine-model.md) | Cycle-based analysis pair and the engine model | Accepted |
 | [0034](0034-numbered-notebook-file-names.md) | Notebook file names carry their position | Accepted |
 | [0035](0035-figures-written-to-out.md) | Figures are written to `out/figures/` beside the handoffs | Accepted |
-| [0036](0036-geometry-and-aerodynamics-notebooks-dropped.md) | The geometry and aerodynamics notebooks are dropped | Accepted |
+| [0036](0036-geometry-and-aerodynamics-notebooks-dropped.md) | The geometry and aerodynamics notebooks are dropped | Accepted; amended by 0037 |
+| [0037](0037-withdraw-geometry-from-imagery.md) | Geometry from imagery is withdrawn | Accepted |

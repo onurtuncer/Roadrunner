@@ -2,16 +2,15 @@
 #
 # SUPPLIED BY THE OWNER on 2026-11-26 as a hand estimate built on
 # photo-scaled assumptions. It is NOT a measurement and NOT a result of
-# this repository: no pixel measurements exist yet (config/evidence/
-# imagery.yaml), so measured geometry is unavailable and nothing
-# here replaces it. The numbers are tier C (inferred) and the owner asks
+# this repository: the study measures no geometry (ADR-0037), and this
+# estimate is its aerodynamics (ADR-0036). The numbers are tier C (inferred) and the owner asks
 # that they be treated as +/-30 %; every low/high below is the nominal
 # value -/+ 30 % (counts are exact). Where the owner gave a tighter range
 # (cd0 0.18 to 0.25) the +/-30 % bounds are wider and are used.
 #
 # The length here (1.7 m, +/-30 %) is the owner's photo assumption and is wider
 # than the ledger's length anchor (length_overall: 1.4 to 1.8 m), which stays the
-# single length anchor for geometry (ADR-0007). The coefficients below are not
+# vehicle's length evidence. The coefficients below are not
 # independent of each other or of s_ref; the +/-30 % is per number, not joint.
 #
 # Reference area is the missile convention S_ref = pi d^2 / 4, NOT wing
